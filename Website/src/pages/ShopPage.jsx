@@ -23,7 +23,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
   const [sortBy, setSortBy] = useState('featured');
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [maxPrice, setMaxPrice] = useState(55000);
+  const [maxPrice, setMaxPrice] = useState(10000);
 
   // Sync with prop if it changes
   React.useEffect(() => {
@@ -236,7 +236,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                   type="range"
                   min="1000"
                   max="10000"
-                  step="1000"
+                  step="500"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(Number(e.target.value))}
                   className="w-full accent-[#0b1a30] cursor-pointer"
@@ -364,6 +364,30 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                       {c.name}
                     </button>
                   ))}
+                </div>
+              </div>
+
+              {/* Price Filter Mobile */}
+              <div className="py-4 border-b border-slate-100">
+                <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider mb-2">
+                  Max Price
+                </h4>
+                <div className="space-y-2">
+                  <input
+                    type="range"
+                    min="1000"
+                    max="10000"
+                    step="500"
+                    value={maxPrice}
+                    onChange={(e) => setMaxPrice(Number(e.target.value))}
+                    className="w-full accent-[#0b1a30] cursor-pointer"
+                  />
+                  <div className="flex justify-between text-xs text-slate-600 font-semibold">
+                    <span>Rs. 1,000</span>
+                    <span className="text-[#0b1a30] font-bold">
+                      Up to Rs. {maxPrice.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               </div>
 
