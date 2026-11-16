@@ -359,8 +359,8 @@ export const CartProvider = ({ children }) => {
     (total, item) => total + item.price * item.quantity,
     0
   );
-  // Free delivery for orders over Rs. 15,000; otherwise Rs. 450 flat islandwide
-  const shippingFee = cartSubtotal >= 15000 || cartSubtotal === 0 ? 0 : 450;
+  // Islandwide doorstep shipping fee of Rs. 350
+  const shippingFee = cart.length === 0 ? 0 : 350;
   const cartGrandTotal = cartSubtotal + shippingFee;
 
   return (

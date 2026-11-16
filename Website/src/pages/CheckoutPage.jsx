@@ -351,7 +351,7 @@ export default function CheckoutPage() {
             Secure Delivery & Order Details
           </h1>
           <p className="text-xs sm:text-sm text-stone-500 mt-1 font-light">
-            Islandwide Doorstep Delivery with Cash on Delivery (COD) or Bank Transfer options.
+            Islandwide Doorstep Delivery (Rs. 350) with Cash on Delivery (COD) or Bank Transfer options.
           </p>
         </div>
 
@@ -623,7 +623,7 @@ export default function CheckoutPage() {
             <div className="text-center text-[11px] text-stone-400 flex items-center justify-center gap-4">
               <span className="flex items-center gap-1">
                 <Truck className="w-3.5 h-3.5 text-stone-600" />
-                Free Islandwide Delivery
+                Islandwide Delivery (Rs. 350)
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
@@ -689,8 +689,8 @@ export default function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-stone-600">
                   <span>Islandwide Shipping</span>
-                  <span className="font-semibold text-emerald-700 uppercase text-[11px]">
-                    FREE (Complimentary)
+                  <span className="font-medium text-stone-900 font-serif">
+                    Rs. {shippingFee.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-serif font-semibold text-stone-900 pt-3 border-t border-stone-200">

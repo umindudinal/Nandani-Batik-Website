@@ -267,7 +267,7 @@ export default function SareeDetailPage() {
                 )}
               </div>
               <p className="text-xs text-stone-500 mt-1.5">
-                Price inclusive of all taxes. Free islandwide doorstep delivery.
+                Price inclusive of all taxes. Islandwide doorstep delivery (Rs. 350).
               </p>
             </div>
 
@@ -402,7 +402,7 @@ export default function SareeDetailPage() {
                 {openAccordion === 'shipping' && (
                   <div className="pb-4 text-stone-600 space-y-2 font-light leading-relaxed">
                     <p>
-                      • <strong className="font-medium text-stone-800">Islandwide Doorstep Delivery:</strong> 1 to 3 business days within Sri Lanka.
+                      • <strong className="font-medium text-stone-800">Islandwide Doorstep Delivery:</strong> 1 to 3 business days within Sri Lanka (Rs. 350 flat rate).
                     </p>
                     <p>
                       • <strong className="font-medium text-stone-800">Payment Options:</strong> Cash on Delivery (COD), Direct Bank Transfer, or Online Card Checkout.

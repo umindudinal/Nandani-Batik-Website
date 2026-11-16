@@ -17,6 +17,7 @@ export default function CartDrawer() {
     removeFromCart,
     updateQuantity,
     cartSubtotal,
+    shippingFee,
     cartGrandTotal,
     navigateTo,
     setActivePage,
@@ -46,7 +47,7 @@ export default function CartDrawer() {
         )
         .join('\n\n') +
       `\n\n• Subtotal: Rs. ${cartSubtotal.toLocaleString()}` +
-      `\n• Delivery: FREE (Islandwide Doorstep)` +
+      `\n• Delivery Fee: Rs. ${shippingFee.toLocaleString()}` +
       `\n• Grand Total: Rs. ${cartGrandTotal.toLocaleString()}` +
       `\n\nPlease let me know how to proceed with delivery!`
   );
@@ -76,11 +77,6 @@ export default function CartDrawer() {
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
-
-          {/* Understated Delivery Reassurance Strip */}
-          <div className="py-2.5 px-6 bg-white/60 border-b border-stone-200/60 text-center text-[11px] text-stone-500 uppercase tracking-widest font-medium">
-            Complimentary Islandwide Doorstep Delivery
           </div>
 
           {/* Bag Items List */}
@@ -197,8 +193,8 @@ export default function CartDrawer() {
                 </div>
                 <div className="flex justify-between text-stone-500">
                   <span>Islandwide Shipping</span>
-                  <span className="text-emerald-700 font-medium uppercase text-[11px] tracking-wider">
-                    Complimentary (Free)
+                  <span className="font-serif text-stone-800 text-sm">
+                    Rs. {shippingFee.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-base font-serif font-normal text-stone-900 pt-3 border-t border-stone-200">
@@ -231,7 +227,7 @@ export default function CartDrawer() {
               </div>
 
               <div className="text-[11px] text-center text-stone-400 pt-1">
-                Free Islandwide Delivery • Cash on Delivery (COD) Available
+                Islandwide Delivery (Rs. 350) • Cash on Delivery (COD) Available
               </div>
             </div>
           )}
