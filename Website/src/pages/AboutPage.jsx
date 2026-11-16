@@ -14,9 +14,8 @@ import {
   Check,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import bg_1 from '../assets/images/background/bg 1.png';
-import bg_2 from '../assets/images/background/bg 2.png';
-import bg_3 from '../assets/images/background/bg 3.png';
+import bg_1 from '../assets/images/sarees/saree 1.2.png';
+import bg_2 from '../assets/images/sarees/saree 3.1.png';
 
 export default function AboutPage({ setActivePage }) {
   const { navigateTo } = useCart();

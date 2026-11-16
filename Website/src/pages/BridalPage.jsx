@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import SareeCard from '../components/sarees/SareeCard';
-import bg_2 from '../assets/images/background/bg 2.png';
+import bg_2 from '../assets/images/sarees/saree 5.1.png';
 
 export default function BridalPage({ setActivePage }) {
   const { sarees, navigateTo } = useCart();
