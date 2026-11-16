@@ -20,7 +20,7 @@ export default function SareeCard({ saree }) {
   return (
     <div
       onClick={() => openSareePage(saree)}
-      className="group cursor-pointer flex flex-col bg-white transition-all duration-300"
+      className="group cursor-pointer flex flex-col bg-transparent transition-all duration-300"
     >
       {/* Image Container */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4f2ee] mb-4">
