@@ -106,7 +106,8 @@ export default function CheckoutPage() {
     };
 
     try {
-      await fetch('http://localhost:5000/api/orders', {
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      await fetch(`${apiBase}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderPayload),

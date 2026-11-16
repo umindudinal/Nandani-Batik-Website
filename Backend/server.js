@@ -958,3 +958,5 @@ server.on('error', (err) => {
     console.error('Server error:', err);
   }
 });
+
+export default app;

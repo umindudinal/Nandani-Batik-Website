@@ -145,6 +145,8 @@ export const CartProvider = ({ children }) => {
     return JSON.stringify(a) === JSON.stringify(b);
   };
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
   // Fetch sarees dynamically from backend (Supabase or Local DB)
   // Silent background refresh prevents UI flickering or loader flashing
   const refreshSarees = async (isInitial = false) => {
@@ -152,7 +154,7 @@ export const CartProvider = ({ children }) => {
       if (isInitial) {
         setIsSareesLoading(true);
       }
-      const res = await fetch('http://localhost:5000/api/sarees');
+      const res = await fetch(`${API_BASE_URL}/sarees`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -171,7 +173,7 @@ export const CartProvider = ({ children }) => {
   // Fetch categories dynamically from backend
   const refreshCategories = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/categories');
+      const res = await fetch(`${API_BASE_URL}/categories`);
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
