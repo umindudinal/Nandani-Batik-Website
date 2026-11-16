@@ -142,45 +142,6 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
           <p className="max-w-xl mx-auto text-xs text-stone-600 font-light leading-relaxed">
             Each creation is an original canvas of molten beeswax and cold-reactive dyes, hand-drawn on pure mulberry silk and Ceylon combed handloom cotton.
           </p>
-
-          {/* Sub-Category Quick Filter Pills */}
-          <div className="mt-8 pt-6 border-t border-stone-200/70 flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-1">
-            <button
-              onClick={() => {
-                setActiveCategory('all');
-                if (setSelectedCategory) setSelectedCategory('all');
-              }}
-              className={`px-4 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all whitespace-nowrap cursor-pointer ${
-                activeCategory === 'all'
-                  ? 'bg-[#0b1a30] text-white shadow-xs'
-                  : 'bg-white/80 hover:bg-white text-stone-700 border border-stone-200/80 hover:border-stone-400'
-              }`}
-            >
-              All Sarees ({sarees.length})
-            </button>
-
-            {categoryList
-              .filter((c) => c.id !== 'all')
-              .map((c) => {
-                const count = sarees.filter((s) => s.category === c.id).length;
-                return (
-                  <button
-                    key={c.id}
-                    onClick={() => {
-                      setActiveCategory(c.id);
-                      if (setSelectedCategory) setSelectedCategory(c.id);
-                    }}
-                    className={`px-4 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all whitespace-nowrap cursor-pointer ${
-                      activeCategory === c.id
-                        ? 'bg-[#0b1a30] text-white shadow-xs'
-                        : 'bg-white/80 hover:bg-white text-stone-700 border border-stone-200/80 hover:border-stone-400'
-                    }`}
-                  >
-                    {c.name} {count > 0 && `(${count})`}
-                  </button>
-                );
-              })}
-          </div>
         </div>
       </section>
 
