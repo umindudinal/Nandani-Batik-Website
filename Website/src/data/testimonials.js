@@ -48,7 +48,7 @@ export const faqs = [
   },
   {
     question: 'How long does delivery take within Sri Lanka?',
-    answer: 'We deliver islandwide! Deliveries within the Western Province (Colombo, Gampaha, Kalutara) take 1 to 2 business days. Outstation deliveries take 2 to 4 business days. Free islandwide delivery applies for orders over Rs. 15,000.',
+    answer: 'We deliver islandwide! Deliveries within the Western Province (Colombo, Gampaha, Kalutara) take 1 to 2 business days. Outstation deliveries take 2 to 4 business days. Islandwide doorstep delivery is a flat Rs. 350 with Cash on Delivery (COD) available.',
   },
   {
     question: 'Do you offer Cash on Delivery (COD) and WhatsApp ordering?',
