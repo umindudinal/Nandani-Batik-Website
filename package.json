@@ -1,0 +1,13 @@
+{
+  "name": "nandani-batik-suite",
+  "version": "1.0.0",
+  "description": "Nandani Batik E-Commerce Website, Admin Dashboard, and Express Backend",
+  "scripts": {
+    "dev:backend": "cd Backend && npm run dev",
+    "dev:dashboard": "cd Dashboard && npm run dev",
+    "dev:website": "cd Website && npm run dev"
+  },
+  "keywords": ["batik", "ecommerce", "dashboard", "supabase"],
+  "author": "Nandani Batik",
+  "license": "ISC"
+}

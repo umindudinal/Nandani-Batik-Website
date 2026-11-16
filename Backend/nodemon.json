@@ -1,0 +1,5 @@
+{
+  "watch": ["server.js", "supabaseClient.js"],
+  "ext": "js,mjs",
+  "ignore": ["uploads/*", "data/*", "*.json", "node_modules/*"]
+}
