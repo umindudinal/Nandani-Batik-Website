@@ -166,7 +166,7 @@ export default function CareGuidePage() {
   ];
 
   return (
-    <div className="bg-[#faf8f5] min-h-screen text-stone-800 antialiased">
+    <div className="bg-brand-cream min-h-screen text-stone-800 antialiased">
       {/* Editorial Hero Section */}
       <section className="relative border-b border-stone-200/80 bg-white/70 overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-14 sm:pt-16 sm:pb-20 text-center">
@@ -470,7 +470,7 @@ export default function CareGuidePage() {
             </p>
           </div>
 
-          <div className="bg-white border border-stone-200/90 divide-y divide-stone-200/70 max-w-3xl mx-auto shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="bg-white border border-stone-200/90 divide-y max-w-3xl mx-auto shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
             {faqs.map((faq, idx) => {
               const isOpen = openFaq === idx;
               return (

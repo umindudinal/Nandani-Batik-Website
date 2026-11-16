@@ -116,7 +116,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="bg-[#faf8f5] min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
+    <div className="bg-brand-cream min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
       {/* Editorial Header */}
       <section className="relative border-b border-stone-200/80 bg-white/70 overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-14 sm:pt-16 sm:pb-20 text-center">
@@ -236,7 +236,7 @@ export default function ContactPage() {
             {submitted ? (
               <div className="p-8 bg-stone-50 border border-stone-200 text-center space-y-4">
                 <div className="w-12 h-12 rounded-full bg-[#0b1a30] text-white flex items-center justify-center mx-auto">
-                  <Check className="w-6 h-6 stroke-[2]" />
+                  <Check className="w-6 h-6 stroke-2" />
                 </div>
                 <div className="space-y-1">
                   <h4 className="font-serif text-lg text-stone-900 font-medium">
@@ -279,7 +279,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       placeholder="e.g. Dilini Samarasekara"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
 
@@ -295,7 +295,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, phone: e.target.value })
                       }
                       placeholder="e.g. 077 892 4115"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -312,7 +312,7 @@ export default function ContactPage() {
                         setFormData({ ...formData, email: e.target.value })
                       }
                       placeholder="e.g. name@example.com"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
 
@@ -325,7 +325,7 @@ export default function ContactPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, subject: e.target.value })
                       }
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     >
                       <option value="General Saree Inquiry">General Saree Inquiry (සාමාන්‍ය විමසීම්)</option>
                       <option value="Bespoke Bridal / Kandyan Osariya">Bespoke Bridal / Kandyan Osariya (මංගල ඔසරි)</option>
@@ -348,7 +348,7 @@ export default function ContactPage() {
                       setFormData({ ...formData, message: e.target.value })
                     }
                     placeholder="Tell us about the sarees you are interested in, wedding colors, or specific event dates..."
-                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800 resize-none"
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none resize-none"
                   />
                 </div>
 
@@ -383,7 +383,7 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="bg-white border border-stone-200/90 divide-y divide-stone-200/70 max-w-3xl mx-auto shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
+          <div className="bg-white border border-stone-200/90 divide-y max-w-3xl mx-auto shadow-[0_1px_4px_rgba(0,0,0,0.02)]">
             {faqs.map((faq, idx) => {
               const isOpen = openFaq === idx;
               return (

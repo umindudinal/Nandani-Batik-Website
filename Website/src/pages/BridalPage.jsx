@@ -134,7 +134,7 @@ export default function BridalPage({ setActivePage }) {
   ];
 
   return (
-    <div className="bg-[#faf8f5] min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
+    <div className="bg-brand-cream min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
       {/* Editorial Bridal Hero */}
       <section className="relative border-b border-stone-200/80 bg-white/70 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
@@ -204,13 +204,13 @@ export default function BridalPage({ setActivePage }) {
 
             {/* Right Photo Frame — Authentic Sri Lankan Photoshoot Asset */}
             <div className="lg:col-span-5 relative">
-              <div className="relative aspect-[3/4] bg-stone-100 overflow-hidden border border-stone-300/80 shadow-lg">
+              <div className="relative aspect-3/4 bg-stone-100 overflow-hidden border border-stone-300/80 shadow-lg">
                 <img
                   src={bg_2}
                   alt="Nandani Batik Bespoke Bridal Saree"
                   className="w-full h-full object-cover object-top filter contrast-[1.02]"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                 <div className="absolute bottom-4 left-4 right-4 text-white text-[11px] font-light tracking-wide bg-black/40 backdrop-blur-xs p-3 border border-white/20">
                   <span className="font-serif italic block text-amber-200 text-xs">
                     The Bridal Atelier
@@ -424,7 +424,7 @@ export default function BridalPage({ setActivePage }) {
                     <select
                       value={troupeType}
                       onChange={(e) => setTroupeType(e.target.value)}
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     >
                       <option value="kandyan-osariya">Traditional Kandyan Osariya (උඩරට ඔසරිය)</option>
                       <option value="reception-saree">Reception / Going-Away Drape (දෙවන ගමන)</option>
@@ -442,7 +442,7 @@ export default function BridalPage({ setActivePage }) {
                         type="date"
                         value={weddingDate}
                         onChange={(e) => setWeddingDate(e.target.value)}
-                        className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                        className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                       />
                     </div>
 
@@ -453,7 +453,7 @@ export default function BridalPage({ setActivePage }) {
                       <select
                         value={troupeSize}
                         onChange={(e) => setTroupeSize(e.target.value)}
-                        className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                        className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                       >
                         <option value="1">1 Saree (Bride Only)</option>
                         <option value="2">2 Sarees (Bride + Maid of Honor)</option>
@@ -473,7 +473,7 @@ export default function BridalPage({ setActivePage }) {
                       value={colorTheme}
                       onChange={(e) => setColorTheme(e.target.value)}
                       placeholder="e.g. Champagne Gold & Navy / Royal Maroon & Pearl Ivory"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
 
@@ -486,7 +486,7 @@ export default function BridalPage({ setActivePage }) {
                       value={additionalNotes}
                       onChange={(e) => setAdditionalNotes(e.target.value)}
                       placeholder="e.g. Matching Nilame belt swatch, specific floral motif, church or poruwa details..."
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
 
