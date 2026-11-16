@@ -13,6 +13,8 @@ import {
   Phone,
   Check,
   Package,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -118,80 +120,101 @@ export default function CheckoutPage() {
 
     setConfirmedOrder({
       ...orderPayload,
-      placedAt: new Date().toLocaleDateString('en-US', {
+      date: new Date().toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
       }),
     });
-    setOrderConfirmed(true);
+
     clearCart();
     setIsSubmitting(false);
+    setOrderConfirmed(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCopy = () => {
-    if (confirmedOrder?.orderReference) {
-      navigator.clipboard.writeText(confirmedOrder.orderReference);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    if (!confirmedOrder) return;
+    navigator.clipboard.writeText(confirmedOrder.orderReference);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const handleBackToShop = () => {
     if (navigateTo) {
       navigateTo('shop');
-    } else {
+    } else if (setActivePage) {
       setActivePage('shop');
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // ORDER CONFIRMED RECEIPT SCREEN
-  if (orderConfirmed && confirmedOrder) {
-    const whatsappReceiptText = encodeURIComponent(
-      `Hello Nandani Batik! 🌸 I have just placed an order on your website:\n\n` +
-        `• Order Ref: ${confirmedOrder.orderReference}\n` +
-        `• Name: ${confirmedOrder.customerName}\n` +
-        `• Phone: ${confirmedOrder.phone}\n` +
-        `• Delivery: ${confirmedOrder.address}, ${confirmedOrder.city}, ${confirmedOrder.district}\n` +
-        `• Payment: ${
-          confirmedOrder.paymentMethod === 'cod'
-            ? 'Cash on Delivery (COD)'
-            : confirmedOrder.paymentMethod === 'bank'
-            ? 'Direct Bank Transfer'
-            : 'Card Payment'
-        }\n` +
-        `• Total Amount: Rs. ${confirmedOrder.grandTotal.toLocaleString()}\n\n` +
-        `Please confirm receipt and islandwide dispatch schedule!`
-    );
+  const paymentLabels = {
+    cod: 'Cash on Delivery (COD)',
+    bank: 'Direct Bank Transfer',
+    card: 'Online Card Payment / Installments',
+  };
 
+  const whatsappReceiptText = confirmedOrder
+    ? encodeURIComponent(
+        `🌸 *NANDANI BATIK ATELIER — ORDER DISPATCH CONFIRMATION* 🌸\n\n` +
+          `• Order Ref: *${confirmedOrder.orderReference}*\n` +
+          `• Customer: ${confirmedOrder.customerName}\n` +
+          `• Contact Phone: ${confirmedOrder.phone}\n` +
+          `• Delivery Address: ${confirmedOrder.address}, ${confirmedOrder.city}, ${confirmedOrder.district}\n` +
+          `• Payment Method: ${paymentLabels[confirmedOrder.paymentMethod] || confirmedOrder.paymentMethod}\n\n` +
+          `*Ordered Sarees:*\n` +
+          confirmedOrder.items
+            .map(
+              (item) =>
+                `  - ${item.name} (${item.quantity} × Rs. ${item.price.toLocaleString()})`
+            )
+            .join('\n') +
+          `\n\n• Bag Subtotal: Rs. ${confirmedOrder.subtotal.toLocaleString()}` +
+          `\n• Islandwide Shipping: Rs. ${confirmedOrder.shippingFee.toLocaleString()}` +
+          `\n• *Grand Total: Rs. ${confirmedOrder.grandTotal.toLocaleString()}*` +
+          (confirmedOrder.notes ? `\n• Special Notes: ${confirmedOrder.notes}` : '') +
+          `\n\nPlease confirm my order dispatch!`
+      )
+    : '';
+
+  // ORDER CONFIRMED VIEW (Prestigious Atelier Certificate)
+  if (orderConfirmed && confirmedOrder) {
     return (
-      <div className="bg-brand-cream min-h-screen py-12 lg:py-20 text-stone-900">
+      <div className="bg-brand-cream min-h-screen py-12 lg:py-20 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
         <div className="max-w-2xl mx-auto px-4 sm:px-6">
-          <div className="bg-white border border-stone-200/80 rounded-3xl p-6 sm:p-10 shadow-xs text-center space-y-6">
-            {/* Success Icon */}
-            <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-100">
-              <Check className="w-8 h-8 stroke-[2.5]" />
+          <div className="bg-white border border-stone-200/90 p-8 sm:p-12 shadow-[0_2px_12px_rgba(0,0,0,0.03)] space-y-8 text-center">
+            {/* Atelier Crest Seal */}
+            <div className="w-16 h-16 rounded-full border-2 border-stone-300 mx-auto overflow-hidden shadow-xs">
+              <img
+                src="/nandani-logo.jpg"
+                alt="Nandani Batik Seal"
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            <div>
-              <span className="text-xs uppercase tracking-widest text-emerald-700 font-semibold block mb-1">
-                Order Received
-              </span>
+            {/* Header Titles */}
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] text-amber-800 font-semibold bg-amber-50/90 px-3 py-1 border border-amber-200/60">
+                <Check className="w-3 h-3 stroke-[2.5]" />
+                <span>Order Registered & Confirmed</span>
+              </div>
               <h1 className="font-serif text-3xl sm:text-4xl font-normal text-stone-900">
-                Thank You for Your Order!
+                Thank You for Your Order
               </h1>
-              <p className="text-xs sm:text-sm text-stone-500 mt-2 max-w-md mx-auto font-light">
-                We have received your order and our atelier will begin preparing your handcrafted saree parcel for islandwide delivery.
+              <p className="font-serif italic text-xs sm:text-sm text-amber-900/80">
+                ඔබගේ ඇණවුම අපගේ ශිල්පී මැදිරිය වෙත සාර්ථකව යොමු විය
+              </p>
+              <p className="text-xs text-stone-600 font-light max-w-md mx-auto pt-1 leading-relaxed">
+                We have registered your order. Our atelier team will begin carefully preparing and steaming your handcrafted saree parcel for islandwide doorstep delivery.
               </p>
             </div>
 
             {/* Order Reference Box */}
-            <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200 flex items-center justify-between max-w-sm mx-auto">
+            <div className="p-4 bg-stone-50 border border-stone-200 flex items-center justify-between max-w-sm mx-auto">
               <div className="text-left">
-                <span className="text-[10px] uppercase tracking-wider text-stone-400 block">
-                  Order Reference
+                <span className="text-[10px] uppercase tracking-wider text-stone-400 block font-medium">
+                  Atelier Order Reference
                 </span>
                 <span className="font-mono text-base font-bold text-stone-900">
                   {confirmedOrder.orderReference}
@@ -199,7 +222,7 @@ export default function CheckoutPage() {
               </div>
               <button
                 onClick={handleCopy}
-                className="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-white text-stone-600 hover:text-stone-900 text-xs font-medium flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 border border-stone-300 hover:border-stone-800 bg-white text-stone-700 hover:text-stone-900 text-xs uppercase tracking-wider font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
                 title="Copy reference code"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
@@ -207,38 +230,35 @@ export default function CheckoutPage() {
               </button>
             </div>
 
-            {/* Order Summary Breakdown */}
-            <div className="border-t border-stone-100 pt-6 text-left space-y-3 text-xs">
-              <h3 className="font-serif text-sm font-semibold text-stone-900">
-                Delivery & Payment Summary
-              </h3>
-              <div className="grid grid-cols-2 gap-3 text-stone-600">
+            {/* Summary Breakdown */}
+            <div className="border-t border-stone-100 pt-6 text-left space-y-4 text-xs">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-stone-400 font-semibold block">
+                Delivery & Dispatch Details
+              </span>
+
+              <div className="grid grid-cols-2 gap-3 text-stone-600 bg-stone-50/70 p-4 border border-stone-200/80">
                 <div>
-                  <span className="text-stone-400 block text-[11px]">Customer</span>
+                  <span className="text-stone-400 block text-[10px] uppercase tracking-wider">Recipient</span>
                   <strong className="text-stone-900 font-medium">{confirmedOrder.customerName}</strong>
                 </div>
                 <div>
-                  <span className="text-stone-400 block text-[11px]">Phone</span>
+                  <span className="text-stone-400 block text-[10px] uppercase tracking-wider">Phone</span>
                   <strong className="text-stone-900 font-medium">{confirmedOrder.phone}</strong>
                 </div>
-                <div className="col-span-2">
-                  <span className="text-stone-400 block text-[11px]">Delivery Address</span>
+                <div className="col-span-2 pt-1 border-t border-stone-200/60">
+                  <span className="text-stone-400 block text-[10px] uppercase tracking-wider">Delivery Address</span>
                   <span className="text-stone-800">
                     {confirmedOrder.address}, {confirmedOrder.city}, {confirmedOrder.district}
                   </span>
                 </div>
-                <div>
-                  <span className="text-stone-400 block text-[11px]">Payment Method</span>
-                  <span className="font-medium text-stone-900 capitalize">
-                    {confirmedOrder.paymentMethod === 'cod'
-                      ? 'Cash on Delivery (COD)'
-                      : confirmedOrder.paymentMethod === 'bank'
-                      ? 'Direct Bank Transfer'
-                      : 'Card Payment'}
+                <div className="pt-1 border-t border-stone-200/60">
+                  <span className="text-stone-400 block text-[10px] uppercase tracking-wider">Payment Method</span>
+                  <span className="font-medium text-stone-900">
+                    {paymentLabels[confirmedOrder.paymentMethod] || confirmedOrder.paymentMethod}
                   </span>
                 </div>
-                <div>
-                  <span className="text-stone-400 block text-[11px]">Total Amount</span>
+                <div className="pt-1 border-t border-stone-200/60">
+                  <span className="text-stone-400 block text-[10px] uppercase tracking-wider">Grand Total</span>
                   <strong className="text-stone-900 text-sm font-serif">
                     Rs. {confirmedOrder.grandTotal.toLocaleString()}
                   </strong>
@@ -246,40 +266,42 @@ export default function CheckoutPage() {
               </div>
 
               {/* Items List */}
-              <div className="pt-3 border-t border-stone-100 space-y-2">
-                <span className="text-[11px] text-stone-400 uppercase tracking-wider block">
-                  Items Ordered ({confirmedOrder.items.length})
+              <div className="space-y-2 pt-2">
+                <span className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold block">
+                  Enclosed Saree Items ({confirmedOrder.items.length})
                 </span>
-                {confirmedOrder.items.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between text-xs py-1">
-                    <span className="text-stone-800">
-                      {item.name} <span className="text-stone-400">× {item.quantity}</span>
-                    </span>
-                    <span className="font-medium text-stone-900 font-serif">
-                      Rs. {(item.price * item.quantity).toLocaleString()}
-                    </span>
-                  </div>
-                ))}
+                <div className="divide-y divide-stone-100">
+                  {confirmedOrder.items.map((item, idx) => (
+                    <div key={idx} className="flex items-center justify-between py-2 text-xs">
+                      <span className="text-stone-800">
+                        {item.name} <span className="text-stone-400">× {item.quantity}</span>
+                      </span>
+                      <span className="font-medium text-stone-900 font-serif">
+                        Rs. {(item.price * item.quantity).toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Actions: WhatsApp Confirmation & Back to Shop */}
-            <div className="space-y-3 pt-4">
+            {/* Actions: WhatsApp Dispatch & Back to Catalog */}
+            <div className="space-y-3 pt-4 border-t border-stone-100">
               <a
                 href={`https://wa.me/94778924115?text=${whatsappReceiptText}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 px-6 rounded-xl text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-xs transition-all"
+                className="w-full bg-[#0b1a30] hover:bg-stone-800 text-white py-3.5 px-6 text-xs uppercase tracking-widest font-medium flex items-center justify-center gap-2 transition-colors cursor-pointer"
               >
-                <MessageCircle className="w-4 h-4" />
-                <span>Confirm Order via WhatsApp</span>
+                <MessageCircle className="w-4 h-4 text-emerald-400" />
+                <span>Confirm Dispatch on WhatsApp</span>
               </a>
 
               <button
                 onClick={handleBackToShop}
-                className="w-full border border-stone-300 hover:border-stone-800 text-stone-800 hover:text-stone-900 py-3.5 px-6 rounded-xl text-xs uppercase tracking-widest font-semibold transition-all"
+                className="w-full border border-stone-300 hover:border-stone-900 text-stone-800 py-3 text-xs uppercase tracking-widest font-medium transition-colors cursor-pointer"
               >
-                Continue Shopping
+                Continue Browsing Catalog
               </button>
             </div>
           </div>
@@ -291,19 +313,24 @@ export default function CheckoutPage() {
   // EMPTY BAG STATE
   if (cart.length === 0) {
     return (
-      <div className="bg-brand-cream min-h-[70vh] flex flex-col items-center justify-center p-8 text-center text-stone-900">
-        <div className="w-16 h-16 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center mb-4">
-          <ShoppingBag className="w-8 h-8" />
+      <div className="bg-brand-cream min-h-[70vh] flex flex-col items-center justify-center p-8 text-center text-stone-900 antialiased">
+        <div className="w-14 h-14 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center mb-4">
+          <ShoppingBag className="w-6 h-6 stroke-[1.5]" />
         </div>
-        <h2 className="font-serif text-2xl text-stone-800">Your Shopping Bag is Empty</h2>
-        <p className="text-xs sm:text-sm text-stone-500 mt-2 max-w-sm">
-          Please select your favorite handcrafted batik saree from our atelier catalog before proceeding to checkout.
+        <h2 className="font-serif text-2xl text-stone-900 font-normal">
+          Your Shopping Bag is Empty
+        </h2>
+        <p className="font-serif italic text-xs text-amber-900/80 mt-1">
+          සාප්පු සවාරිය ආරම්භ කිරීමට කරුණාකර සාරියක් තෝරාගන්න
+        </p>
+        <p className="text-xs text-stone-500 mt-2 max-w-sm font-light leading-relaxed">
+          Please explore our atelier catalog to select your favorite handcrafted batik saree before proceeding to checkout.
         </p>
         <button
           onClick={handleBackToShop}
-          className="mt-6 px-6 py-3.5 bg-[#0b1a30] hover:bg-stone-800 text-white rounded-xl text-xs uppercase tracking-widest font-semibold transition-colors flex items-center gap-2"
+          className="mt-6 px-7 py-3 bg-[#0b1a30] hover:bg-stone-800 text-white text-xs uppercase tracking-widest font-medium transition-colors flex items-center gap-2 cursor-pointer"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
           <span>Explore Saree Collection</span>
         </button>
       </div>
@@ -311,73 +338,78 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="bg-brand-cream min-h-screen py-8 lg:py-14 text-stone-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center justify-between pb-6 mb-8 border-b border-stone-200/80 text-xs text-stone-500">
+    <div className="bg-brand-cream min-h-screen py-10 lg:py-16 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Editorial Breadcrumb */}
+        <div className="flex items-center justify-between pb-4 mb-8 border-b border-stone-200/80 text-xs text-stone-500">
           <div className="flex items-center gap-2">
             <button
               onClick={() => (navigateTo ? navigateTo('home') : setActivePage('home'))}
-              className="hover:text-stone-900 transition-colors"
+              className="hover:text-stone-900 transition-colors cursor-pointer"
             >
               Home
             </button>
             <span>/</span>
             <button
               onClick={() => (navigateTo ? navigateTo('shop') : setActivePage('shop'))}
-              className="hover:text-stone-900 transition-colors"
+              className="hover:text-stone-900 transition-colors cursor-pointer"
             >
               Collection
             </button>
             <span>/</span>
-            <span className="text-stone-900 font-semibold">Proceed to Checkout</span>
+            <span className="text-stone-900 font-medium">Checkout</span>
           </div>
 
           <button
             onClick={handleBackToShop}
-            className="inline-flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 transition-colors"
+            className="flex items-center gap-1.5 text-stone-500 hover:text-stone-900 transition-colors uppercase tracking-wider text-[11px] cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Continue Shopping</span>
           </button>
         </div>
 
-        {/* Page Title */}
-        <div className="mb-8">
-          <div className="text-[11px] uppercase tracking-widest text-amber-800 font-medium mb-1">
-            Atelier Checkout
+        {/* Editorial Page Title */}
+        <div className="mb-10 text-center sm:text-left">
+          <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-stone-500 font-medium mb-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
+            <span>Nandani Atelier Checkout</span>
+            <span>•</span>
+            <span className="font-serif italic capitalize">දිවයින පුරා බෙදාහැරීම</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-normal text-stone-900">
-            Secure Delivery & Order Details
+            Delivery & Payment Details
           </h1>
-          <p className="text-xs sm:text-sm text-stone-500 mt-1 font-light">
-            Islandwide Doorstep Delivery (Rs. 350) with Cash on Delivery (COD) or Bank Transfer options.
+          <p className="font-serif italic text-xs sm:text-sm text-amber-900/80 mt-1">
+            ඔබගේ නන්දනී බතික් සාරිය නිවසටම ගෙන්වා ගැනීම සඳහා විස්තර ඇතුළත් කරන්න
           </p>
         </div>
 
         {/* Main 2-Column Checkout Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Form Details (7 cols) */}
-          <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-8">
-            {/* Step 1: Customer Contact & Delivery Address */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-full bg-[#0b1a30] text-white text-xs font-bold flex items-center justify-center font-mono">
-                    1
-                  </span>
-                  <h2 className="font-serif text-base sm:text-lg font-semibold text-stone-900">
-                    Delivery Address & Contact
+          <form onSubmit={handleSubmit} className="lg:col-span-7 space-y-6">
+            {/* Section I: Customer Contact & Delivery Address */}
+            <div className="bg-white p-7 sm:p-8 border border-stone-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-6">
+              <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+                <div>
+                  <h2 className="font-serif text-base sm:text-lg font-normal text-stone-900">
+                    I. Recipient & Delivery Address
                   </h2>
+                  <p className="font-serif italic text-xs text-amber-900/75 mt-0.5">
+                    ලබන්නාගේ විස්තර හා ලිපිනය
+                  </p>
                 </div>
-                <span className="text-[11px] text-stone-400">Islandwide Dispatch</span>
+                <span className="text-[10px] uppercase tracking-widest text-stone-400 font-medium">
+                  Islandwide Dispatch
+                </span>
               </div>
 
               <div className="space-y-4 text-xs">
                 {/* Full Name */}
                 <div>
-                  <label className="block text-stone-700 font-medium mb-1.5">
-                    Full Name <span className="text-red-500">*</span>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
+                    Full Recipient Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -385,15 +417,15 @@ export default function CheckoutPage() {
                     required
                     value={formData.fullName}
                     onChange={handleInputChange}
-                    placeholder="Enter your recipient name"
-                    className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50"
+                    placeholder="Enter recipient's full name"
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
                   />
                 </div>
 
                 {/* Phone & WhatsApp */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-stone-700 font-medium mb-1.5">
+                    <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
                       Phone Number (Call) <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -403,11 +435,11 @@ export default function CheckoutPage() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="e.g. 077 123 4567"
-                      className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
                     />
                   </div>
                   <div>
-                    <label className="block text-stone-700 font-medium mb-1.5">
+                    <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
                       WhatsApp Number (Optional)
                     </label>
                     <input
@@ -416,14 +448,14 @@ export default function CheckoutPage() {
                       value={formData.whatsapp}
                       onChange={handleInputChange}
                       placeholder="e.g. 077 123 4567"
-                      className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
                     />
                   </div>
                 </div>
 
                 {/* Street Address */}
                 <div>
-                  <label className="block text-stone-700 font-medium mb-1.5">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
                     Delivery Street Address <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -432,22 +464,22 @@ export default function CheckoutPage() {
                     rows="2"
                     value={formData.address}
                     onChange={handleInputChange}
-                    placeholder="House / Apartment number, Street name, Landmark"
-                    className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50 resize-none"
+                    placeholder="House / Apartment number, Street name, Nearest landmark..."
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800 resize-none"
                   />
                 </div>
 
                 {/* District & City */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-stone-700 font-medium mb-1.5">
+                    <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
                       District <span className="text-red-500">*</span>
                     </label>
                     <select
                       name="district"
                       value={formData.district}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50 cursor-pointer"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800 cursor-pointer"
                     >
                       {districts.map((d) => (
                         <option key={d} value={d}>
@@ -457,7 +489,7 @@ export default function CheckoutPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-stone-700 font-medium mb-1.5">
+                    <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
                       City / Postal Area <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -467,48 +499,50 @@ export default function CheckoutPage() {
                       value={formData.city}
                       onChange={handleInputChange}
                       placeholder="e.g. Maharagama, Moratuwa"
-                      className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
                     />
                   </div>
                 </div>
 
                 {/* Special Instructions */}
                 <div>
-                  <label className="block text-stone-700 font-medium mb-1.5">
-                    Special Notes for Courier (Optional)
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
+                    Special Courier Notes (Optional)
                   </label>
                   <input
                     type="text"
                     name="notes"
                     value={formData.notes}
                     onChange={handleInputChange}
-                    placeholder="e.g. Call before delivery, Deliver after 2 PM"
-                    className="w-full px-4 py-2.5 border border-stone-300 rounded-xl focus:outline-none bg-stone-50/50"
+                    placeholder="e.g. Call before arrival, deliver after 2 PM"
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Step 2: Payment Method */}
-            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-stone-200/80 shadow-xs space-y-4">
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-                <div className="flex items-center gap-2.5">
-                  <span className="w-6 h-6 rounded-full bg-[#0b1a30] text-white text-xs font-bold flex items-center justify-center font-mono">
-                    2
-                  </span>
-                  <h2 className="font-serif text-base sm:text-lg font-semibold text-stone-900">
-                    Payment Method
+            {/* Section II: Payment Method */}
+            <div className="bg-white p-7 sm:p-8 border border-stone-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+                <div>
+                  <h2 className="font-serif text-base sm:text-lg font-normal text-stone-900">
+                    II. Atelier Payment Method
                   </h2>
+                  <p className="font-serif italic text-xs text-amber-900/75 mt-0.5">
+                    ගෙවීම් ක්‍රමය තෝරන්න
+                  </p>
                 </div>
-                <span className="text-[11px] text-stone-400">Secure Islandwide</span>
+                <span className="text-[10px] uppercase tracking-widest text-stone-400 font-medium">
+                  Secure Checkout
+                </span>
               </div>
 
               <div className="space-y-3 text-xs">
                 {/* Option 1: COD */}
                 <label
-                  className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${
                     formData.paymentMethod === 'cod'
-                      ? 'border-[#0b1a30] bg-[#0b1a30]/5 ring-1 ring-[#0b1a30]'
+                      ? 'border-stone-900 bg-stone-50/80 shadow-xs'
                       : 'border-stone-200 hover:border-stone-300 bg-white'
                   }`}
                 >
@@ -518,25 +552,23 @@ export default function CheckoutPage() {
                     value="cod"
                     checked={formData.paymentMethod === 'cod'}
                     onChange={handleInputChange}
-                    className="mt-1 text-[#0b1a30] focus:ring-[#0b1a30]"
+                    className="mt-1 text-[#0b1a30] focus:ring-0 cursor-pointer"
                   />
                   <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <strong className="font-medium text-stone-900 text-sm">
-                        Cash on Delivery (COD)
-                      </strong>
-                    </div>
-                    <p className="text-stone-500 mt-1 leading-relaxed">
-                      Pay safely in cash directly to the courier when your saree parcel is delivered to your doorstep anywhere in Sri Lanka.
+                    <strong className="font-medium text-stone-900 text-xs uppercase tracking-wider block">
+                      Cash on Delivery (COD)
+                    </strong>
+                    <p className="text-stone-500 mt-1 leading-relaxed font-light">
+                      Pay in cash directly to the courier when your handcrafted saree is safely delivered to your doorstep anywhere in Sri Lanka.
                     </p>
                   </div>
                 </label>
 
                 {/* Option 2: Bank Transfer */}
                 <label
-                  className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${
                     formData.paymentMethod === 'bank'
-                      ? 'border-[#0b1a30] bg-[#0b1a30]/5 ring-1 ring-[#0b1a30]'
+                      ? 'border-stone-900 bg-stone-50/80 shadow-xs'
                       : 'border-stone-200 hover:border-stone-300 bg-white'
                   }`}
                 >
@@ -546,18 +578,18 @@ export default function CheckoutPage() {
                     value="bank"
                     checked={formData.paymentMethod === 'bank'}
                     onChange={handleInputChange}
-                    className="mt-1 text-[#0b1a30] focus:ring-[#0b1a30]"
+                    className="mt-1 text-[#0b1a30] focus:ring-0 cursor-pointer"
                   />
                   <div className="flex-1">
-                    <strong className="font-medium text-stone-900 text-sm">
+                    <strong className="font-medium text-stone-900 text-xs uppercase tracking-wider block">
                       Direct Bank Transfer / Online Banking
                     </strong>
-                    <p className="text-stone-500 mt-1 leading-relaxed">
-                      Deposit or transfer directly to our Commercial Bank / Bank of Ceylon atelier account. WhatsApp your deposit slip to confirm dispatch.
+                    <p className="text-stone-500 mt-1 leading-relaxed font-light">
+                      Transfer directly to our Commercial Bank atelier account. WhatsApp your deposit slip to initiate immediate dispatch.
                     </p>
 
                     {formData.paymentMethod === 'bank' && (
-                      <div className="mt-3 p-3.5 bg-white border border-stone-200 rounded-xl text-[11px] text-stone-700 space-y-1">
+                      <div className="mt-3 p-3 bg-white border border-stone-200 text-[11px] text-stone-700 space-y-1">
                         <p>
                           <strong>Bank:</strong> Commercial Bank of Ceylon
                         </p>
@@ -577,9 +609,9 @@ export default function CheckoutPage() {
 
                 {/* Option 3: Card / Installments */}
                 <label
-                  className={`flex items-start gap-3.5 p-4 rounded-2xl border cursor-pointer transition-all ${
+                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${
                     formData.paymentMethod === 'card'
-                      ? 'border-[#0b1a30] bg-[#0b1a30]/5 ring-1 ring-[#0b1a30]'
+                      ? 'border-stone-900 bg-stone-50/80 shadow-xs'
                       : 'border-stone-200 hover:border-stone-300 bg-white'
                   }`}
                 >
@@ -589,17 +621,17 @@ export default function CheckoutPage() {
                     value="card"
                     checked={formData.paymentMethod === 'card'}
                     onChange={handleInputChange}
-                    className="mt-1 text-[#0b1a30] focus:ring-[#0b1a30]"
+                    className="mt-1 text-[#0b1a30] focus:ring-0 cursor-pointer"
                   />
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <strong className="font-medium text-stone-900 text-sm">
-                        Visa, MasterCard, or Installments
+                      <strong className="font-medium text-stone-900 text-xs uppercase tracking-wider block">
+                        Credit / Debit Card or 3-Month Installments
                       </strong>
-                      <span className="text-[10px] text-stone-500">Koko & Mintpay</span>
+                      <span className="text-[10px] text-stone-400 font-medium">Koko & Mintpay</span>
                     </div>
-                    <p className="text-stone-500 mt-1 leading-relaxed">
-                      Complete payment via secure credit/debit card link or split into 3 monthly interest-free payments via Koko or Mintpay.
+                    <p className="text-stone-500 mt-1 leading-relaxed font-light">
+                      Secure payment link or 3 interest-free monthly installments via Koko or Mintpay.
                     </p>
                   </div>
                 </label>
@@ -610,46 +642,47 @@ export default function CheckoutPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-[#0b1a30] hover:bg-brand-blue-800 active:scale-99 text-white py-4 px-6 rounded-2xl text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg transition-all duration-200 cursor-pointer disabled:opacity-60"
+              className="w-full bg-[#0b1a30] hover:bg-stone-800 text-white py-4 px-6 text-xs uppercase tracking-widest font-medium flex items-center justify-center gap-2.5 transition-colors cursor-pointer disabled:opacity-60"
             >
-              <Lock className="w-4 h-4 text-amber-300" />
+              <Lock className="w-3.5 h-3.5 text-amber-300" />
               <span>
                 {isSubmitting
-                  ? 'Placing Order...'
-                  : `Place Order • Rs. ${cartGrandTotal.toLocaleString()}`}
+                  ? 'Confirming Order...'
+                  : `Complete Order • Rs. ${cartGrandTotal.toLocaleString()}`}
               </span>
             </button>
 
-            <div className="text-center text-[11px] text-stone-400 flex items-center justify-center gap-4">
-              <span className="flex items-center gap-1">
+            {/* Reassurance Footer */}
+            <div className="text-center text-[11px] text-stone-400 flex items-center justify-center gap-4 pt-1">
+              <span className="flex items-center gap-1.5">
                 <Truck className="w-3.5 h-3.5 text-stone-600" />
                 Islandwide Delivery (Rs. 350)
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-stone-600" />
-                Authentic Batik Guarantee
+                Authentic Ceylon Wax Batik Guarantee
               </span>
             </div>
           </form>
 
           {/* Right Column: Order Summary (5 cols, Sticky) */}
           <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
-            <div className="bg-white p-6 sm:p-7 rounded-3xl border border-stone-200/80 shadow-xs space-y-5">
-              <div className="flex items-center justify-between pb-4 border-b border-stone-100">
-                <h3 className="font-serif text-base sm:text-lg font-semibold text-stone-900">
-                  Shopping Bag Summary
+            <div className="bg-white border border-stone-200/90 p-6 sm:p-7 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-6">
+              <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+                <h3 className="font-serif text-base font-normal text-stone-900">
+                  Atelier Order Manifest
                 </h3>
-                <span className="text-xs text-stone-500 font-medium">
-                  {cart.length} {cart.length === 1 ? 'item' : 'items'}
+                <span className="text-xs text-stone-500 font-light">
+                  {cart.length} {cart.length === 1 ? 'piece' : 'pieces'}
                 </span>
               </div>
 
               {/* Items List */}
-              <div className="space-y-4 max-h-95 overflow-y-auto pr-1">
+              <div className="space-y-4 max-h-96 overflow-y-auto pr-1 divide-y divide-stone-100">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex gap-3.5 items-start">
-                    <div className="w-16 h-20 rounded-xl overflow-hidden bg-stone-100 shrink-0 border border-stone-200/80">
+                  <div key={item.id} className="flex gap-3.5 items-start pt-3 first:pt-0">
+                    <div className="w-16 h-20 bg-stone-100 shrink-0 border border-stone-200 overflow-hidden">
                       <img
                         src={item.image && item.image.trim() ? item.image.trim() : '/sarees/saree 1.1.png'}
                         alt={item.name}
@@ -660,16 +693,16 @@ export default function CheckoutPage() {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-serif text-xs font-semibold text-stone-900 truncate">
+                      <h4 className="font-serif text-xs font-normal text-stone-900 truncate">
                         {item.name}
                       </h4>
                       {item.sinhalaName && (
-                        <p className="text-[11px] text-stone-500 font-serif italic truncate">
+                        <p className="text-[11px] text-amber-900/70 font-serif italic truncate mt-0.5">
                           {item.sinhalaName}
                         </p>
                       )}
-                      <p className="text-[11px] text-stone-400 mt-0.5">
-                        Qty: <strong className="text-stone-700">{item.quantity}</strong>
+                      <p className="text-[11px] text-stone-400 mt-1">
+                        Qty: <strong className="text-stone-700 font-medium">{item.quantity}</strong>
                       </p>
                       <p className="text-xs font-medium text-stone-900 mt-1 font-serif">
                         Rs. {(item.price * item.quantity).toLocaleString()}
@@ -680,7 +713,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Pricing Breakdown */}
-              <div className="border-t border-stone-100 pt-4 space-y-2 text-xs">
+              <div className="border-t border-stone-200 pt-4 space-y-2 text-xs">
                 <div className="flex justify-between text-stone-600">
                   <span>Bag Subtotal</span>
                   <span className="font-medium text-stone-900 font-serif">
@@ -693,17 +726,24 @@ export default function CheckoutPage() {
                     Rs. {shippingFee.toLocaleString()}
                   </span>
                 </div>
-                <div className="flex justify-between text-base font-serif font-semibold text-stone-900 pt-3 border-t border-stone-200">
+                <div className="flex justify-between text-base font-serif font-normal text-stone-900 pt-3 border-t border-stone-200">
                   <span>Grand Total</span>
-                  <span className="text-xl">
+                  <span className="text-lg font-medium">
                     Rs. {cartGrandTotal.toLocaleString()}
                   </span>
                 </div>
               </div>
+
+              {/* Delivery Footnote */}
+              <div className="pt-3 border-t border-stone-100 text-[11px] text-stone-400 font-light space-y-1">
+                <p>• Western Province: 1 to 2 business days</p>
+                <p>• Outstation Delivery: 2 to 4 business days</p>
+                <p>• Signature protective packaging included</p>
+              </div>
             </div>
 
             {/* Concierge Assistance Card */}
-            <div className="bg-stone-50 p-5 rounded-2xl border border-stone-200 text-xs text-stone-600 space-y-2">
+            <div className="bg-white border border-stone-200/90 p-5 text-xs text-stone-600 space-y-2">
               <div className="flex items-center gap-2 text-stone-800 font-medium">
                 <Phone className="w-3.5 h-3.5 text-stone-700" />
                 <span>Need assistance with your order?</span>
@@ -715,9 +755,9 @@ export default function CheckoutPage() {
                 href="https://wa.me/94778924115?text=Hello%20Nandani%20Batik,%20I%20have%20a%20question%20about%20checkout"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-emerald-700 font-semibold hover:underline pt-1"
+                className="inline-flex items-center gap-1.5 text-stone-900 hover:text-amber-800 font-medium pt-1 uppercase tracking-wider text-[11px] transition-colors"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
+                <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
                 <span>Chat with WhatsApp Concierge</span>
               </a>
             </div>
