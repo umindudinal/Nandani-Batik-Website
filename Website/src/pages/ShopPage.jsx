@@ -98,7 +98,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
     if (setSelectedCategory) setSelectedCategory('all');
     setSelectedColor('all');
     setSelectedFabric('all');
-    setMaxPrice(55000);
+    setMaxPrice(10000);
     setSearchQuery('');
     setSortBy('featured');
   };
@@ -107,7 +107,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
     activeCategory !== 'all' ||
     selectedColor !== 'all' ||
     selectedFabric !== 'all' ||
-    maxPrice < 55000 ||
+    maxPrice < 10000 ||
     searchQuery.trim() !== '';
 
   return (
