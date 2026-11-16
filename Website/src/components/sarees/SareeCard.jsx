@@ -23,7 +23,7 @@ export default function SareeCard({ saree }) {
       className="group cursor-pointer flex flex-col bg-transparent transition-all duration-300"
     >
       {/* Image Container */}
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#f4f2ee] mb-4">
+      <div className="relative aspect-3/4 w-full overflow-hidden bg-[#f4f2ee] mb-4">
         {/* Main Image */}
         <img
           src={primaryImage}
@@ -65,7 +65,7 @@ export default function SareeCard({ saree }) {
             </span>
           )}
           {saree.inStock && saree.isBestseller && (
-            <span className="bg-[#c59b27] text-white text-[9px] font-semibold tracking-widest uppercase px-2 py-0.5">
+            <span className="bg-brand-gold text-white text-[9px] font-semibold tracking-widest uppercase px-2 py-0.5">
               Bestseller
             </span>
           )}

@@ -268,7 +268,7 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
             {/* Cart Drawer Trigger - Single sleek horizontal badge */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="flex items-center gap-1.5 bg-[#0b1a30] hover:bg-[#162d52] text-white px-3 py-1.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 whitespace-nowrap shrink-0"
+              className="flex items-center gap-1.5 bg-[#0b1a30] hover:bg-brand-blue-800 text-white px-3 py-1.5 rounded-full shadow-xs hover:shadow-md transition-all duration-200 whitespace-nowrap shrink-0"
               title="Shopping Cart"
               aria-label="Shopping Cart"
             >

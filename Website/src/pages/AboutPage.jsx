@@ -97,7 +97,7 @@ export default function AboutPage({ setActivePage }) {
   ];
 
   return (
-    <div className="bg-[#faf8f5] min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
+    <div className="bg-brand-cream min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
       {/* Editorial Header / Hero */}
       <section className="relative border-b border-stone-200/80 bg-white/70 overflow-hidden">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-14 sm:pt-16 sm:pb-20 text-center">
@@ -150,13 +150,13 @@ export default function AboutPage({ setActivePage }) {
         <section className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-12 items-center">
           {/* Portrait Image Showcase with Luxury Frame */}
           <div className="md:col-span-5 relative">
-            <div className="relative aspect-[3/4] bg-stone-100 overflow-hidden border border-stone-300/80 shadow-md">
+            <div className="relative aspect-3/4 bg-stone-100 overflow-hidden border border-stone-300/80 shadow-md">
               <img
                 src={bg_1}
                 alt="Handcrafted Nandani Batik Saree in Sri Lanka"
                 className="w-full h-full object-cover object-top filter contrast-[1.02]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-4 left-4 right-4 text-white text-[11px] font-light tracking-wide bg-black/40 backdrop-blur-xs p-2.5 border border-white/20">
                 <span className="font-serif italic block text-amber-200 text-xs">
                   The Handloom Atelier
@@ -167,7 +167,7 @@ export default function AboutPage({ setActivePage }) {
 
             {/* Circular Atelier Seal Accent */}
             <div className="absolute -top-4 -right-4 w-20 h-20 rounded-full bg-white border border-stone-200 shadow-lg p-1.5 hidden sm:flex items-center justify-center">
-              <div className="w-full h-full rounded-full border border-stone-300 flex flex-col items-center justify-center text-center p-1 bg-[#faf8f5]">
+              <div className="w-full h-full rounded-full border border-stone-300 flex flex-col items-center justify-center text-center p-1 bg-brand-cream">
                 <span className="font-serif text-[9px] font-semibold tracking-wider text-stone-900 leading-none">
                   NANDANI
                 </span>
@@ -299,7 +299,7 @@ export default function AboutPage({ setActivePage }) {
             </div>
 
             <div className="md:col-span-5 relative">
-              <div className="aspect-[4/5] bg-stone-900 overflow-hidden border border-white/20 shadow-lg">
+              <div className="aspect-4/5 bg-stone-900 overflow-hidden border border-white/20 shadow-lg">
                 <img
                   src={bg_2}
                   alt="Nandani Batik Bridal Saree"
@@ -331,7 +331,7 @@ export default function AboutPage({ setActivePage }) {
                 className="bg-white p-7 sm:p-8 border border-stone-200/90 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-3"
               >
                 <div className="w-8 h-8 rounded-full bg-stone-50 border border-stone-200 flex items-center justify-center text-stone-800">
-                  <Check className="w-4 h-4 stroke-[2]" />
+                  <Check className="w-4 h-4 stroke-2" />
                 </div>
                 <div>
                   <h3 className="font-serif text-base sm:text-lg text-stone-900 font-medium">
