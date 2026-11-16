@@ -9,6 +9,9 @@ import {
   ShoppingBag,
   Loader2,
   Sparkles,
+  ArrowRight,
+  ShieldCheck,
+  RotateCcw,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { categories } from '../data/categories';
@@ -33,24 +36,23 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
   }, [selectedCategory]);
 
   const colors = [
-    { name: 'all', label: 'All Colors', hex: '#ffffff' },
-    { name: 'Dark Blue', label: 'Dark Blue (Signature)', hex: '#0b1a30' },
-    { name: 'Emerald Green', label: 'Emerald Green', hex: '#047857' },
-    { name: 'Crimson Red', label: 'Crimson Red', hex: '#991b1b' },
-    { name: 'Mustard Gold', label: 'Mustard Gold', hex: '#b45309' },
-    { name: 'Turquoise', label: 'Turquoise Blue', hex: '#0891b2' },
+    { name: 'all', label: 'All Tones', hex: '#ffffff' },
+    { name: 'Dark Blue', label: 'Indigo Navy', hex: '#0b1a30' },
+    { name: 'Emerald Green', label: 'Mayura Emerald', hex: '#047857' },
+    { name: 'Crimson Red', label: 'Araliya Crimson', hex: '#991b1b' },
+    { name: 'Mustard Gold', label: 'Saffron Gold', hex: '#b45309' },
+    { name: 'Turquoise', label: 'Ocean Turquoise', hex: '#0891b2' },
     { name: 'Midnight Black', label: 'Obsidian Black', hex: '#18181b' },
-    { name: 'Pastel Pink', label: 'Pastel Rose', hex: '#f472b6' },
+    { name: 'Pastel Pink', label: 'Lotus Rose', hex: '#f472b6' },
   ];
 
   const fabrics = [
-    'all',
-    '100% Pure Mulberry Silk',
-    'Raw Silk & Handloom Blend',
-    '100% Handspun Ceylon Cotton',
-    'Super-combed Pure Cotton',
-    'Pure Georgette Silk',
-    'Heavy Bridal Raw Silk',
+    { id: 'all', label: 'All Textiles' },
+    { id: '100% Pure Mulberry Silk', label: 'Pure Mulberry Silk' },
+    { id: 'Raw Silk & Handloom Blend', label: 'Raw Silk & Handloom Blend' },
+    { id: '100% Handspun Ceylon Cotton', label: 'Handspun Ceylon Cotton' },
+    { id: 'Super-combed Pure Cotton', label: 'Super-combed Cotton' },
+    { id: 'Pure Georgette Silk', label: 'Pure Georgette Silk' },
   ];
 
   const filteredSarees = useMemo(() => {
@@ -110,212 +112,388 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
     maxPrice < 10000 ||
     searchQuery.trim() !== '';
 
+  const activeCategoryObj = categoryList.find((c) => c.id === activeCategory);
+
   return (
-    <div className="bg-[#fcfbf9] min-h-screen py-10 md:py-14">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Breadcrumb & Header */}
-        <div className="mb-8">
-          <div className="text-xs text-slate-500 mb-2">
-            Home / <span className="text-[#0b1a30] font-semibold">Saree Collection</span>
-          </div>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-              <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#0b1a30]">
-                Handcrafted Batik Saree Catalog
-              </h1>
-              <p className="text-sm text-slate-500 mt-1">
-                අතින් නිමවූ උසස්ම ප්‍රමිතියේ ශ්‍රී ලාංකික බතික් සාරි එකතුව
-              </p>
-            </div>
-            <div className="text-xs text-slate-500 font-medium bg-white px-3.5 py-1.5 rounded-full border border-slate-200 shadow-xs self-start md:self-auto">
-              Showing <strong className="text-[#0b1a30]">{filteredSarees.length}</strong> designs
-            </div>
-          </div>
-        </div>
-
-        {/* Filter & Sort Bar */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          {/* Search Box */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search by saree name, color, fabric..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs"
-              >
-                Clear
-              </button>
-            )}
+    <div className="bg-brand-cream min-h-screen text-stone-800 antialiased selection:bg-[#0b1a30] selection:text-white">
+      {/* Editorial Header Section */}
+      <section className="relative border-b border-stone-200/80 bg-white/70 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-12 sm:pt-14 sm:pb-16 text-center">
+          {/* Atelier Kicker */}
+          <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-stone-500 font-medium mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-600 inline-block" />
+            <span>Nandani Atelier Catalog • Handcrafted in Ceylon</span>
+            <span className="hidden sm:inline">•</span>
+            <span className="hidden sm:inline font-serif italic capitalize">
+              බතික් සහ සේද සාරි එකතුව
+            </span>
           </div>
 
-          {/* Controls Right */}
-          <div className="flex items-center gap-3 justify-between sm:justify-end">
-            {/* Mobile Filter Drawer Button */}
+          {/* Grand Title */}
+          <h1 className="font-serif text-3xl sm:text-5xl font-normal text-stone-900 tracking-tight leading-[1.15] mb-3 max-w-2xl mx-auto">
+            The Saree Collection
+          </h1>
+
+          {/* Sinhala Subtitle */}
+          <p className="font-serif italic text-sm sm:text-base text-amber-900/85 mb-4">
+            පරපුරක අභිමානය රැඳි උසස්ම ප්‍රමිතියේ ශ්‍රී ලාංකික බතික් සාරි
+          </p>
+
+          <p className="max-w-xl mx-auto text-xs text-stone-600 font-light leading-relaxed">
+            Each creation is an original canvas of molten beeswax and cold-reactive dyes, hand-drawn on pure mulberry silk and Ceylon combed handloom cotton.
+          </p>
+
+          {/* Sub-Category Quick Filter Pills */}
+          <div className="mt-8 pt-6 border-t border-stone-200/70 flex items-center justify-center gap-2 overflow-x-auto no-scrollbar py-1">
             <button
-              onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100"
+              onClick={() => {
+                setActiveCategory('all');
+                if (setSelectedCategory) setSelectedCategory('all');
+              }}
+              className={`px-4 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all whitespace-nowrap cursor-pointer ${
+                activeCategory === 'all'
+                  ? 'bg-[#0b1a30] text-white shadow-xs'
+                  : 'bg-white/80 hover:bg-white text-stone-700 border border-stone-200/80 hover:border-stone-400'
+              }`}
             >
-              <Filter className="w-3.5 h-3.5" />
-              <span>Filters {isFiltered && '(Active)'}</span>
+              All Sarees ({sarees.length})
             </button>
 
-            {/* Sort Dropdown */}
-            <div className="flex items-center gap-2 text-xs">
-              <span className="text-slate-500 hidden sm:inline">Sort By:</span>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none bg-white cursor-pointer"
-              >
-                <option value="featured">Featured Collection</option>
-                <option value="newest">New Arrivals</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-              </select>
-            </div>
-
-            {isFiltered && (
-              <button
-                onClick={handleResetFilters}
-                className="text-xs font-semibold text-red-600 hover:text-red-700 underline underline-offset-2 ml-1"
-              >
-                Reset All
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Main Grid with Sidebar Filter */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
-          {/* Desktop Left Sidebar Filter (Clean Sticky, No Internal Scrollbar) */}
-          <aside className="hidden lg:block lg:sticky lg:top-24 self-start space-y-6">
-            {/* Categories */}
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-              <h3 className="font-serif text-sm font-bold text-[#0b1a30] mb-3 pb-2 border-b border-slate-100">
-                Saree Categories
-              </h3>
-              <div className="space-y-1 text-xs">
-                {categoryList.map((c) => (
+            {categoryList
+              .filter((c) => c.id !== 'all')
+              .map((c) => {
+                const count = sarees.filter((s) => s.category === c.id).length;
+                return (
                   <button
                     key={c.id}
                     onClick={() => {
                       setActiveCategory(c.id);
                       if (setSelectedCategory) setSelectedCategory(c.id);
                     }}
-                    className={`w-full text-left px-3 py-2 rounded-xl font-medium transition-all flex items-center justify-between ${
+                    className={`px-4 py-2 rounded-full text-xs uppercase tracking-wider font-medium transition-all whitespace-nowrap cursor-pointer ${
                       activeCategory === c.id
-                        ? 'bg-[#0b1a30] text-white font-bold'
-                        : 'text-slate-700 hover:bg-slate-50'
+                        ? 'bg-[#0b1a30] text-white shadow-xs'
+                        : 'bg-white/80 hover:bg-white text-stone-700 border border-stone-200/80 hover:border-stone-400'
                     }`}
                   >
-                    <span>{c.name}</span>
-                    <span className="text-[10px] opacity-70">
-                      {c.id === 'all'
-                        ? sarees.length
-                        : sarees.filter((s) => s.category === c.id).length}
-                    </span>
+                    {c.name} {count > 0 && `(${count})`}
                   </button>
-                ))}
-              </div>
-            </div>
+                );
+              })}
+          </div>
+        </div>
+      </section>
 
-            {/* Price Slider */}
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-              <h3 className="font-serif text-sm font-bold text-[#0b1a30] mb-3 pb-2 border-b border-slate-100">
-                Max Price
+      {/* Main Content Area */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* Minimalist Search & Control Strip */}
+        <div className="bg-white border border-stone-200/90 p-4 sm:p-5 mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          {/* Search Box */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search by saree title, color, or motif..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-8 py-2 text-xs bg-stone-50/70 border border-stone-300 rounded-none text-stone-900 focus:outline-none focus:border-stone-800 placeholder:text-stone-400"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Controls: Count & Sort */}
+          <div className="flex items-center justify-between md:justify-end gap-3 shrink-0">
+            {/* Mobile Filter Toggle */}
+            <button
+              onClick={() => setMobileFilterOpen(true)}
+              className="lg:hidden inline-flex items-center gap-1.5 px-3.5 py-2 border border-stone-300 text-xs uppercase tracking-wider text-stone-800 bg-white hover:bg-stone-50 cursor-pointer"
+            >
+              <SlidersHorizontal className="w-3.5 h-3.5" />
+              <span>Filters {isFiltered && '(Active)'}</span>
+            </button>
+
+            <span className="text-xs text-stone-500 font-light hidden sm:inline">
+              Showing <strong className="font-medium text-stone-900">{filteredSarees.length}</strong> {filteredSarees.length === 1 ? 'drape' : 'drapes'}
+            </span>
+
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2">
+              <label htmlFor="shop-sort" className="text-xs text-stone-500 hidden sm:inline font-light">
+                Sort:
+              </label>
+              <select
+                id="shop-sort"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-white border border-stone-300 rounded-none px-3 py-2 text-xs uppercase tracking-wider text-stone-800 focus:outline-none focus:border-stone-800 cursor-pointer"
+              >
+                <option value="featured">Featured Archive</option>
+                <option value="newest">New Arrivals</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Active Filter Chips */}
+        {isFiltered && (
+          <div className="mb-6 flex flex-wrap items-center gap-2 text-xs">
+            <span className="text-stone-400 text-[11px] uppercase tracking-wider">
+              Active Filters:
+            </span>
+
+            {activeCategory !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>{activeCategoryObj ? activeCategoryObj.name : activeCategory}</span>
+                <button
+                  onClick={() => {
+                    setActiveCategory('all');
+                    if (setSelectedCategory) setSelectedCategory('all');
+                  }}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {selectedColor !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>Color: {selectedColor}</span>
+                <button
+                  onClick={() => setSelectedColor('all')}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {selectedFabric !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>Fabric: {selectedFabric}</span>
+                <button
+                  onClick={() => setSelectedFabric('all')}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {maxPrice < 10000 && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>Up to Rs. {maxPrice.toLocaleString()}</span>
+                <button
+                  onClick={() => setMaxPrice(10000)}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {searchQuery.trim() && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>"{searchQuery}"</span>
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            <button
+              onClick={handleResetFilters}
+              className="text-[11px] text-amber-900 hover:text-stone-900 underline underline-offset-2 uppercase tracking-wider ml-2 cursor-pointer font-medium"
+            >
+              Reset All
+            </button>
+          </div>
+        )}
+
+        {/* Catalog Grid with Unified Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-10 items-start">
+          {/* Desktop Left Sidebar Filter (Unified Atelier Panel) */}
+          <aside className="hidden lg:block lg:sticky lg:top-24 self-start bg-white border border-stone-200/90 p-6 space-y-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-200">
+              <h3 className="font-serif text-sm uppercase tracking-wider text-stone-900 font-medium">
+                Refine Selection
               </h3>
-              <div className="space-y-3">
-                <input
-                  type="range"
-                  min="1000"
-                  max="10000"
-                  step="500"
-                  value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
-                  className="w-full accent-[#0b1a30] cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-slate-600 font-semibold">
-                  <span>Rs. 1,000</span>
-                  <span className="text-[#0b1a30] font-bold">
-                    Up to Rs. {maxPrice.toLocaleString()}
-                  </span>
-                </div>
+              {isFiltered && (
+                <button
+                  onClick={handleResetFilters}
+                  className="text-[11px] text-stone-400 hover:text-stone-900 uppercase tracking-widest cursor-pointer"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+
+            {/* Categories List */}
+            <div className="space-y-3">
+              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                Saree Categories
+              </span>
+              <div className="space-y-1 text-xs">
+                {categoryList.map((c) => {
+                  const count =
+                    c.id === 'all'
+                      ? sarees.length
+                      : sarees.filter((s) => s.category === c.id).length;
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        setActiveCategory(c.id);
+                        if (setSelectedCategory) setSelectedCategory(c.id);
+                      }}
+                      className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer ${
+                        activeCategory === c.id
+                          ? 'bg-[#0b1a30] text-white font-medium'
+                          : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                      }`}
+                    >
+                      <span className="truncate">{c.name}</span>
+                      <span className="text-[10px] opacity-75 font-mono">{count}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Color Swatch Filter */}
-            <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-              <h3 className="font-serif text-sm font-bold text-[#0b1a30] mb-3 pb-2 border-b border-slate-100">
+            {/* Price Range Slider */}
+            <div className="space-y-3 pt-4 border-t border-stone-100">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                  Price Ceiling
+                </span>
+                <span className="font-serif text-xs text-stone-900 font-medium">
+                  Up to Rs. {maxPrice.toLocaleString()}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="1000"
+                max="10000"
+                step="500"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-full accent-[#0b1a30] cursor-pointer"
+              />
+              <div className="flex justify-between text-[11px] text-stone-400">
+                <span>Rs. 1,000</span>
+                <span>Rs. 10,000</span>
+              </div>
+            </div>
+
+            {/* Color Swatch Selector */}
+            <div className="space-y-3 pt-4 border-t border-stone-100">
+              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
                 Color Palette
-              </h3>
-              <div className="space-y-2 text-xs">
+              </span>
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
                 {colors.map((color) => (
                   <button
                     key={color.name}
                     onClick={() => setSelectedColor(color.name)}
-                    className={`w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl transition-all ${
+                    className={`flex items-center gap-2 px-2 py-1.5 border transition-all cursor-pointer ${
                       selectedColor === color.name
-                        ? 'bg-[#0b1a30]/10 font-bold text-[#0b1a30]'
-                        : 'text-slate-700 hover:bg-slate-50'
+                        ? 'border-stone-900 bg-stone-50 font-medium text-stone-900'
+                        : 'border-transparent text-stone-600 hover:bg-stone-50'
                     }`}
                   >
                     {color.name === 'all' ? (
-                      <div className="w-4 h-4 rounded-full border border-slate-300 bg-linear-to-tr from-blue-900 via-amber-400 to-rose-500" />
+                      <span className="w-3.5 h-3.5 rounded-full border border-stone-300 bg-gradient-to-tr from-stone-800 via-amber-400 to-rose-400 shrink-0" />
                     ) : (
-                      <div
-                        className="w-4 h-4 rounded-full border border-slate-300 shrink-0 shadow-xs"
+                      <span
+                        className="w-3.5 h-3.5 rounded-full border border-stone-300 shrink-0"
                         style={{ backgroundColor: color.hex }}
                       />
                     )}
-                    <span className="flex-1 text-left">{color.label}</span>
-                    {selectedColor === color.name && (
-                      <Check className="w-3.5 h-3.5 text-[#0b1a30]" />
-                    )}
+                    <span className="text-[11px] truncate">{color.label}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            
+            {/* Fabric Filter */}
+            <div className="space-y-3 pt-4 border-t border-stone-100">
+              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                Textile Weave
+              </span>
+              <div className="space-y-1 text-xs">
+                {fabrics.map((f) => (
+                  <button
+                    key={f.id}
+                    onClick={() => setSelectedFabric(f.id)}
+                    className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer ${
+                      selectedFabric === f.id
+                        ? 'bg-[#0b1a30] text-white font-medium'
+                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                    }`}
+                  >
+                    <span className="truncate">{f.label}</span>
+                    {selectedFabric === f.id && <Check className="w-3 h-3 shrink-0" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Atelier Assurance */}
+            <div className="pt-4 border-t border-stone-100 text-[10px] uppercase tracking-widest text-stone-400 space-y-1">
+              <p>• 100% Hand-Drawn Batik</p>
+              <p>• Islandwide Delivery (Rs. 350)</p>
+              <p>• Cash on Delivery Available</p>
+            </div>
           </aside>
 
           {/* Right Product Grid */}
           <main className="lg:col-span-3">
             {isSareesLoading ? (
-              <div className="flex items-center justify-center py-24 text-slate-400">
-                <Loader2 className="w-8 h-8 animate-spin text-[#0b1a30]" />
+              <div className="flex flex-col items-center justify-center py-24 text-stone-400 space-y-3">
+                <Loader2 className="w-7 h-7 animate-spin text-[#0b1a30]" />
+                <span className="text-xs uppercase tracking-widest font-serif">
+                  Loading Atelier Collection...
+                </span>
               </div>
             ) : filteredSarees.length === 0 ? (
-              <div className="bg-white rounded-3xl p-12 text-center border border-slate-200">
-                <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-4">
-                  <ShoppingBag className="w-8 h-8" />
+              <div className="bg-white border border-stone-200/90 p-12 text-center space-y-4">
+                <div className="w-14 h-14 rounded-full bg-stone-100 text-stone-400 flex items-center justify-center mx-auto">
+                  <ShoppingBag className="w-6 h-6 stroke-[1.5]" />
                 </div>
-                <h3 className="font-serif text-xl font-bold text-slate-800 mb-1">
-                  No Sarees Found
-                </h3>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto mb-6">
-                  {sarees.length === 0
-                    ? 'There are currently no sarees in the collection. Sarees published via the Dashboard will appear here.'
-                    : "We couldn't find any sarees matching your selected filters. Try adjusting your color, fabric, or price options."}
-                </p>
-                {sarees.length > 0 && (
-                  <button
-                    onClick={handleResetFilters}
-                    className="bg-[#0b1a30] hover:bg-brand-blue-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition-all"
-                  >
-                    Clear All Filters
-                  </button>
+                <div className="space-y-1">
+                  <h3 className="font-serif text-xl text-stone-900 font-normal">
+                    No Sarees Found Matching Criteria
+                  </h3>
+                  <p className="text-xs text-stone-500 max-w-sm mx-auto font-light leading-relaxed">
+                    We could not find any drapes matching your exact filter selection. Try adjusting your color palette or price range.
+                  </p>
+                </div>
+                {isFiltered && (
+                  <div className="pt-2">
+                    <button
+                      onClick={handleResetFilters}
+                      className="bg-[#0b1a30] hover:bg-stone-800 text-white px-6 py-2.5 text-xs uppercase tracking-widest font-medium transition-colors cursor-pointer"
+                    >
+                      Clear All Filters
+                    </button>
+                  </div>
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10 sm:gap-x-8 sm:gap-y-12">
                 {filteredSarees.map((saree) => (
                   <SareeCard key={saree.id} saree={saree} />
                 ))}
@@ -325,26 +503,32 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
         </div>
       </div>
 
-      {/* Mobile Filter Slide Drawer */}
+      {/* Refined Mobile Filter Slide Drawer */}
       {mobileFilterOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden flex justify-end">
-          <div className="w-full max-w-xs bg-white h-full p-6 overflow-y-auto space-y-6 flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                <h3 className="font-serif text-lg font-bold text-[#0b1a30]">
-                  Filter Sarees
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs lg:hidden flex justify-end animate-fadeIn">
+          <div
+            className="fixed inset-0"
+            onClick={() => setMobileFilterOpen(false)}
+          />
+
+          <div className="relative w-full max-w-xs bg-white h-full p-6 overflow-y-auto space-y-6 flex flex-col justify-between border-l border-stone-200 shadow-2xl">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between pb-4 border-b border-stone-200">
+                <h3 className="font-serif text-lg text-stone-900 font-normal">
+                  Refine Collection
                 </h3>
                 <button
                   onClick={() => setMobileFilterOpen(false)}
-                  className="p-1 rounded-full text-slate-400 hover:text-slate-700"
+                  className="p-1.5 text-stone-400 hover:text-stone-900 transition-colors"
+                  aria-label="Close filters"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               {/* Categories */}
-              <div className="py-4 border-b border-slate-100">
-                <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider mb-2">
+              <div className="space-y-2">
+                <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
                   Category
                 </h4>
                 <div className="space-y-1">
@@ -355,10 +539,10 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                         setActiveCategory(c.id);
                         if (setSelectedCategory) setSelectedCategory(c.id);
                       }}
-                      className={`w-full text-left px-3 py-1.5 rounded-lg text-xs ${
+                      className={`w-full text-left px-3 py-1.5 text-xs transition-colors ${
                         activeCategory === c.id
-                          ? 'bg-[#0b1a30] text-white font-bold'
-                          : 'text-slate-700'
+                          ? 'bg-[#0b1a30] text-white font-medium'
+                          : 'text-stone-700 hover:bg-stone-50'
                       }`}
                     >
                       {c.name}
@@ -368,62 +552,97 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
               </div>
 
               {/* Price Filter Mobile */}
-              <div className="py-4 border-b border-slate-100">
-                <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider mb-2">
-                  Max Price
-                </h4>
-                <div className="space-y-2">
-                  <input
-                    type="range"
-                    min="1000"
-                    max="10000"
-                    step="500"
-                    value={maxPrice}
-                    onChange={(e) => setMaxPrice(Number(e.target.value))}
-                    className="w-full accent-[#0b1a30] cursor-pointer"
-                  />
-                  <div className="flex justify-between text-xs text-slate-600 font-semibold">
-                    <span>Rs. 1,000</span>
-                    <span className="text-[#0b1a30] font-bold">
-                      Up to Rs. {maxPrice.toLocaleString()}
-                    </span>
-                  </div>
+              <div className="space-y-2 pt-4 border-t border-stone-100">
+                <div className="flex justify-between items-center">
+                  <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
+                    Max Price
+                  </h4>
+                  <span className="font-serif text-xs text-stone-900 font-medium">
+                    Up to Rs. {maxPrice.toLocaleString()}
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="1000"
+                  max="10000"
+                  step="500"
+                  value={maxPrice}
+                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  className="w-full accent-[#0b1a30] cursor-pointer"
+                />
+                <div className="flex justify-between text-[11px] text-stone-400">
+                  <span>Rs. 1,000</span>
+                  <span>Rs. 10,000</span>
                 </div>
               </div>
 
-              {/* Colors */}
-              <div className="py-4 border-b border-slate-100">
-                <h4 className="font-bold text-xs text-slate-800 uppercase tracking-wider mb-2">
-                  Color
+              {/* Colors Mobile */}
+              <div className="space-y-2 pt-4 border-t border-stone-100">
+                <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
+                  Color Palette
                 </h4>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-1.5">
                   {colors.map((c) => (
                     <button
                       key={c.name}
                       onClick={() => setSelectedColor(c.name)}
-                      className={`text-left p-2 rounded-lg text-[11px] border flex items-center gap-1.5 ${
+                      className={`text-left p-1.5 text-[11px] border flex items-center gap-1.5 transition-colors ${
                         selectedColor === c.name
-                          ? 'border-[#0b1a30] bg-[#0b1a30]/10 font-bold'
-                          : 'border-slate-200 text-slate-700'
+                          ? 'border-stone-900 bg-stone-50 font-medium text-stone-900'
+                          : 'border-transparent text-stone-700 hover:bg-stone-50'
                       }`}
                     >
                       <span
-                        className="w-3 h-3 rounded-full shrink-0 border"
+                        className="w-3 h-3 rounded-full shrink-0 border border-stone-300"
                         style={{ backgroundColor: c.hex }}
                       />
-                      <span className="truncate">{c.name === 'all' ? 'All' : c.name}</span>
+                      <span className="truncate">{c.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Fabric Mobile */}
+              <div className="space-y-2 pt-4 border-t border-stone-100">
+                <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
+                  Textile
+                </h4>
+                <div className="space-y-1">
+                  {fabrics.map((f) => (
+                    <button
+                      key={f.id}
+                      onClick={() => setSelectedFabric(f.id)}
+                      className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                        selectedFabric === f.id
+                          ? 'bg-[#0b1a30] text-white font-medium'
+                          : 'text-stone-700 hover:bg-stone-50'
+                      }`}
+                    >
+                      <span className="truncate">{f.label}</span>
+                      {selectedFabric === f.id && <Check className="w-3 h-3" />}
                     </button>
                   ))}
                 </div>
               </div>
             </div>
 
-            <button
-              onClick={() => setMobileFilterOpen(false)}
-              className="w-full bg-[#0b1a30] text-white py-3 rounded-xl text-xs font-bold"
-            >
-              Apply Filters ({filteredSarees.length} Designs)
-            </button>
+            <div className="pt-4 border-t border-stone-200 space-y-2">
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full bg-[#0b1a30] text-white py-3 text-xs uppercase tracking-widest font-medium transition-colors cursor-pointer"
+              >
+                Apply Filters ({filteredSarees.length} Pieces)
+              </button>
+
+              {isFiltered && (
+                <button
+                  onClick={handleResetFilters}
+                  className="w-full text-center text-xs text-stone-500 hover:text-stone-900 py-1.5 cursor-pointer underline"
+                >
+                  Reset All Filters
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
