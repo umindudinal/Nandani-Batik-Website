@@ -33,13 +33,27 @@ export default function OrderList({
   onUpdateOrderStatus,
   onDeleteOrder,
 }) {
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('pending');
+  const [hasUserSelectedTab, setHasUserSelectedTab] = useState(false);
   const [search, setSearch] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
+  // If there are no pending orders on initial load, auto-focus the first active status with orders
+  React.useEffect(() => {
+    if (!hasUserSelectedTab && Array.isArray(orders) && orders.length > 0) {
+      const hasPending = orders.some((o) => o.status === 'pending');
+      if (!hasPending) {
+        const firstOrder = orders.find((o) => o.status && o.status !== 'cancelled') || orders[0];
+        if (firstOrder && firstOrder.status) {
+          setStatusFilter(firstOrder.status);
+        }
+      }
+    }
+  }, [orders, hasUserSelectedTab]);
+
   const filteredOrders = useMemo(() => {
     return (orders || []).filter((order) => {
-      if (statusFilter !== 'all' && order.status !== statusFilter) {
+      if (order.status !== statusFilter) {
         return false;
       }
       if (search) {
@@ -58,7 +72,6 @@ export default function OrderList({
   }, [orders, statusFilter, search]);
 
   const statusOptions = [
-    { value: 'all', label: 'All Orders', count: (orders || []).length },
     {
       value: 'pending',
       label: 'Pending',
@@ -127,7 +140,10 @@ export default function OrderList({
           {statusOptions.map((opt) => (
             <button
               key={opt.value}
-              onClick={() => setStatusFilter(opt.value)}
+              onClick={() => {
+                setStatusFilter(opt.value);
+                setHasUserSelectedTab(true);
+              }}
               className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors whitespace-nowrap flex items-center gap-1.5 ${
                 statusFilter === opt.value
                   ? 'bg-[#0a1120] text-white shadow-xs'
@@ -153,11 +169,13 @@ export default function OrderList({
       {filteredOrders.length === 0 ? (
         <div className="bg-white rounded-xl border border-slate-200/90 p-12 text-center shadow-xs">
           <Package size={32} className="mx-auto text-slate-300 mb-2" />
-          <h4 className="text-sm font-semibold text-slate-700">No Orders Found</h4>
+          <h4 className="text-sm font-semibold text-slate-700 capitalize">
+            No {statusFilter} Orders
+          </h4>
           <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
             {search
-              ? 'No customer orders match your search keyword. Clear the search to view all.'
-              : 'Orders placed on the website checkout will show up here automatically.'}
+              ? `No ${statusFilter} orders match your search keyword.`
+              : `There are currently no orders under the "${statusFilter}" status.`}
           </p>
         </div>
       ) : (
