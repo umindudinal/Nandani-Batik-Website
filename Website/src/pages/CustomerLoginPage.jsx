@@ -107,7 +107,16 @@ export default function CustomerLoginPage() {
         throw new Error(data.error || 'Failed to sign in. Please verify your credentials.');
       }
 
-      saveCustomerProfile(data.customer);
+      const profileToSave = data.customer;
+      if (typeof saveCustomerProfile === 'function') {
+        saveCustomerProfile(profileToSave);
+      } else {
+        try {
+          localStorage.setItem('nandani_customer_profile', JSON.stringify(profileToSave));
+        } catch (err) {
+          console.error(err);
+        }
+      }
       if (showToast) showToast(`සාදරයෙන් පිළිගනිමු, ${data.customer.fullName}!`);
       setSuccessMessage('පිවිසීම සාර්ථකයි! (Login successful)');
 
@@ -165,7 +174,16 @@ export default function CustomerLoginPage() {
         throw new Error(data.error || 'Failed to register account.');
       }
 
-      saveCustomerProfile(data.customer || payload);
+      const profileToSave = data.customer || payload;
+      if (typeof saveCustomerProfile === 'function') {
+        saveCustomerProfile(profileToSave);
+      } else {
+        try {
+          localStorage.setItem('nandani_customer_profile', JSON.stringify(profileToSave));
+        } catch (err) {
+          console.error(err);
+        }
+      }
       if (showToast) showToast('Nandani Batik පාරිභෝගික ලියාපදිංචිය සාර්ථකයි!');
       setSuccessMessage('ගිණුම සාර්ථකව නිර්මාණය විය! (Account created successfully)');
 

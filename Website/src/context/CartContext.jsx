@@ -84,6 +84,30 @@ export const CartProvider = ({ children }) => {
   const [pendingSareeId, setPendingSareeId] = useState(initialRoute.sareeId);
   const [toast, setToast] = useState(null);
 
+  // Customer Authentication Profile State (persisted in localStorage)
+  const [customerProfile, setCustomerProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('nandani_customer_profile');
+      return saved ? JSON.parse(saved) : null;
+    } catch (err) {
+      console.error('Failed to parse customer profile from localStorage:', err);
+      return null;
+    }
+  });
+
+  const saveCustomerProfile = (profile) => {
+    setCustomerProfile(profile);
+    try {
+      if (profile) {
+        localStorage.setItem('nandani_customer_profile', JSON.stringify(profile));
+      } else {
+        localStorage.removeItem('nandani_customer_profile');
+      }
+    } catch (err) {
+      console.error('Failed to persist customer profile in localStorage:', err);
+    }
+  };
+
   // Navigate function that keeps browser URL in sync
   const navigateTo = (page, category = null, saree = null, replace = false) => {
     setActivePageState(page);
@@ -415,6 +439,8 @@ export const CartProvider = ({ children }) => {
         cartSubtotal,
         shippingFee,
         cartGrandTotal,
+        customerProfile,
+        saveCustomerProfile,
       }}
     >
       {children}

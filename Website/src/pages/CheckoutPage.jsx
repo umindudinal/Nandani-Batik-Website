@@ -147,21 +147,23 @@ export default function CheckoutPage() {
           }),
         });
         const custData = await custRes.json();
-        if (custData && custData.customer) {
+        if (custData && custData.customer && typeof saveCustomerProfile === 'function') {
           saveCustomerProfile(custData.customer);
         }
       } catch (custErr) {
         console.warn('Customer auto-register error:', custErr);
-        saveCustomerProfile({
-          fullName: formData.fullName,
-          phone: formData.phone,
-          whatsapp: formData.whatsapp || formData.phone,
-          email: formData.email,
-          address: formData.address,
-          district: formData.district,
-          city: formData.city,
-          notes: formData.notes,
-        });
+        if (typeof saveCustomerProfile === 'function') {
+          saveCustomerProfile({
+            fullName: formData.fullName,
+            phone: formData.phone,
+            whatsapp: formData.whatsapp || formData.phone,
+            email: formData.email,
+            address: formData.address,
+            district: formData.district,
+            city: formData.city,
+            notes: formData.notes,
+          });
+        }
       }
 
       // 2. Submit Order
