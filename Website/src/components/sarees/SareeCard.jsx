@@ -109,7 +109,7 @@ export default function SareeCard({ saree }) {
       <div className="flex flex-col flex-1 space-y-1">
         {/* Fabric & Code */}
         <div className="flex items-center justify-between text-[11px] text-stone-500 uppercase tracking-wider">
-          <span className="truncate">{saree.fabricType || saree.fabric || saree.categoryLabel}</span>
+          <span className="truncate">{saree.fabric || saree.categoryLabel}</span>
           <span className="font-mono text-[10px] text-stone-400 shrink-0 ml-2">
             {saree.id ? saree.id.replace('nb-saree-', '#') : ''}
           </span>
@@ -120,19 +120,12 @@ export default function SareeCard({ saree }) {
           {saree.name}
         </h3>
 
-        {/* Sinhala Name & Design Badge */}
-        <div className="flex items-center justify-between gap-2">
-          {saree.sinhalaName && (
-            <p className="text-xs text-stone-500 line-clamp-1 font-normal">
-              {saree.sinhalaName}
-            </p>
-          )}
-          {saree.designType && (
-            <span className="text-[10px] text-amber-900 bg-amber-50 border border-amber-100/80 px-1.5 py-0.2 rounded font-medium whitespace-nowrap shrink-0">
-              {saree.designType}
-            </span>
-          )}
-        </div>
+        {/* Sinhala Name */}
+        {saree.sinhalaName && (
+          <p className="text-xs text-stone-500 line-clamp-1 font-normal">
+            {saree.sinhalaName}
+          </p>
+        )}
 
         {/* Price & Color */}
         <div className="flex items-center justify-between pt-1">

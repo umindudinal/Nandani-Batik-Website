@@ -3,10 +3,8 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Overview from './components/Overview';
 import SareeList from './components/SareeList';
-import CategoryList from './components/CategoryList';
 import OrderList from './components/OrderList';
 import SareeModal from './components/SareeModal';
-import CategoryModal from './components/CategoryModal';
 import LoginPage from './components/LoginPage';
 import Toast from './components/Toast';
 import { api } from './api/client';
@@ -41,11 +39,11 @@ export default function App() {
     try {
       const search = new URLSearchParams(window.location.search);
       const tab = search.get('tab');
-      if (['overview', 'sarees', 'categories', 'orders'].includes(tab)) {
+      if (['overview', 'sarees', 'orders'].includes(tab)) {
         return tab;
       }
       const hash = window.location.hash.replace('#', '');
-      if (['overview', 'sarees', 'categories', 'orders'].includes(hash)) {
+      if (['overview', 'sarees', 'orders'].includes(hash)) {
         return hash;
       }
     } catch { }
@@ -79,9 +77,6 @@ export default function App() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSaree, setEditingSaree] = useState(null);
-
-  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] = useState(null);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [toast, setToast] = useState(null);
@@ -233,40 +228,6 @@ export default function App() {
     }
   };
 
-  // Category Handlers
-  const handleOpenAddCategoryModal = () => {
-    setEditingCategory(null);
-    setIsCategoryModalOpen(true);
-  };
-
-  const handleOpenEditCategoryModal = (cat) => {
-    setEditingCategory(cat);
-    setIsCategoryModalOpen(true);
-  };
-
-  const handleSaveCategory = async (payload) => {
-    if (editingCategory) {
-      await api.updateCategory(editingCategory.id, payload);
-      showToast(`Category "${payload.name}" updated successfully!`);
-    } else {
-      await api.createCategory(payload);
-      showToast(`New category "${payload.name}" created!`);
-    }
-    notifyStoreUpdated();
-    loadAllData(true);
-  };
-
-  const handleDeleteCategory = async (id) => {
-    try {
-      const res = await api.deleteCategory(id);
-      showToast(res.message || 'Category deleted successfully', 'info');
-      notifyStoreUpdated();
-      loadAllData(true);
-    } catch (err) {
-      showToast(`Failed to delete category: ${err.message}`, 'error');
-    }
-  };
-
   if (!isAuthenticated) {
     return (
       <>
@@ -334,18 +295,6 @@ export default function App() {
               onOpenEditModal={handleOpenEditModal}
               onToggleField={handleToggleField}
               onDeleteSaree={handleDeleteSaree}
-              onNavigateToCategories={() => setActiveTab('categories')}
-            />
-          )}
-
-          {activeTab === 'categories' && (
-            <CategoryList
-              categories={categories}
-              sarees={sarees}
-              onOpenAddModal={handleOpenAddCategoryModal}
-              onOpenEditModal={handleOpenEditCategoryModal}
-              onDeleteCategory={handleDeleteCategory}
-              onViewCategorySarees={() => setActiveTab('sarees')}
             />
           )}
 
@@ -366,14 +315,6 @@ export default function App() {
         initialData={editingSaree}
         categories={categories}
         onSave={handleSaveSaree}
-      />
-
-      {/* Add / Edit Category Modal */}
-      <CategoryModal
-        isOpen={isCategoryModalOpen}
-        onClose={() => setIsCategoryModalOpen(false)}
-        initialData={editingCategory}
-        onSave={handleSaveCategory}
       />
 
       {/* Global Toast */}

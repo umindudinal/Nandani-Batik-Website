@@ -10,7 +10,6 @@ import {
   MessageCircle,
   Plus,
   CreditCard,
-  Layers,
 } from 'lucide-react';
 
 export default function Overview({
@@ -270,12 +269,12 @@ export default function Overview({
               </button>
 
               <button
-                onClick={() => setActiveTab('categories')}
+                onClick={() => setActiveTab('orders')}
                 className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors"
               >
                 <div className="flex items-center gap-2">
-                  <Layers size={15} className="text-slate-400" />
-                  <span>Manage Saree Categories</span>
+                  <Package size={15} className="text-slate-400" />
+                  <span>Review Customer Orders</span>
                 </div>
                 <ArrowRight size={13} className="text-slate-400" />
               </button>

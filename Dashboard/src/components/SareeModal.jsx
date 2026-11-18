@@ -10,12 +10,6 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { api } from '../api/client';
-import {
-  FABRIC_TYPES,
-  DESIGN_TYPES,
-  COLOUR_TYPES,
-  MAIN_COLOURS,
-} from '../constants/sareeAttributes';
 
 export default function SareeModal({
   isOpen,
@@ -31,11 +25,6 @@ export default function SareeModal({
     category: 'pure-silk',
     categoryLabel: 'Pure Silk',
     fabric: '100% Pure Mulberry Silk',
-    fabricType: 'Silk Batik Sarees',
-    designType: 'Floral Design',
-    colourType: 'Single Colour',
-    mainColour: 'Navy Blue',
-    mainColours: ['Navy Blue'],
     primaryColor: 'Dark Blue',
     colorHex: '#0b1a30',
     price: '',
@@ -65,13 +54,6 @@ export default function SareeModal({
     if (initialData) {
       setFormData({
         ...initialData,
-        fabricType: initialData.fabricType || 'Silk Batik Sarees',
-        designType: initialData.designType || 'Floral Design',
-        colourType: initialData.colourType || 'Single Colour',
-        mainColour: initialData.mainColour || initialData.primaryColor || 'Navy Blue',
-        mainColours: Array.isArray(initialData.mainColours) && initialData.mainColours.length
-          ? initialData.mainColours
-          : [initialData.mainColour || initialData.primaryColor || 'Navy Blue'],
         tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : (initialData.tags || ''),
       });
     } else {
@@ -81,11 +63,6 @@ export default function SareeModal({
         category: 'pure-silk',
         categoryLabel: 'Pure Silk',
         fabric: '100% Pure Mulberry Silk',
-        fabricType: 'Silk Batik Sarees',
-        designType: 'Floral Design',
-        colourType: 'Single Colour',
-        mainColour: 'Navy Blue',
-        mainColours: ['Navy Blue'],
         primaryColor: 'Dark Blue',
         colorHex: '#0b1a30',
         price: '',
@@ -410,135 +387,6 @@ export default function SareeModal({
                       </option>
                     ))}
                 </select>
-              </div>
-
-              {/* Saree Categorization & Design Attributes (User Requested Taxonomy) */}
-              <div className="p-3.5 bg-slate-50 border border-slate-200/90 rounded-xl space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-semibold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>Saree Classification & Style (සාරි වර්ගීකරණය)</span>
-                  </h4>
-                  <span className="text-[10px] text-slate-500 font-mono">Filter Options</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Fabric Type */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-700 mb-1">
-                      Fabric Type (රෙදි වර්ගය) <span className="text-rose-500">*</span>
-                    </label>
-                    <select
-                      value={formData.fabricType || 'Silk Batik Sarees'}
-                      onChange={(e) => setFormData({ ...formData, fabricType: e.target.value })}
-                      className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-slate-800 font-medium text-slate-800"
-                    >
-                      {FABRIC_TYPES.map((f) => (
-                        <option key={f} value={f}>
-                          {f}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Design Type */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-700 mb-1">
-                      Design Type (මෝස්තර වර්ගය) <span className="text-rose-500">*</span>
-                    </label>
-                    <select
-                      value={formData.designType || 'Floral Design'}
-                      onChange={(e) => setFormData({ ...formData, designType: e.target.value })}
-                      className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-slate-800 font-medium text-slate-800"
-                    >
-                      {DESIGN_TYPES.map((d) => (
-                        <option key={d} value={d}>
-                          {d}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Colour Type */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-700 mb-1">
-                      Colour Type (වර්ණ සංකලනය) <span className="text-rose-500">*</span>
-                    </label>
-                    <select
-                      value={formData.colourType || 'Single Colour'}
-                      onChange={(e) => setFormData({ ...formData, colourType: e.target.value })}
-                      className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-slate-800 font-medium text-slate-800"
-                    >
-                      {COLOUR_TYPES.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Main Colour */}
-                  <div>
-                    <label className="block text-xs font-medium text-slate-700 mb-1">
-                      Main Colour (ප්‍රධාන වර්ණය) <span className="text-rose-500">*</span>
-                    </label>
-                    <select
-                      value={formData.mainColour || 'Navy Blue'}
-                      onChange={(e) => {
-                        const colObj = MAIN_COLOURS.find((c) => c.name === e.target.value);
-                        setFormData({
-                          ...formData,
-                          mainColour: e.target.value,
-                          colorHex: colObj ? colObj.hex : formData.colorHex,
-                          primaryColor: e.target.value,
-                        });
-                      }}
-                      className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none focus:border-slate-800 font-medium text-slate-800"
-                    >
-                      {MAIN_COLOURS.map((c) => (
-                        <option key={c.name} value={c.name}>
-                          {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Visual Color Palette Picker */}
-                <div className="pt-1 border-t border-slate-200/60">
-                  <label className="block text-[11px] font-medium text-slate-600 mb-1.5">
-                    Click to Select Main Colour Swatch:
-                  </label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {MAIN_COLOURS.map((col) => {
-                      const isSelected = formData.mainColour === col.name;
-                      return (
-                        <button
-                          type="button"
-                          key={col.name}
-                          onClick={() =>
-                            setFormData({
-                              ...formData,
-                              mainColour: col.name,
-                              colorHex: col.hex,
-                              primaryColor: col.name,
-                            })
-                          }
-                          className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-medium border transition-all cursor-pointer ${
-                            isSelected
-                              ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
-                          }`}
-                        >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0"
-                            style={{ backgroundColor: col.hex }}
-                          />
-                          <span>{col.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
               </div>
 
               <div>

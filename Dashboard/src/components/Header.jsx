@@ -17,10 +17,6 @@ export default function Header({
       title: 'Saree Catalog & Inventory',
       subtitle: 'Manage batik collections, pricing, photos, and stock availability',
     },
-    categories: {
-      title: 'Saree Categories & Collections',
-      subtitle: 'Create, update, and manage fabric types and occasion categories',
-    },
     orders: {
       title: 'Customer Orders',
       subtitle: 'Review and process incoming website orders and customer dispatches',

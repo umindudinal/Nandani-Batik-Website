@@ -3,7 +3,6 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Package,
-  Layers,
   X,
   LogOut,
 } from 'lucide-react';
@@ -27,11 +26,6 @@ export default function Sidebar({
       label: 'Saree Catalog',
       icon: ShoppingBag,
       badge: stats?.totalSarees,
-    },
-    {
-      id: 'categories',
-      label: 'Categories',
-      icon: Layers,
     },
     {
       id: 'orders',

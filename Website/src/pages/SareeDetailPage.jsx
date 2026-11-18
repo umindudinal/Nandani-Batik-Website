@@ -239,20 +239,8 @@ export default function SareeDetailPage() {
           <div className="lg:col-span-5 space-y-6">
             {/* Header info */}
             <div>
-              <div className="flex flex-wrap items-center gap-2 mb-2">
-                <span className="text-[11px] uppercase tracking-widest text-stone-500 font-medium">
-                  {saree.categoryLabel || saree.category}
-                </span>
-                {saree.fabricType && (
-                  <span className="text-[10px] bg-stone-100 text-stone-700 px-2 py-0.5 rounded font-medium">
-                    {saree.fabricType}
-                  </span>
-                )}
-                {saree.designType && (
-                  <span className="text-[10px] bg-amber-50 text-amber-900 border border-amber-200/70 px-2 py-0.5 rounded font-medium">
-                    {saree.designType}
-                  </span>
-                )}
+              <div className="text-[11px] uppercase tracking-widest text-stone-400 font-medium mb-2">
+                {saree.categoryLabel || saree.category} • Handcrafted Sri Lankan Batik
               </div>
 
               <h1 className="font-serif text-3xl sm:text-4xl text-stone-900 font-normal tracking-tight leading-snug">
@@ -291,40 +279,12 @@ export default function SareeDetailPage() {
             )}
 
             {/* Key Garment Highlights */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-6 py-4 border-y border-stone-200/80 text-xs">
+            <div className="grid grid-cols-2 gap-4 py-4 border-y border-stone-200/80 text-xs">
               <div>
                 <span className="text-stone-400 uppercase tracking-wider text-[10px] block mb-0.5">
-                  Fabric Type
+                  Fabric
                 </span>
-                <span className="font-medium text-stone-800">{saree.fabricType || saree.fabric}</span>
-              </div>
-              <div>
-                <span className="text-stone-400 uppercase tracking-wider text-[10px] block mb-0.5">
-                  Design Motif
-                </span>
-                <span className="font-medium text-stone-800">{saree.designType || 'Hand-drawn Batik Motif'}</span>
-              </div>
-              <div>
-                <span className="text-stone-400 uppercase tracking-wider text-[10px] block mb-0.5">
-                  Colour Type
-                </span>
-                <span className="font-medium text-stone-800">{saree.colourType || 'Batik Multi'}</span>
-              </div>
-              <div>
-                <span className="text-stone-400 uppercase tracking-wider text-[10px] block mb-0.5">
-                  Main Colour
-                </span>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  {saree.colorHex && (
-                    <span
-                      className="w-3 h-3 rounded-full border border-stone-300 shrink-0 inline-block"
-                      style={{ backgroundColor: saree.colorHex }}
-                    />
-                  )}
-                  <span className="font-medium text-stone-800">
-                    {saree.mainColour || saree.primaryColor || 'Batik Tone'}
-                  </span>
-                </div>
+                <span className="font-medium text-stone-800">{saree.fabric}</span>
               </div>
               <div>
                 <span className="text-stone-400 uppercase tracking-wider text-[10px] block mb-0.5">
@@ -337,6 +297,12 @@ export default function SareeDetailPage() {
                   Total Length
                 </span>
                 <span className="font-medium text-stone-800">{saree.length || '6.0 Meters (with blouse)'}</span>
+              </div>
+              <div>
+                <span className="text-stone-400 uppercase tracking-wider text-[10px] block mb-0.5">
+                  Availability
+                </span>
+                <span className="font-medium text-emerald-700">In Stock • Ready to Dispatch</span>
               </div>
             </div>
 

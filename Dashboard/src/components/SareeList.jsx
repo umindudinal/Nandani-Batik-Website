@@ -10,10 +10,7 @@ import {
   AlertTriangle,
   ExternalLink,
   Sparkles,
-  Layers,
-  Tag,
 } from 'lucide-react';
-import { FABRIC_TYPES, DESIGN_TYPES } from '../constants/sareeAttributes';
 
 export default function SareeList({
   sarees,
@@ -22,12 +19,9 @@ export default function SareeList({
   onOpenEditModal,
   onToggleField,
   onDeleteSaree,
-  onNavigateToCategories,
 }) {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedFabricType, setSelectedFabricType] = useState('all');
-  const [selectedDesignType, setSelectedDesignType] = useState('all');
   const [stockFilter, setStockFilter] = useState('all'); // all, inStock, outOfStock
   const [viewMode, setViewMode] = useState('table'); // 'table' or 'grid'
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
@@ -41,19 +35,7 @@ export default function SareeList({
         const matchesFabric = item.fabric?.toLowerCase().includes(q);
         const matchesCategory = item.category?.toLowerCase().includes(q);
         const matchesId = item.id?.toLowerCase().includes(q);
-        const matchesFabricType = item.fabricType?.toLowerCase().includes(q);
-        const matchesDesignType = item.designType?.toLowerCase().includes(q);
-        const matchesMainColour = item.mainColour?.toLowerCase().includes(q);
-        if (
-          !matchesName &&
-          !matchesSinhala &&
-          !matchesFabric &&
-          !matchesCategory &&
-          !matchesId &&
-          !matchesFabricType &&
-          !matchesDesignType &&
-          !matchesMainColour
-        ) {
+        if (!matchesName && !matchesSinhala && !matchesFabric && !matchesCategory && !matchesId) {
           return false;
         }
       }
@@ -62,20 +44,12 @@ export default function SareeList({
         return false;
       }
 
-      if (selectedFabricType !== 'all' && item.fabricType !== selectedFabricType) {
-        return false;
-      }
-
-      if (selectedDesignType !== 'all' && item.designType !== selectedDesignType) {
-        return false;
-      }
-
       if (stockFilter === 'inStock' && !item.inStock) return false;
       if (stockFilter === 'outOfStock' && item.inStock) return false;
 
       return true;
     });
-  }, [sarees, search, selectedCategory, selectedFabricType, selectedDesignType, stockFilter]);
+  }, [sarees, search, selectedCategory, stockFilter]);
 
   return (
     <div className="p-4 sm:p-6 md:p-8 space-y-4 max-w-7xl mx-auto">
@@ -119,34 +93,6 @@ export default function SareeList({
               ))}
           </select>
 
-          {/* Fabric Type Filter */}
-          <select
-            value={selectedFabricType}
-            onChange={(e) => setSelectedFabricType(e.target.value)}
-            className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none focus:border-slate-800"
-          >
-            <option value="all">All Fabric Types</option>
-            {FABRIC_TYPES.map((fab) => (
-              <option key={fab} value={fab}>
-                {fab}
-              </option>
-            ))}
-          </select>
-
-          {/* Design Type Filter */}
-          <select
-            value={selectedDesignType}
-            onChange={(e) => setSelectedDesignType(e.target.value)}
-            className="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none focus:border-slate-800"
-          >
-            <option value="all">All Design Types</option>
-            {DESIGN_TYPES.map((des) => (
-              <option key={des} value={des}>
-                {des}
-              </option>
-            ))}
-          </select>
-
           {/* Stock Filter */}
           <select
             value={stockFilter}
@@ -179,18 +125,6 @@ export default function SareeList({
               <Grid size={14} />
             </button>
           </div>
-
-          {/* Manage Categories Shortcut */}
-          {onNavigateToCategories && (
-            <button
-              onClick={onNavigateToCategories}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium rounded-lg transition-colors shadow-xs"
-              title="Manage Saree Categories"
-            >
-              <Layers size={13} className="text-slate-500" />
-              <span>Categories</span>
-            </button>
-          )}
 
           {/* Add Saree Button */}
           <button
@@ -260,25 +194,6 @@ export default function SareeList({
                                 #{saree.id}
                               </span>
                             </div>
-                            {(saree.fabricType || saree.designType || saree.colourType) && (
-                              <div className="flex flex-wrap items-center gap-1 mt-1">
-                                {saree.fabricType && (
-                                  <span className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.2 rounded font-medium">
-                                    {saree.fabricType}
-                                  </span>
-                                )}
-                                {saree.designType && (
-                                  <span className="text-[9px] bg-indigo-50 text-indigo-700 px-1.5 py-0.2 rounded font-medium">
-                                    {saree.designType}
-                                  </span>
-                                )}
-                                {saree.colourType && (
-                                  <span className="text-[9px] bg-amber-50 text-amber-800 px-1.5 py-0.2 rounded font-medium">
-                                    {saree.colourType}
-                                  </span>
-                                )}
-                              </div>
-                            )}
                           </div>
                         </div>
                       </td>
@@ -447,34 +362,14 @@ export default function SareeList({
                     <p className="text-[11px] text-slate-500 truncate">{saree.sinhalaName}</p>
                   )}
 
-                  {(saree.fabricType || saree.designType) && (
-                    <div className="flex flex-wrap gap-1 mt-1.5">
-                      {saree.fabricType && (
-                        <span className="text-[9px] bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded font-medium truncate max-w-full">
-                          {saree.fabricType}
-                        </span>
-                      )}
-                      {saree.designType && (
-                        <span className="text-[9px] bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-medium truncate max-w-full">
-                          {saree.designType}
-                        </span>
-                      )}
-                    </div>
-                  )}
-
                   <div className="flex items-baseline justify-between mt-2.5 pt-2 border-t border-slate-100">
                     <div className="font-mono font-medium text-slate-900 text-xs">
                       Rs. {Number(saree.price).toLocaleString()}
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] text-slate-500 font-medium">
-                        {saree.mainColour || saree.primaryColor || 'Batik'}
-                      </span>
-                      <div
-                        className="w-3 h-3 rounded-full border border-slate-300 shrink-0"
-                        style={{ backgroundColor: saree.colorHex || '#0b1a30' }}
-                      />
-                    </div>
+                    <div
+                      className="w-3 h-3 rounded-full border border-slate-300"
+                      style={{ backgroundColor: saree.colorHex || '#0b1a30' }}
+                    />
                   </div>
                 </div>
               </div>
