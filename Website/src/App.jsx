@@ -68,7 +68,11 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fcfbf9] text-slate-800 selection:bg-[#0b1a30] selection:text-white">
+    <div
+      className={`min-h-screen flex flex-col bg-[#fcfbf9] text-slate-800 selection:bg-[#0b1a30] selection:text-white ${
+        isAuthPage ? 'h-screen max-h-screen overflow-hidden' : ''
+      }`}
+    >
       {/* Top Announcement Bar */}
       {!isAuthPage && <AnnouncementBar />}
 
