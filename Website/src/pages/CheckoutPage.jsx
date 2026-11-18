@@ -514,7 +514,7 @@ export default function CheckoutPage() {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="Enter recipient's full name"
-                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                   />
                 </div>
 
@@ -531,7 +531,7 @@ export default function CheckoutPage() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="e.g. 077 123 4567"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
                   <div>
@@ -544,7 +544,7 @@ export default function CheckoutPage() {
                       value={formData.whatsapp}
                       onChange={handleInputChange}
                       placeholder="e.g. 077 123 4567"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -561,7 +561,7 @@ export default function CheckoutPage() {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="House / Apartment number, Street name, Nearest landmark..."
-                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800 resize-none"
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none resize-none"
                   />
                 </div>
 
@@ -575,7 +575,7 @@ export default function CheckoutPage() {
                       name="district"
                       value={formData.district}
                       onChange={handleInputChange}
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800 cursor-pointer"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none cursor-pointer"
                     >
                       {districts.map((d) => (
                         <option key={d} value={d}>
@@ -595,7 +595,7 @@ export default function CheckoutPage() {
                       value={formData.city}
                       onChange={handleInputChange}
                       placeholder="e.g. Maharagama, Moratuwa"
-                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                      className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -611,7 +611,7 @@ export default function CheckoutPage() {
                     value={formData.notes}
                     onChange={handleInputChange}
                     placeholder="e.g. Call before arrival, deliver after 2 PM"
-                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-none px-3.5 py-2.5 text-stone-800 focus:outline-none"
                   />
                 </div>
               </div>
@@ -774,7 +774,7 @@ export default function CheckoutPage() {
               {/* Items List */}
               <div className="space-y-4 max-h-96 overflow-y-auto pr-1 divide-y divide-stone-100">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex gap-3.5 items-start pt-3 first:pt-0">
+                  <div key={item.id} className="flex gap-3.5 items-start pt-3">
                     <div className="w-16 h-20 bg-stone-100 shrink-0 border border-stone-200 overflow-hidden">
                       <img
                         src={item.image && item.image.trim() ? item.image.trim() : '/sarees/saree 1.1.png'}

@@ -5,15 +5,7 @@ import {
   ArrowRight,
   CheckCircle,
   AlertCircle,
-  ShoppingBag,
   ArrowLeft,
-  User,
-  Phone,
-  MapPin,
-  Lock,
-  Mail,
-  Building,
-  Sparkles,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -118,7 +110,7 @@ export default function CustomerLoginPage() {
       if (showToast) showToast(`සාදරයෙන් පිළිගනිමු, ${data.customer.fullName}!`);
       setSuccessMessage('පිවිසීම සාර්ථකයි! (Login successful)');
 
-      // Redirect back to shop or checkout after brief moment
+      // Redirect back to shop or checkout after a brief moment
       setTimeout(() => {
         if (navigateTo) {
           navigateTo('shop');
@@ -190,16 +182,16 @@ export default function CustomerLoginPage() {
     }
   };
 
-  // Social Login Mock / Instant fill for demo
+  // Social Login Mock / Instant fill for testing
   const handleSocialMock = (provider) => {
     if (provider === 'google') {
       setLoginIdentifier('kavindi.perera@gmail.com');
       setLoginPassword('password123');
-      if (showToast) showToast('Google account details loaded for testing');
+      if (showToast) showToast('Google account details pre-filled for testing');
     } else {
       setLoginIdentifier('077 123 4567');
       setLoginPassword('password123');
-      if (showToast) showToast('WhatsApp mobile details loaded for testing');
+      if (showToast) showToast('Facebook/Mobile details pre-filled for testing');
     }
   };
 
@@ -212,16 +204,16 @@ export default function CustomerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7ede6]/50 flex items-center justify-center p-4 sm:p-6 lg:p-10 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#f8ece6] via-[#fbf7f4] to-[#f4e6de] flex items-center justify-center p-4 sm:p-6 lg:p-10 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
       {/* Outer Card Wrapper */}
-      <div className="w-full max-w-5xl bg-white rounded-2xl sm:rounded-3xl shadow-xl shadow-stone-900/5 border border-stone-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+      <div className="w-full max-w-5xl bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-stone-900/10 border border-stone-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
         {/* LEFT COLUMN: Clean Form Area */}
         <div className="p-7 sm:p-10 lg:p-12 flex flex-col justify-between space-y-6">
           {/* Top atelier breadcrumb & back */}
           <div className="flex items-center justify-between">
             <button
               onClick={handleBackToShop}
-              className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-900 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-900 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Shop</span>
@@ -248,7 +240,7 @@ export default function CustomerLoginPage() {
             </h1>
             <p className="text-xs text-stone-500">
               {mode === 'login'
-                ? 'Enter details to login • පාරිභෝගික ගිණුමට පිවිසෙන්න'
+                ? 'Enter details to login'
                 : 'Enter details to register with Nandani Atelier'}
             </p>
           </div>
@@ -278,7 +270,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="button"
                   onClick={() => saveCustomerProfile(null)}
-                  className="text-amber-800 underline hover:text-stone-900"
+                  className="text-amber-800 underline hover:text-stone-900 cursor-pointer"
                 >
                   Sign Out
                 </button>
@@ -292,12 +284,12 @@ export default function CustomerLoginPage() {
           {/* LOGIN VIEW */}
           {mode === 'login' ? (
             <div className="space-y-5">
-              {/* Social Login Buttons (Google & Facebook/WhatsApp) */}
+              {/* Social Login Buttons (Google & Facebook) - Exactly like user's reference image */}
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => handleSocialMock('google')}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-xl text-xs font-medium text-stone-700 transition-colors shadow-2xs"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-xl text-xs font-medium text-stone-700 transition-colors shadow-2xs cursor-pointer"
                 >
                   <svg className="w-4 h-4" viewBox="0 0 24 24">
                     <path
@@ -323,7 +315,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="button"
                   onClick={() => handleSocialMock('facebook')}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-xl text-xs font-medium text-stone-700 transition-colors shadow-2xs"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-xl text-xs font-medium text-stone-700 transition-colors shadow-2xs cursor-pointer"
                 >
                   <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -343,17 +335,17 @@ export default function CustomerLoginPage() {
 
               {/* Login Form */}
               <form onSubmit={handleLogin} className="space-y-4 text-xs">
-                {/* Email or Phone */}
+                {/* Email Address */}
                 <div className="space-y-1">
                   <label className="block text-stone-700 font-medium text-[11px] uppercase tracking-wider">
-                    Email Address or Phone
+                    Email Address
                   </label>
                   <input
                     type="text"
                     required
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
-                    placeholder="example@gmail.com or 077 123 4567"
+                    placeholder="example@gmail.com"
                     className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2.5 text-stone-800 placeholder:text-stone-400 focus:outline-none focus:border-stone-800 focus:ring-1 focus:ring-stone-800 transition-all"
                   />
                 </div>
@@ -375,7 +367,7 @@ export default function CustomerLoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer"
                       aria-label="Toggle password visibility"
                     >
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -390,7 +382,7 @@ export default function CustomerLoginPage() {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-stone-300"
+                      className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-stone-300 cursor-pointer"
                     />
                     <span>Remember Me</span>
                   </label>
@@ -400,13 +392,13 @@ export default function CustomerLoginPage() {
                     onClick={() => {
                       alert('To reset your password, please contact our atelier directly via WhatsApp: +94 77 892 4115');
                     }}
-                    className="text-stone-500 hover:text-stone-900 transition-colors"
+                    className="text-stone-500 hover:text-stone-900 transition-colors cursor-pointer"
                   >
                     Forgot Your Password?
                   </button>
                 </div>
 
-                {/* Submit Action Button (Red / Rose like the screenshot) */}
+                {/* Submit Action Button (Red / Crimson like reference image) */}
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -433,7 +425,7 @@ export default function CustomerLoginPage() {
                     value={registerData.fullName}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Kavindi Perera"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none"
                   />
                 </div>
 
@@ -449,7 +441,7 @@ export default function CustomerLoginPage() {
                     value={registerData.phone}
                     onChange={handleRegisterChange}
                     placeholder="077 123 4567"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none"
                   />
                 </div>
 
@@ -465,7 +457,7 @@ export default function CustomerLoginPage() {
                     value={sameAsPhone ? registerData.phone : registerData.whatsapp}
                     onChange={handleRegisterChange}
                     placeholder="077 123 4567"
-                    className="w-full bg-white disabled:bg-stone-50 border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white disabled:bg-stone-50 border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none"
                   />
                   <label className="flex items-center gap-1.5 text-[10px] text-stone-500 cursor-pointer">
                     <input
@@ -489,7 +481,7 @@ export default function CustomerLoginPage() {
                     value={registerData.email}
                     onChange={handleRegisterChange}
                     placeholder="kavindi@example.com"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none"
                   />
                 </div>
 
@@ -505,7 +497,7 @@ export default function CustomerLoginPage() {
                     value={registerData.address}
                     onChange={handleRegisterChange}
                     placeholder="House No, Road / Street"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none"
                   />
                 </div>
 
@@ -518,7 +510,7 @@ export default function CustomerLoginPage() {
                     name="district"
                     value={registerData.district}
                     onChange={handleRegisterChange}
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-800 focus:outline-none"
                   >
                     {districts.map((d) => (
                       <option key={d} value={d}>
@@ -539,7 +531,7 @@ export default function CustomerLoginPage() {
                     value={registerData.city}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Maharagama"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none"
                   />
                 </div>
 
@@ -554,7 +546,7 @@ export default function CustomerLoginPage() {
                     value={registerData.password}
                     onChange={handleRegisterChange}
                     placeholder="Create a password for fast 1-click login"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none focus:border-stone-800 font-mono"
+                    className="w-full bg-white border border-stone-300 rounded-xl px-3.5 py-2 text-stone-800 focus:outline-none font-mono"
                   />
                 </div>
               </div>
