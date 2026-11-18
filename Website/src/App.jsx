@@ -25,6 +25,7 @@ import Toast from './components/common/Toast';
 
 function MainApp() {
   const { activePage, setActivePage, selectedCategory, setSelectedCategory } = useCart();
+  const isAuthPage = activePage === 'login';
 
   const renderPage = () => {
     switch (activePage) {
@@ -69,31 +70,35 @@ function MainApp() {
   return (
     <div className="min-h-screen flex flex-col bg-[#fcfbf9] text-slate-800 selection:bg-[#0b1a30] selection:text-white">
       {/* Top Announcement Bar */}
-      <AnnouncementBar />
+      {!isAuthPage && <AnnouncementBar />}
 
       {/* Main Sticky Navbar */}
-      <Navbar
-        activePage={activePage}
-        setActivePage={setActivePage}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
+      {!isAuthPage && (
+        <Navbar
+          activePage={activePage}
+          setActivePage={setActivePage}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
+      )}
 
       {/* Page Content */}
       <main className="flex-1">{renderPage()}</main>
 
       {/* Footer */}
-      <Footer
-        setActivePage={setActivePage}
-        setSelectedCategory={setSelectedCategory}
-      />
+      {!isAuthPage && (
+        <Footer
+          setActivePage={setActivePage}
+          setSelectedCategory={setSelectedCategory}
+        />
+      )}
 
       {/* Global Modals & Floating Elements */}
       <CartDrawer />
       <CheckoutModal />
       <QuickSearchModal />
       <WishlistModal />
-      <WhatsAppFloat />
+      {!isAuthPage && <WhatsAppFloat />}
       <Toast />
     </div>
   );

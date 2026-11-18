@@ -219,18 +219,23 @@ export default function CustomerLoginPage() {
               <span>Back to Shop</span>
             </button>
 
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full overflow-hidden border border-amber-500/40">
+            <button
+              type="button"
+              onClick={() => (navigateTo ? navigateTo('home') : setActivePage && setActivePage('home'))}
+              className="flex items-center gap-2 group cursor-pointer text-left"
+              title="Return to Home"
+            >
+              <div className="w-6 h-6 rounded-full overflow-hidden border border-amber-500/40 group-hover:border-amber-600 transition-colors">
                 <img
                   src="/nandani-logo.jpg"
                   alt="Nandani Logo"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="font-serif text-xs font-semibold tracking-wider uppercase text-stone-700">
+              <span className="font-serif text-xs font-semibold tracking-wider uppercase text-stone-700 group-hover:text-stone-900 transition-colors">
                 Nandani Batik
               </span>
-            </div>
+            </button>
           </div>
 
           {/* Form Header */}
