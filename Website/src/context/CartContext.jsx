@@ -59,6 +59,9 @@ export const CartProvider = ({ children }) => {
       if (path === '/checkout') {
         return { page: 'checkout', category: 'all', sareeId: null };
       }
+      if (path === '/login' || path === '/signin' || path === '/account' || path === '/register') {
+        return { page: 'login', category: 'all', sareeId: null };
+      }
       if (path.startsWith('/saree/')) {
         const id = decodeURIComponent(path.replace('/saree/', ''));
         return { page: 'saree-detail', category: 'all', sareeId: id };
@@ -107,6 +110,8 @@ export const CartProvider = ({ children }) => {
       targetUrl = '/contact';
     } else if (page === 'checkout') {
       targetUrl = '/checkout';
+    } else if (page === 'login') {
+      targetUrl = '/login';
     } else if (page === 'saree-detail') {
       const target = saree || selectedSaree;
       targetUrl = target?.id ? `/saree/${encodeURIComponent(target.id)}` : '/shop';

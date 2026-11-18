@@ -27,18 +27,38 @@ export default function CheckoutPage() {
     clearCart,
     navigateTo,
     setActivePage,
+    customerProfile,
+    saveCustomerProfile,
   } = useCart();
 
   const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    whatsapp: '',
-    address: '',
-    district: 'Colombo',
-    city: '',
-    notes: '',
+    fullName: customerProfile?.fullName || '',
+    phone: customerProfile?.phone || '',
+    whatsapp: customerProfile?.whatsapp || customerProfile?.phone || '',
+    email: customerProfile?.email || '',
+    address: customerProfile?.address || '',
+    district: customerProfile?.district || 'Colombo',
+    city: customerProfile?.city || '',
+    notes: customerProfile?.notes || '',
     paymentMethod: 'cod', // 'cod' | 'bank' | 'card'
   });
+
+  // Keep in sync with logged-in customer profile
+  React.useEffect(() => {
+    if (customerProfile) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: customerProfile.fullName || prev.fullName,
+        phone: customerProfile.phone || prev.phone,
+        whatsapp: customerProfile.whatsapp || customerProfile.phone || prev.whatsapp,
+        email: customerProfile.email || prev.email,
+        address: customerProfile.address || prev.address,
+        district: customerProfile.district || prev.district,
+        city: customerProfile.city || prev.city,
+        notes: customerProfile.notes || prev.notes,
+      }));
+    }
+  }, [customerProfile]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -109,6 +129,42 @@ export default function CheckoutPage() {
 
     try {
       const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+      // 1. Sync / Save Customer in Supabase & local profile
+      try {
+        const custRes = await fetch(`${apiBase}/customers`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fullName: formData.fullName,
+            phone: formData.phone,
+            whatsapp: formData.whatsapp || formData.phone,
+            email: formData.email,
+            address: formData.address,
+            district: formData.district,
+            city: formData.city,
+            notes: formData.notes,
+          }),
+        });
+        const custData = await custRes.json();
+        if (custData && custData.customer) {
+          saveCustomerProfile(custData.customer);
+        }
+      } catch (custErr) {
+        console.warn('Customer auto-register error:', custErr);
+        saveCustomerProfile({
+          fullName: formData.fullName,
+          phone: formData.phone,
+          whatsapp: formData.whatsapp || formData.phone,
+          email: formData.email,
+          address: formData.address,
+          district: formData.district,
+          city: formData.city,
+          notes: formData.notes,
+        });
+      }
+
+      // 2. Submit Order
       await fetch(`${apiBase}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -157,25 +213,25 @@ export default function CheckoutPage() {
 
   const whatsappReceiptText = confirmedOrder
     ? encodeURIComponent(
-        `🌸 *NANDANI BATIK ATELIER — ORDER DISPATCH CONFIRMATION* 🌸\n\n` +
-          `• Order Ref: *${confirmedOrder.orderReference}*\n` +
-          `• Customer: ${confirmedOrder.customerName}\n` +
-          `• Contact Phone: ${confirmedOrder.phone}\n` +
-          `• Delivery Address: ${confirmedOrder.address}, ${confirmedOrder.city}, ${confirmedOrder.district}\n` +
-          `• Payment Method: ${paymentLabels[confirmedOrder.paymentMethod] || confirmedOrder.paymentMethod}\n\n` +
-          `*Ordered Sarees:*\n` +
-          confirmedOrder.items
-            .map(
-              (item) =>
-                `  - ${item.name} (${item.quantity} × Rs. ${item.price.toLocaleString()})`
-            )
-            .join('\n') +
-          `\n\n• Bag Subtotal: Rs. ${confirmedOrder.subtotal.toLocaleString()}` +
-          `\n• Islandwide Shipping: Rs. ${confirmedOrder.shippingFee.toLocaleString()}` +
-          `\n• *Grand Total: Rs. ${confirmedOrder.grandTotal.toLocaleString()}*` +
-          (confirmedOrder.notes ? `\n• Special Notes: ${confirmedOrder.notes}` : '') +
-          `\n\nPlease confirm my order dispatch!`
-      )
+      `🌸 *NANDANI BATIK ATELIER — ORDER DISPATCH CONFIRMATION* 🌸\n\n` +
+      `• Order Ref: *${confirmedOrder.orderReference}*\n` +
+      `• Customer: ${confirmedOrder.customerName}\n` +
+      `• Contact Phone: ${confirmedOrder.phone}\n` +
+      `• Delivery Address: ${confirmedOrder.address}, ${confirmedOrder.city}, ${confirmedOrder.district}\n` +
+      `• Payment Method: ${paymentLabels[confirmedOrder.paymentMethod] || confirmedOrder.paymentMethod}\n\n` +
+      `*Ordered Sarees:*\n` +
+      confirmedOrder.items
+        .map(
+          (item) =>
+            `  - ${item.name} (${item.quantity} × Rs. ${item.price.toLocaleString()})`
+        )
+        .join('\n') +
+      `\n\n• Bag Subtotal: Rs. ${confirmedOrder.subtotal.toLocaleString()}` +
+      `\n• Islandwide Shipping: Rs. ${confirmedOrder.shippingFee.toLocaleString()}` +
+      `\n• *Grand Total: Rs. ${confirmedOrder.grandTotal.toLocaleString()}*` +
+      (confirmedOrder.notes ? `\n• Special Notes: ${confirmedOrder.notes}` : '') +
+      `\n\nPlease confirm my order dispatch!`
+    )
     : '';
 
   // ORDER CONFIRMED VIEW (Prestigious Atelier Certificate)
@@ -406,6 +462,46 @@ export default function CheckoutPage() {
               </div>
 
               <div className="space-y-4 text-xs">
+                {/* Customer Account Pre-fill Banner */}
+                {customerProfile ? (
+                  <div className="p-3.5 bg-amber-50/90 border border-amber-200/90 flex items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-amber-200 text-amber-900 font-bold flex items-center justify-center text-xs shrink-0">
+                        {customerProfile.fullName.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <span className="font-semibold text-stone-900 block">
+                          සාදරයෙන් පිළිගනිමු, {customerProfile.fullName}!
+                        </span>
+                        <span className="text-[11px] text-stone-600">
+                          ඔබගේ ලියාපදිංචි බෙදාහැරීමේ තොරතුරු ස්වයංක්‍රීයව ඇතුළත් කර ඇත.
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => (navigateTo ? navigateTo('login') : setActivePage('login'))}
+                      className="text-xs font-semibold text-[#0b1a30] hover:underline shrink-0 cursor-pointer"
+                    >
+                      Edit Details
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-3.5 bg-stone-50 border border-stone-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs text-stone-700">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>පෙර ලියාපදිංචි වූ පාරිභෝගික ගිණුමක් තිබේද?</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => (navigateTo ? navigateTo('login') : setActivePage('login'))}
+                      className="text-xs font-semibold bg-white border border-stone-300 hover:border-stone-800 text-stone-900 px-3.5 py-1.5 rounded-md transition-colors shrink-0 cursor-pointer"
+                    >
+                      Log In to Auto-Fill (පිවිසෙන්න)
+                    </button>
+                  </div>
+                )}
+
                 {/* Full Name */}
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-600 font-medium mb-1.5">
@@ -540,11 +636,10 @@ export default function CheckoutPage() {
               <div className="space-y-3 text-xs">
                 {/* Option 1: COD */}
                 <label
-                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${
-                    formData.paymentMethod === 'cod'
-                      ? 'border-stone-900 bg-stone-50/80 shadow-xs'
-                      : 'border-stone-200 hover:border-stone-300 bg-white'
-                  }`}
+                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${formData.paymentMethod === 'cod'
+                    ? 'border-stone-900 bg-stone-50/80 shadow-xs'
+                    : 'border-stone-200 hover:border-stone-300 bg-white'
+                    }`}
                 >
                   <input
                     type="radio"
@@ -566,11 +661,10 @@ export default function CheckoutPage() {
 
                 {/* Option 2: Bank Transfer */}
                 <label
-                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${
-                    formData.paymentMethod === 'bank'
-                      ? 'border-stone-900 bg-stone-50/80 shadow-xs'
-                      : 'border-stone-200 hover:border-stone-300 bg-white'
-                  }`}
+                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${formData.paymentMethod === 'bank'
+                    ? 'border-stone-900 bg-stone-50/80 shadow-xs'
+                    : 'border-stone-200 hover:border-stone-300 bg-white'
+                    }`}
                 >
                   <input
                     type="radio"
@@ -609,11 +703,10 @@ export default function CheckoutPage() {
 
                 {/* Option 3: Card / Installments */}
                 <label
-                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${
-                    formData.paymentMethod === 'card'
-                      ? 'border-stone-900 bg-stone-50/80 shadow-xs'
-                      : 'border-stone-200 hover:border-stone-300 bg-white'
-                  }`}
+                  className={`flex items-start gap-3 p-4 border transition-all cursor-pointer ${formData.paymentMethod === 'card'
+                    ? 'border-stone-900 bg-stone-50/80 shadow-xs'
+                    : 'border-stone-200 hover:border-stone-300 bg-white'
+                    }`}
                 >
                   <input
                     type="radio"

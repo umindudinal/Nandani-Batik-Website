@@ -91,6 +91,25 @@ function getLocalDb() {
           status: 'processing',
           createdAt: new Date(Date.now() - 3600000 * 24).toISOString()
         }
+      ],
+      customers: [
+        {
+          id: 'cust-demo-01',
+          fullName: 'Kavindi Perera',
+          phone: '077 123 4567',
+          whatsapp: '077 123 4567',
+          email: 'kavindi@example.com',
+          password: 'password123',
+          address: 'No 45, Temple Road',
+          district: 'Colombo',
+          city: 'Nugegoda',
+          postalCode: '10250',
+          notes: 'Prefers morning delivery.',
+          ordersCount: 1,
+          totalSpent: 28500,
+          createdAt: new Date(Date.now() - 3600000 * 24 * 7).toISOString(),
+          updatedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
+        }
       ]
     };
     fs.writeFileSync(dbPath, JSON.stringify(defaultData, null, 2));
@@ -98,10 +117,12 @@ function getLocalDb() {
   }
   try {
     const raw = fs.readFileSync(dbPath, 'utf8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.customers) parsed.customers = [];
+    return parsed;
   } catch (err) {
     console.error('Error reading local db:', err);
-    return { sarees: initialSarees, categories: initialCategories, orders: [] };
+    return { sarees: initialSarees, categories: initialCategories, orders: [], customers: [] };
   }
 }
 
@@ -220,6 +241,44 @@ function mapDbOrderToJs(item) {
   };
 }
 
+function mapDbCustomerToJs(item) {
+  if (!item) return null;
+  return {
+    id: item.id,
+    fullName: item.full_name || item.fullName || '',
+    phone: item.phone || '',
+    whatsapp: item.whatsapp || item.phone || '',
+    email: item.email || '',
+    address: item.address || '',
+    district: item.district || 'Colombo',
+    city: item.city || '',
+    postalCode: item.postal_code || item.postalCode || '',
+    notes: item.notes || '',
+    ordersCount: Number(item.orders_count || item.ordersCount || 0),
+    totalSpent: Number(item.total_spent || item.totalSpent || 0),
+    createdAt: item.created_at || item.createdAt || new Date().toISOString(),
+    updatedAt: item.updated_at || item.updatedAt || new Date().toISOString(),
+  };
+}
+
+function mapJsCustomerToDb(item) {
+  return {
+    full_name: item.fullName,
+    phone: item.phone,
+    whatsapp: item.whatsapp || item.phone || null,
+    email: item.email || null,
+    password: item.password || null,
+    address: item.address,
+    district: item.district || 'Colombo',
+    city: item.city || null,
+    postal_code: item.postalCode || null,
+    notes: item.notes || null,
+    orders_count: Number(item.ordersCount || 0),
+    total_spent: Number(item.totalSpent || 0),
+    updated_at: new Date().toISOString(),
+  };
+}
+
 function mapJsOrderToDb(item) {
   return {
     order_reference: item.orderReference,
@@ -282,16 +341,20 @@ app.get('/api/stats', async (req, res) => {
   try {
     let sarees = [];
     let orders = [];
+    let customers = [];
 
     if (isSupabaseConfigured() && supabase) {
       const { data: sData } = await supabase.from('sarees').select('*');
       const { data: oData } = await supabase.from('orders').select('*');
+      const { data: cData } = await supabase.from('customers').select('*');
       sarees = (sData || []).map(mapDbSareeToJs);
       orders = (oData || []).map(mapDbOrderToJs);
+      customers = (cData || []).map(mapDbCustomerToJs);
     } else {
       const db = getLocalDb();
       sarees = db.sarees || [];
       orders = db.orders || [];
+      customers = db.customers || [];
     }
 
     const totalSarees = sarees.length;
@@ -303,6 +366,7 @@ app.get('/api/stats', async (req, res) => {
     const pendingOrders = orders.filter((o) => o.status === 'pending').length;
     const processingOrders = orders.filter((o) => o.status === 'processing').length;
     const completedOrders = orders.filter((o) => o.status === 'delivered').length;
+    const totalCustomers = customers.length;
     const totalRevenue = orders.reduce((sum, o) => {
       if (o.status !== 'cancelled') {
         return sum + Number(o.grandTotal || 0);
@@ -319,6 +383,7 @@ app.get('/api/stats', async (req, res) => {
       pendingOrders,
       processingOrders,
       completedOrders,
+      totalCustomers,
       totalRevenue,
     });
   } catch (err) {
@@ -553,7 +618,7 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
           req.file.mimetype
         );
         // Clean up temp local file
-        fs.unlink(req.file.path, () => {});
+        fs.unlink(req.file.path, () => { });
         return res.json({ url: publicUrl, storage: 'supabase' });
       } catch (uploadErr) {
         console.warn('Supabase storage upload failed, keeping local file:', uploadErr.message);
@@ -612,12 +677,101 @@ app.post('/api/orders', async (req, res) => {
       const dbPayload = mapJsOrderToDb(newOrder);
       const { data, error } = await supabase.from('orders').insert([dbPayload]).select().single();
       if (error) throw error;
+
+      // Automatically sync customer in Supabase customers table
+      try {
+        const custPhone = (body.phone || '').trim();
+        if (custPhone) {
+          const { data: existingCust } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('phone', custPhone)
+            .maybeSingle();
+
+          if (existingCust) {
+            await supabase
+              .from('customers')
+              .update({
+                full_name: body.customerName || existingCust.full_name,
+                whatsapp: body.whatsapp || existingCust.whatsapp,
+                email: body.email || existingCust.email,
+                address: body.address || existingCust.address,
+                district: body.district || existingCust.district,
+                city: body.city || existingCust.city,
+                notes: body.notes || existingCust.notes,
+                orders_count: (Number(existingCust.orders_count) || 0) + 1,
+                total_spent: (Number(existingCust.total_spent) || 0) + Number(body.grandTotal || 0),
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', existingCust.id);
+          } else {
+            await supabase.from('customers').insert([
+              {
+                full_name: body.customerName,
+                phone: custPhone,
+                whatsapp: body.whatsapp || custPhone,
+                email: body.email || null,
+                address: body.address,
+                district: body.district || 'Colombo',
+                city: body.city || null,
+                notes: body.notes || null,
+                orders_count: 1,
+                total_spent: Number(body.grandTotal || 0),
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              },
+            ]);
+          }
+        }
+      } catch (custErr) {
+        console.warn('Customer auto-link to Supabase warning:', custErr.message);
+      }
+
       return res.status(201).json(mapDbOrderToJs(data));
     }
 
     const db = getLocalDb();
     newOrder.id = `ord-${Date.now()}`;
     db.orders.unshift(newOrder);
+
+    // Automatically sync customer in local DB
+    try {
+      const custPhone = (body.phone || '').trim();
+      if (custPhone) {
+        if (!db.customers) db.customers = [];
+        const existingCust = db.customers.find((c) => c.phone === custPhone);
+        if (existingCust) {
+          existingCust.fullName = body.customerName || existingCust.fullName;
+          existingCust.whatsapp = body.whatsapp || existingCust.whatsapp;
+          if (body.email) existingCust.email = body.email;
+          existingCust.address = body.address || existingCust.address;
+          existingCust.district = body.district || existingCust.district;
+          existingCust.city = body.city || existingCust.city;
+          existingCust.ordersCount = (Number(existingCust.ordersCount) || 0) + 1;
+          existingCust.totalSpent = (Number(existingCust.totalSpent) || 0) + Number(body.grandTotal || 0);
+          existingCust.updatedAt = new Date().toISOString();
+        } else {
+          db.customers.unshift({
+            id: `cust-${Date.now()}`,
+            fullName: body.customerName,
+            phone: custPhone,
+            whatsapp: body.whatsapp || custPhone,
+            email: body.email || '',
+            address: body.address,
+            district: body.district || 'Colombo',
+            city: body.city || '',
+            notes: body.notes || '',
+            ordersCount: 1,
+            totalSpent: Number(body.grandTotal || 0),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          });
+        }
+      }
+    } catch (custErr) {
+      console.warn('Customer auto-link to local DB warning:', custErr.message);
+    }
+
     saveLocalDb(db);
     res.status(201).json(newOrder);
   } catch (err) {
@@ -677,6 +831,310 @@ app.delete('/api/orders/:id', async (req, res) => {
     saveLocalDb(db);
     res.json({ success: true, message: `Order ${id} deleted` });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ==========================================
+// CUSTOMERS API (පාරිභෝගික ගිණුම්, ලියාපදිංචි සහ පිවිසුම් සේවා)
+// ==========================================
+
+// 14. CUSTOMERS: List All Customers (for Admin Dashboard)
+app.get('/api/customers', async (req, res) => {
+  try {
+    if (isSupabaseConfigured() && supabase) {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return res.json((data || []).map(mapDbCustomerToJs));
+    }
+
+    const db = getLocalDb();
+    const customers = db.customers || [];
+    res.json(customers);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 15. CUSTOMERS: Fast Lookup by Phone
+app.get('/api/customers/by-phone/:phone', async (req, res) => {
+  try {
+    const rawPhone = (req.params.phone || '').trim();
+    const cleanPhone = rawPhone.replace(/[\s-]/g, '');
+
+    if (!cleanPhone) {
+      return res.status(400).json({ error: 'Phone number required' });
+    }
+
+    if (isSupabaseConfigured() && supabase) {
+      const { data, error } = await supabase
+        .from('customers')
+        .select('*')
+        .or(`phone.eq.${rawPhone},phone.eq.${cleanPhone}`)
+        .limit(1);
+
+      if (error) throw error;
+      if (data && data.length > 0) {
+        return res.json({ found: true, customer: mapDbCustomerToJs(data[0]) });
+      }
+      return res.json({ found: false });
+    }
+
+    const db = getLocalDb();
+    const customers = db.customers || [];
+    const found = customers.find(
+      (c) =>
+        (c.phone && c.phone.replace(/[\s-]/g, '') === cleanPhone) ||
+        c.phone === rawPhone
+    );
+
+    if (found) {
+      return res.json({ found: true, customer: found });
+    }
+    return res.json({ found: false });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 16. CUSTOMERS: Register / Create Account
+const handleCustomerRegister = async (req, res) => {
+  try {
+    const {
+      fullName,
+      phone,
+      whatsapp,
+      email,
+      password,
+      address,
+      district,
+      city,
+      postalCode,
+      notes,
+    } = req.body;
+
+    if (!fullName || !fullName.trim()) {
+      return res.status(400).json({ error: 'Full name is required (සම්පූර්ණ නම අවශ්‍යයි)' });
+    }
+    if (!phone || !phone.trim()) {
+      return res.status(400).json({ error: 'Contact phone number is required (දුරකථන අංකය අවශ්‍යයි)' });
+    }
+    if (!address || !address.trim()) {
+      return res.status(400).json({ error: 'Delivery address is required (බෙදාහැරීමේ ලිපිනය අවශ්‍යයි)' });
+    }
+
+    const cleanPhone = phone.trim();
+
+    if (isSupabaseConfigured() && supabase) {
+      const { data: existing } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('phone', cleanPhone)
+        .maybeSingle();
+
+      if (existing) {
+        const updatePayload = {
+          full_name: fullName.trim(),
+          whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
+          email: (email && email.trim()) || existing.email,
+          address: address.trim(),
+          district: district || existing.district || 'Colombo',
+          city: (city && city.trim()) || existing.city,
+          postal_code: (postalCode && postalCode.trim()) || existing.postal_code,
+          notes: (notes && notes.trim()) || existing.notes,
+          updated_at: new Date().toISOString(),
+        };
+        if (password) updatePayload.password = password;
+
+        const { data: updated, error: updateErr } = await supabase
+          .from('customers')
+          .update(updatePayload)
+          .eq('id', existing.id)
+          .select()
+          .single();
+
+        if (updateErr) throw updateErr;
+        return res.json({
+          success: true,
+          isNew: false,
+          customer: mapDbCustomerToJs(updated),
+          token: `nb_client_${Date.now()}`,
+          message: 'Customer profile updated successfully',
+        });
+      } else {
+        const insertPayload = {
+          full_name: fullName.trim(),
+          phone: cleanPhone,
+          whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
+          email: (email && email.trim()) || null,
+          password: password || null,
+          address: address.trim(),
+          district: district || 'Colombo',
+          city: (city && city.trim()) || null,
+          postal_code: (postalCode && postalCode.trim()) || null,
+          notes: (notes && notes.trim()) || null,
+          orders_count: 0,
+          total_spent: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        const { data: created, error: insertErr } = await supabase
+          .from('customers')
+          .insert([insertPayload])
+          .select()
+          .single();
+
+        if (insertErr) throw insertErr;
+        return res.status(201).json({
+          success: true,
+          isNew: true,
+          customer: mapDbCustomerToJs(created),
+          token: `nb_client_${Date.now()}`,
+          message: 'Customer registered successfully',
+        });
+      }
+    }
+
+    // Local DB Fallback
+    const db = getLocalDb();
+    if (!db.customers) db.customers = [];
+
+    const existingIdx = db.customers.findIndex(
+      (c) => c.phone && c.phone.trim() === cleanPhone
+    );
+
+    if (existingIdx !== -1) {
+      const existing = db.customers[existingIdx];
+      const updated = {
+        ...existing,
+        fullName: fullName.trim(),
+        whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
+        email: (email && email.trim()) || existing.email,
+        address: address.trim(),
+        district: district || existing.district || 'Colombo',
+        city: (city && city.trim()) || existing.city,
+        postalCode: (postalCode && postalCode.trim()) || existing.postalCode,
+        notes: (notes && notes.trim()) || existing.notes,
+        updatedAt: new Date().toISOString(),
+      };
+      if (password) updated.password = password;
+
+      db.customers[existingIdx] = updated;
+      saveLocalDb(db);
+      return res.json({
+        success: true,
+        isNew: false,
+        customer: updated,
+        token: `nb_client_${Date.now()}`,
+        message: 'Customer profile updated successfully',
+      });
+    } else {
+      const newCustomer = {
+        id: `cust-${Date.now()}`,
+        fullName: fullName.trim(),
+        phone: cleanPhone,
+        whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
+        email: (email && email.trim()) || '',
+        password: password || '',
+        address: address.trim(),
+        district: district || 'Colombo',
+        city: (city && city.trim()) || '',
+        postalCode: (postalCode && postalCode.trim()) || '',
+        notes: (notes && notes.trim()) || '',
+        ordersCount: 0,
+        totalSpent: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      db.customers.unshift(newCustomer);
+      saveLocalDb(db);
+      return res.status(201).json({
+        success: true,
+        isNew: true,
+        customer: newCustomer,
+        token: `nb_client_${Date.now()}`,
+        message: 'Customer registered successfully',
+      });
+    }
+  } catch (err) {
+    console.error('Error saving customer:', err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+app.post('/api/customers', handleCustomerRegister);
+app.post('/api/customers/register', handleCustomerRegister);
+
+// 17. CUSTOMERS: Login Authentication
+app.post('/api/customers/login', async (req, res) => {
+  try {
+    const { identifier, password } = req.body;
+    if (!identifier || !identifier.trim()) {
+      return res.status(400).json({ error: 'Email or phone number is required (ඊමේල් හෝ දුරකථන අංකය ඇතුළත් කරන්න)' });
+    }
+
+    const clean = identifier.trim();
+    const cleanPhone = clean.replace(/[\s-]/g, '');
+
+    let foundCustomer = null;
+    let customerPassword = null;
+
+    if (isSupabaseConfigured() && supabase) {
+      let query = supabase.from('customers').select('*');
+      if (clean.includes('@')) {
+        query = query.ilike('email', clean);
+      } else {
+        query = query.or(`phone.eq.${clean},phone.eq.${cleanPhone}`);
+      }
+      const { data, error } = await query.limit(1);
+      if (error) throw error;
+      if (data && data.length > 0) {
+        foundCustomer = mapDbCustomerToJs(data[0]);
+        customerPassword = data[0].password;
+      }
+    } else {
+      const db = getLocalDb();
+      const customers = db.customers || [];
+      const match = customers.find((c) => {
+        if (clean.includes('@')) {
+          return c.email && c.email.toLowerCase() === clean.toLowerCase();
+        }
+        return (
+          c.phone === clean ||
+          (c.phone && c.phone.replace(/[\s-]/g, '') === cleanPhone)
+        );
+      });
+      if (match) {
+        foundCustomer = match;
+        customerPassword = match.password;
+      }
+    }
+
+    if (!foundCustomer) {
+      return res.status(404).json({
+        error: 'ගිණුමක් හමු නොවීය. කරුණාකර පළමුව ලියාපදිංචි වන්න (Account not found. Please create an account).'
+      });
+    }
+
+    // If account has password and user provided password, check match
+    if (customerPassword && password && customerPassword !== password) {
+      return res.status(401).json({
+        error: 'මුරපදය වැරදියි. කරුණාකර නැවත උත්සාහ කරන්න (Incorrect password).'
+      });
+    }
+
+    return res.json({
+      success: true,
+      customer: foundCustomer,
+      token: `nb_client_${Date.now()}`,
+      message: 'සාදරයෙන් පිළිගනිමු! (Login successful)',
+    });
+  } catch (err) {
+    console.error('Customer login error:', err);
     res.status(500).json({ error: err.message });
   }
 });

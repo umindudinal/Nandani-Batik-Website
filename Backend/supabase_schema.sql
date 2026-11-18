@@ -69,12 +69,35 @@ CREATE TABLE IF NOT EXISTS public.orders (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. ENABLE ROW LEVEL SECURITY (RLS)
+-- 4. CUSTOMERS TABLE (පාරිභෝගික ලියාපදිංචි සහ පිවිසුම් දත්ත ගොනුව)
+CREATE TABLE IF NOT EXISTS public.customers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    full_name TEXT NOT NULL,
+    phone TEXT NOT NULL UNIQUE,
+    whatsapp TEXT,
+    email TEXT UNIQUE,
+    password TEXT,
+    address TEXT NOT NULL,
+    district TEXT NOT NULL DEFAULT 'Colombo',
+    city TEXT,
+    postal_code TEXT,
+    notes TEXT,
+    orders_count INTEGER DEFAULT 0,
+    total_spent NUMERIC(10, 2) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_customers_phone ON public.customers(phone);
+CREATE INDEX IF NOT EXISTS idx_customers_email ON public.customers(email);
+
+-- 5. ENABLE ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.sarees ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
 
--- 5. RLS POLICIES FOR PUBLIC ACCESS
+-- 6. RLS POLICIES FOR PUBLIC ACCESS
 -- Sarees: Public can read all sarees, anon/authenticated can insert/update/delete from dashboard
 DROP POLICY IF EXISTS "Public read sarees" ON public.sarees;
 CREATE POLICY "Public read sarees" ON public.sarees FOR SELECT USING (true);
@@ -95,6 +118,10 @@ CREATE POLICY "Public insert orders" ON public.orders FOR INSERT WITH CHECK (tru
 
 DROP POLICY IF EXISTS "Allow order management" ON public.orders;
 CREATE POLICY "Allow order management" ON public.orders FOR ALL USING (true) WITH CHECK (true);
+
+-- Customers: Public can register, login, and update, dashboard can view and manage
+DROP POLICY IF EXISTS "Public manage customers" ON public.customers;
+CREATE POLICY "Public manage customers" ON public.customers FOR ALL USING (true) WITH CHECK (true);
 
 -- 6. STORAGE BUCKET FOR SAREE IMAGES
 -- Run this or create a bucket named 'saree-images' from the Supabase Storage dashboard

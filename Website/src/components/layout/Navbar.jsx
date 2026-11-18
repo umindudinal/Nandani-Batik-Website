@@ -7,6 +7,7 @@ import {
   X,
   PhoneCall,
   ChevronDown,
+  User,
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 
@@ -17,6 +18,7 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
     setIsCartOpen,
     setIsWishlistOpen,
     setIsSearchOpen,
+    customerProfile,
     sarees = [],
     categories: liveCategories = [],
     navigateTo,
@@ -50,11 +52,10 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
 
   return (
     <header
-      className={`sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all duration-200 ${
-        isScrolled
-          ? 'shadow-md shadow-[#0b1a30]/8 py-1.5'
-          : 'border-b border-slate-100 py-2'
-      }`}
+      className={`sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all duration-200 ${isScrolled
+        ? 'shadow-md shadow-[#0b1a30]/8 py-1.5'
+        : 'border-b border-slate-100 py-2'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-2 lg:gap-4 flex-nowrap">
@@ -90,11 +91,10 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
           <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 flex-nowrap whitespace-nowrap">
             <button
               onClick={() => handleNavClick('home')}
-              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${
-                activePage === 'home'
-                  ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
-                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
-              }`}
+              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${activePage === 'home'
+                ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
+                : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
+                }`}
             >
               Home
             </button>
@@ -107,11 +107,10 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
             >
               <button
                 onClick={() => handleNavClick('shop', 'all')}
-                className={`flex items-center gap-1 px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${
-                  activePage === 'shop'
-                    ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
-                    : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
-                }`}
+                className={`flex items-center gap-1 px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${activePage === 'shop'
+                  ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
+                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
+                  }`}
               >
                 <span>Saree Collection</span>
                 <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -195,44 +194,40 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
 
             <button
               onClick={() => handleNavClick('bridal')}
-              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${
-                activePage === 'bridal'
-                  ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
-                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
-              }`}
+              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${activePage === 'bridal'
+                ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
+                : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
+                }`}
             >
               Bridal & Bespoke
             </button>
 
             <button
               onClick={() => handleNavClick('about')}
-              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${
-                activePage === 'about'
-                  ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
-                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
-              }`}
+              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${activePage === 'about'
+                ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
+                : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
+                }`}
             >
               Our Heritage
             </button>
 
             <button
               onClick={() => handleNavClick('care')}
-              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${
-                activePage === 'care'
-                  ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
-                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
-              }`}
+              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${activePage === 'care'
+                ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
+                : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
+                }`}
             >
               Saree Care Guide
             </button>
 
             <button
               onClick={() => handleNavClick('contact')}
-              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${
-                activePage === 'contact'
-                  ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
-                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
-              }`}
+              className={`px-2.5 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors whitespace-nowrap ${activePage === 'contact'
+                ? 'text-[#0b1a30] bg-[#0b1a30]/8 font-bold'
+                : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100/80'
+                }`}
             >
               Contact Us
             </button>
@@ -265,6 +260,29 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
               )}
             </button>
 
+            {/* Customer Login / Account Trigger */}
+            <button
+              onClick={() => handleNavClick('login')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 cursor-pointer ${
+                customerProfile
+                  ? 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
+                  : 'text-slate-700 hover:text-[#0b1a30] hover:bg-slate-100'
+              }`}
+              title={
+                customerProfile
+                  ? `Signed in as ${customerProfile.fullName}`
+                  : 'Customer Login / පාරිභෝගික ගිණුමට පිවිසෙන්න'
+              }
+              aria-label="Customer Account"
+            >
+              <User className={`w-4 h-4 ${customerProfile ? 'text-amber-600' : 'text-slate-600'}`} />
+              <span className="hidden sm:inline font-sans text-xs">
+                {customerProfile
+                  ? customerProfile.fullName.split(' ')[0]
+                  : 'Login'}
+              </span>
+            </button>
+
             {/* Cart Drawer Trigger - Single sleek horizontal badge */}
             <button
               onClick={() => setIsCartOpen(true)}
@@ -290,21 +308,19 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
           <div className="flex flex-col space-y-1">
             <button
               onClick={() => handleNavClick('home')}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                activePage === 'home'
-                  ? 'bg-[#0b1a30] text-white'
-                  : 'text-slate-800 hover:bg-slate-50'
-              }`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${activePage === 'home'
+                ? 'bg-[#0b1a30] text-white'
+                : 'text-slate-800 hover:bg-slate-50'
+                }`}
             >
               Home
             </button>
             <button
               onClick={() => handleNavClick('shop', 'all')}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                activePage === 'shop'
-                  ? 'bg-[#0b1a30] text-white'
-                  : 'text-slate-800 hover:bg-slate-50'
-              }`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${activePage === 'shop'
+                ? 'bg-[#0b1a30] text-white'
+                : 'text-slate-800 hover:bg-slate-50'
+                }`}
             >
               All Saree Collections
             </button>
@@ -352,43 +368,57 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
             </div>
             <button
               onClick={() => handleNavClick('bridal')}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                activePage === 'bridal'
-                  ? 'bg-[#0b1a30] text-white'
-                  : 'text-slate-800 hover:bg-slate-50'
-              }`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${activePage === 'bridal'
+                ? 'bg-[#0b1a30] text-white'
+                : 'text-slate-800 hover:bg-slate-50'
+                }`}
             >
               Bridal & Bespoke Orders
             </button>
             <button
               onClick={() => handleNavClick('about')}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                activePage === 'about'
-                  ? 'bg-[#0b1a30] text-white'
-                  : 'text-slate-800 hover:bg-slate-50'
-              }`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${activePage === 'about'
+                ? 'bg-[#0b1a30] text-white'
+                : 'text-slate-800 hover:bg-slate-50'
+                }`}
             >
               Our Heritage & Artisan Story
             </button>
             <button
               onClick={() => handleNavClick('care')}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                activePage === 'care'
-                  ? 'bg-[#0b1a30] text-white'
-                  : 'text-slate-800 hover:bg-slate-50'
-              }`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${activePage === 'care'
+                ? 'bg-[#0b1a30] text-white'
+                : 'text-slate-800 hover:bg-slate-50'
+                }`}
             >
               Saree Care Guide
             </button>
             <button
               onClick={() => handleNavClick('contact')}
-              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${
-                activePage === 'contact'
-                  ? 'bg-[#0b1a30] text-white'
-                  : 'text-slate-800 hover:bg-slate-50'
-              }`}
+              className={`text-left px-3 py-2 rounded-lg text-xs font-semibold ${activePage === 'contact'
+                ? 'bg-[#0b1a30] text-white'
+                : 'text-slate-800 hover:bg-slate-50'
+                }`}
             >
               Contact Us & Showroom
+            </button>
+
+            {/* Mobile Customer Login Link */}
+            <button
+              onClick={() => handleNavClick('login')}
+              className="text-left px-3 py-2 rounded-lg text-xs font-semibold text-amber-900 bg-amber-50 hover:bg-amber-100 flex items-center justify-between transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4 text-amber-600" />
+                <span>
+                  {customerProfile
+                    ? `පාරිභෝගික ගිණුම (${customerProfile.fullName.split(' ')[0]})`
+                    : 'Customer Login / පාරිභෝගික පිවිසුම'}
+                </span>
+              </div>
+              <span className="text-[10px] uppercase font-mono tracking-wider font-bold text-amber-700">
+                {customerProfile ? 'Account' : 'Sign In'}
+              </span>
             </button>
 
             {/* Direct WhatsApp Callout in Mobile Menu */}

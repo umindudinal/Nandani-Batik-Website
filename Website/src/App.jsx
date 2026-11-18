@@ -13,6 +13,7 @@ import CareGuidePage from './pages/CareGuidePage';
 import ContactPage from './pages/ContactPage';
 import SareeDetailPage from './pages/SareeDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
+import CustomerLoginPage from './pages/CustomerLoginPage';
 
 // Modals & Common Drawers
 import CartDrawer from './components/cart/CartDrawer';
@@ -53,6 +54,8 @@ function MainApp() {
         return <SareeDetailPage />;
       case 'checkout':
         return <CheckoutPage />;
+      case 'login':
+        return <CustomerLoginPage />;
       default:
         return (
           <HomePage

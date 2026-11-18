@@ -58,7 +58,7 @@ export default function LoginPage({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#060e1b] flex flex-col justify-center items-center p-4 sm:p-6 text-slate-100 antialiased selection:bg-amber-400 selection:text-slate-900 relative overflow-hidden">
+    <div className="min-h-screen bg-brand-blue-950 flex flex-col justify-center items-center p-4 sm:p-6 text-slate-100 antialiased selection:bg-amber-400 selection:text-slate-900 relative overflow-hidden">
       {/* Subtle Background Radial Accents */}
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-brand-blue-700/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -82,9 +82,6 @@ export default function LoginPage({ onLoginSuccess }) {
             <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white tracking-wide">
               Nandani Batik
             </h1>
-            <p className="font-serif italic text-xs text-slate-400 mt-1">
-              පරිපාලක පද්ධතිය වෙත පිවිසෙන්න
-            </p>
           </div>
         </div>
 
@@ -112,7 +109,7 @@ export default function LoginPage({ onLoginSuccess }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="admin@nandanibatik.lk"
-                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/50 transition-all"
+                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-400/50 transition-all"
               />
             </div>
           </div>
@@ -130,7 +127,7 @@ export default function LoginPage({ onLoginSuccess }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/50 transition-all font-mono"
+                className="w-full bg-slate-900/90 border border-slate-700/80 rounded-xl pl-10 pr-10 py-2.5 text-slate-100 focus:outline-none focus:ring-1 focus:ring-amber-400/50 transition-all font-mono"
               />
               <button
                 type="button"
@@ -181,24 +178,6 @@ export default function LoginPage({ onLoginSuccess }) {
             )}
           </button>
         </form>
-
-        {/* Quick Credentials Info Tooltip */}
-        <div className="pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 text-center space-y-1">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500">
-            Atelier Credentials
-          </p>
-          <div className="inline-flex items-center gap-2 bg-slate-900/80 border border-slate-800 px-3 py-1.5 rounded-lg text-slate-300 font-mono text-[11px]">
-            <span>admin@nandanibatik.lk</span>
-            <span className="text-slate-600">•</span>
-            <span>nandani2026</span>
-          </div>
-        </div>
-
-        {/* Security Reassurance */}
-        <div className="text-center text-[10px] uppercase tracking-widest text-slate-500 flex items-center justify-center gap-1.5 pt-1">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Encrypted Session • Authorized Personnel Only</span>
-        </div>
       </div>
     </div>
   );
