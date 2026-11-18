@@ -262,7 +262,7 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
 
             {/* Customer Login / Account Trigger */}
             <button
-              onClick={() => handleNavClick('login')}
+              onClick={() => handleNavClick(customerProfile ? 'profile' : 'login')}
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all shrink-0 cursor-pointer ${
                 customerProfile
                   ? 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
@@ -405,7 +405,7 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
 
             {/* Mobile Customer Login Link */}
             <button
-              onClick={() => handleNavClick('login')}
+              onClick={() => handleNavClick(customerProfile ? 'profile' : 'login')}
               className="text-left px-3 py-2 rounded-lg text-xs font-semibold text-amber-900 bg-amber-50 hover:bg-amber-100 flex items-center justify-between transition-colors"
             >
               <div className="flex items-center gap-2">

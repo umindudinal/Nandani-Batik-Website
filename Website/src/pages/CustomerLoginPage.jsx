@@ -223,7 +223,7 @@ export default function CustomerLoginPage() {
   };
 
   return (
-    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-gradient-to-br from-[#f8ece6] via-[#fbf7f4] to-[#f4e6de] flex items-center justify-center p-2 sm:p-4 lg:p-6 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-linear-to-br from-[#f8ece6] via-[#fbf7f4] to-[#f4e6de] flex items-center justify-center p-2 sm:p-4 lg:p-6 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
       {/* Outer Card Wrapper */}
       <div className="w-full max-w-5xl max-h-[96vh] bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-stone-900/10 border border-stone-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
         {/* LEFT COLUMN: Clean Form Area */}
@@ -284,16 +284,16 @@ export default function CustomerLoginPage() {
             </div>
           )}
 
-          {/* If already logged in, show logged in banner */}
+          {/* If already logged in, show logged in banner with direct link to profile */}
           {customerProfile && (
-            <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-xs space-y-1.5">
+            <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-xs space-y-2">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-stone-900">
                   Signed in as {customerProfile.fullName}
                 </span>
                 <button
                   type="button"
-                  onClick={() => saveCustomerProfile(null)}
+                  onClick={() => (saveCustomerProfile ? saveCustomerProfile(null) : localStorage.removeItem('nandani_customer_profile'))}
                   className="text-amber-800 underline hover:text-stone-900 cursor-pointer text-[11px]"
                 >
                   Sign Out
@@ -302,6 +302,14 @@ export default function CustomerLoginPage() {
               <p className="text-stone-600 text-[11px]">
                 {customerProfile.phone} • {customerProfile.district}
               </p>
+              <button
+                type="button"
+                onClick={() => (navigateTo ? navigateTo('profile') : setActivePage('profile'))}
+                className="w-full bg-[#0b1a30] hover:bg-stone-900 text-white py-1.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <span>Go to My Profile & Orders (මගේ ඇණවුම්)</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
             </div>
           )}
 
@@ -370,7 +378,7 @@ export default function CustomerLoginPage() {
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
                     placeholder="example@gmail.com"
-                    className="w-full h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -386,7 +394,7 @@ export default function CustomerLoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full h-11 px-3.5 pr-11 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                      className="w-full h-11 px-3.5 pr-11 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                     />
                     <button
                       type="button"
@@ -449,7 +457,7 @@ export default function CustomerLoginPage() {
                     value={registerData.fullName}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Kavindi Perera"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -465,7 +473,7 @@ export default function CustomerLoginPage() {
                     value={registerData.phone}
                     onChange={handleRegisterChange}
                     placeholder="077 123 4567"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -481,7 +489,7 @@ export default function CustomerLoginPage() {
                     value={registerData.address}
                     onChange={handleRegisterChange}
                     placeholder="House No, Road / Street"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -495,7 +503,7 @@ export default function CustomerLoginPage() {
                       name="district"
                       value={registerData.district}
                       onChange={handleRegisterChange}
-                      className="w-full h-10 sm:h-11 px-3.5 pr-8 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none appearance-none cursor-pointer transition-all shadow-2xs"
+                      className="w-full h-10 sm:h-11 px-3.5 pr-8 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none appearance-none cursor-pointer transition-all shadow-2xs"
                     >
                       {districts.map((d) => (
                         <option key={d} value={d}>
@@ -518,7 +526,7 @@ export default function CustomerLoginPage() {
                     value={registerData.city}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Maharagama"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -534,7 +542,7 @@ export default function CustomerLoginPage() {
                       value={registerData.password}
                       onChange={handleRegisterChange}
                       placeholder="Create password"
-                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                     />
                     <button
                       type="button"
@@ -558,7 +566,7 @@ export default function CustomerLoginPage() {
                     value={registerData.email}
                     onChange={handleRegisterChange}
                     placeholder="name@email.com"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
               </div>
@@ -586,7 +594,7 @@ export default function CustomerLoginPage() {
                       value={registerData.whatsapp}
                       onChange={handleRegisterChange}
                       placeholder="077 123 4567"
-                      className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                      className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                     />
                   </div>
                 )}
@@ -650,7 +658,7 @@ export default function CustomerLoginPage() {
           />
 
           {/* Soft Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-stone-950/80 via-stone-950/20 to-transparent" />
 
           {/* Luxury Atelier Caption at Bottom */}
           <div className="absolute bottom-6 left-6 right-6 text-white space-y-1.5 z-10">

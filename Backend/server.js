@@ -636,12 +636,16 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
 // 10. ORDERS: List Orders
 app.get('/api/orders', async (req, res) => {
   try {
-    const { status } = req.query;
+    const { status, phone } = req.query;
 
     if (isSupabaseConfigured() && supabase) {
       let query = supabase.from('orders').select('*').order('created_at', { ascending: false });
       if (status && status !== 'all') {
         query = query.eq('status', status);
+      }
+      if (phone && phone.trim()) {
+        const clean = phone.replace(/[\s-+]/g, '');
+        query = query.or(`phone.ilike.%${clean}%,whatsapp.ilike.%${clean}%`);
       }
       const { data, error } = await query;
       if (error) throw error;
@@ -652,6 +656,14 @@ app.get('/api/orders', async (req, res) => {
     let orders = db.orders || [];
     if (status && status !== 'all') {
       orders = orders.filter((o) => o.status === status);
+    }
+    if (phone && phone.trim()) {
+      const clean = phone.replace(/[\s-+]/g, '');
+      orders = orders.filter((o) => {
+        const oPhone = (o.phone || '').replace(/[\s-+]/g, '');
+        const oWa = (o.whatsapp || '').replace(/[\s-+]/g, '');
+        return oPhone.includes(clean) || oWa.includes(clean) || clean.includes(oPhone);
+      });
     }
     res.json(orders);
   } catch (err) {
