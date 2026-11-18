@@ -6,6 +6,7 @@ import {
   CheckCircle,
   AlertCircle,
   ArrowLeft,
+  ChevronDown,
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -288,13 +289,13 @@ export default function CustomerLoginPage() {
 
           {/* LOGIN VIEW */}
           {mode === 'login' ? (
-            <div className="space-y-3.5">
+            <div className="space-y-4">
               {/* Social Login Buttons (Google & Facebook) - Exactly like user's reference image */}
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => handleSocialMock('google')}
-                  className="w-full flex items-center justify-center gap-2 py-2 px-3 border border-stone-200 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-xl text-xs font-medium text-stone-700 transition-colors shadow-2xs cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-300 bg-[#f8f9fa] hover:bg-white rounded-xl text-xs font-medium text-stone-700 transition-all shadow-2xs cursor-pointer"
                 >
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path
@@ -320,7 +321,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="button"
                   onClick={() => handleSocialMock('facebook')}
-                  className="w-full flex items-center justify-center gap-2 py-2 px-3 border border-stone-200 hover:border-stone-400 bg-white hover:bg-stone-50 rounded-xl text-xs font-medium text-stone-700 transition-colors shadow-2xs cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-300 bg-[#f8f9fa] hover:bg-white rounded-xl text-xs font-medium text-stone-700 transition-all shadow-2xs cursor-pointer"
                 >
                   <svg className="w-4 h-4 fill-[#1877F2] shrink-0" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -330,19 +331,19 @@ export default function CustomerLoginPage() {
               </div>
 
               {/* OR Divider */}
-              <div className="relative flex items-center justify-center my-0.5">
+              <div className="relative flex items-center justify-center my-1">
                 <div className="border-t border-stone-200 w-full" />
-                <span className="bg-white px-2.5 text-[10px] uppercase font-mono tracking-widest text-stone-400">
+                <span className="bg-white px-3 text-[10px] uppercase font-mono tracking-widest text-stone-400">
                   OR
                 </span>
                 <div className="border-t border-stone-200 w-full" />
               </div>
 
               {/* Login Form */}
-              <form onSubmit={handleLogin} className="space-y-3 text-xs">
+              <form onSubmit={handleLogin} className="space-y-3.5">
                 {/* Email Address */}
-                <div className="space-y-1">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1.5">
                     Email Address
                   </label>
                   <input
@@ -351,13 +352,13 @@ export default function CustomerLoginPage() {
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
                     placeholder="example@gmail.com"
-                    className="w-full bg-white border border-stone-300 rounded-xl px-3 py-2 text-stone-800 placeholder:text-stone-400 focus:outline-none focus:border-stone-800 focus:ring-1 focus:ring-stone-800 transition-all text-xs"
+                    className="w-full h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
                 {/* Password */}
-                <div className="space-y-1">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1.5">
                     Password
                   </label>
                   <div className="relative">
@@ -367,27 +368,27 @@ export default function CustomerLoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-white border border-stone-300 rounded-xl px-3 pr-10 py-2 text-stone-800 placeholder:text-stone-400 focus:outline-none focus:border-stone-800 focus:ring-1 focus:ring-stone-800 transition-all font-mono text-xs"
+                      className="w-full h-11 px-3.5 pr-11 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer transition-colors"
                       aria-label="Toggle password visibility"
                     >
-                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
                   </div>
                 </div>
 
                 {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between text-[11px] pt-0.5">
-                  <label className="flex items-center gap-1.5 cursor-pointer text-stone-600">
+                <div className="flex items-center justify-between text-xs pt-0.5">
+                  <label className="flex items-center gap-2 cursor-pointer text-stone-600 hover:text-stone-900">
                     <input
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded text-rose-600 focus:ring-rose-500 border-stone-300 cursor-pointer"
+                      className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-stone-300 cursor-pointer"
                     />
                     <span>Remember Me</span>
                   </label>
@@ -397,7 +398,7 @@ export default function CustomerLoginPage() {
                     onClick={() => {
                       alert('To reset your password, please contact our atelier directly via WhatsApp: +94 77 892 4115');
                     }}
-                    className="text-stone-500 hover:text-stone-900 transition-colors cursor-pointer"
+                    className="text-stone-500 hover:text-stone-900 transition-colors cursor-pointer text-xs"
                   >
                     Forgot Your Password?
                   </button>
@@ -407,21 +408,21 @@ export default function CustomerLoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-[#c1272d] hover:bg-[#a61c22] active:scale-99 text-white py-2.5 px-6 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/10 cursor-pointer"
+                  className="w-full h-11 sm:h-12 bg-[#c1272d] hover:bg-[#a61c22] active:scale-[0.99] text-white rounded-xl text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/15 cursor-pointer mt-1"
                 >
                   <span>{isLoading ? 'Signing In...' : 'Log In'}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
             </div>
           ) : (
-            /* REGISTER VIEW - Streamlined 2-column layout to avoid scrolling */
-            <form onSubmit={handleRegister} className="space-y-2.5 text-xs">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
+            /* REGISTER VIEW */
+            <form onSubmit={handleRegister} className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Row 1: Full Name */}
-                <div className="space-y-0.5">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                    Full Name (සම්පූර්ණ නම) <span className="text-red-500">*</span>
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Full Name <span className="text-stone-400 font-normal">(සම්පූර්ණ නම)</span> <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -430,26 +431,15 @@ export default function CustomerLoginPage() {
                     value={registerData.fullName}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Kavindi Perera"
-                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
-                {/* Row 1: Contact Phone + WhatsApp inline toggle */}
-                <div className="space-y-0.5">
-                  <div className="flex items-center justify-between">
-                    <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                      Phone <span className="text-red-500">*</span>
-                    </label>
-                    <label className="flex items-center gap-1 text-[10px] text-stone-500 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={sameAsPhone}
-                        onChange={(e) => setSameAsPhone(e.target.checked)}
-                        className="w-3 h-3 rounded text-rose-600 focus:ring-rose-500"
-                      />
-                      <span>WhatsApp same</span>
-                    </label>
-                  </div>
+                {/* Row 1: Contact Phone */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Phone Number <span className="text-stone-400 font-normal">(දුරකථන අංකය)</span> <span className="text-rose-500">*</span>
+                  </label>
                   <input
                     type="tel"
                     required
@@ -457,31 +447,14 @@ export default function CustomerLoginPage() {
                     value={registerData.phone}
                     onChange={handleRegisterChange}
                     placeholder="077 123 4567"
-                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
-                {/* Optional WhatsApp Input if not same as phone */}
-                {!sameAsPhone && (
-                  <div className="sm:col-span-2 space-y-0.5">
-                    <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                      WhatsApp Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="whatsapp"
-                      value={registerData.whatsapp}
-                      onChange={handleRegisterChange}
-                      placeholder="077 123 4567"
-                      className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
-                    />
-                  </div>
-                )}
-
-                {/* Row 2: Delivery Address (Full width) */}
-                <div className="sm:col-span-2 space-y-0.5">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                    Delivery Address (බෙදාහැරීමේ ලිපිනය) <span className="text-red-500">*</span>
+                {/* Row 2: Delivery Address */}
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Delivery Address <span className="text-stone-400 font-normal">(බෙදාහැරීමේ ලිපිනය)</span> <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -490,32 +463,36 @@ export default function CustomerLoginPage() {
                     value={registerData.address}
                     onChange={handleRegisterChange}
                     placeholder="House No, Road / Street"
-                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
-                {/* Row 3: District & City */}
-                <div className="space-y-0.5">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                    District <span className="text-red-500">*</span>
+                {/* Row 3: District */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    District <span className="text-rose-500">*</span>
                   </label>
-                  <select
-                    name="district"
-                    value={registerData.district}
-                    onChange={handleRegisterChange}
-                    className="w-full bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
-                  >
-                    {districts.map((d) => (
-                      <option key={d} value={d}>
-                        {d}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="relative">
+                    <select
+                      name="district"
+                      value={registerData.district}
+                      onChange={handleRegisterChange}
+                      className="w-full h-10 sm:h-11 px-3.5 pr-8 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none appearance-none cursor-pointer transition-all shadow-2xs"
+                    >
+                      {districts.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="w-4 h-4 text-stone-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
 
-                <div className="space-y-0.5">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                    City / Town
+                {/* Row 3: City */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    City / Town <span className="text-stone-400 font-normal">(නගරය)</span>
                   </label>
                   <input
                     type="text"
@@ -523,28 +500,39 @@ export default function CustomerLoginPage() {
                     value={registerData.city}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Maharagama"
-                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
-                {/* Row 4: Password & Email */}
-                <div className="space-y-0.5">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                    Password (මුරපදය)
+                {/* Row 4: Password */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Password <span className="text-stone-400 font-normal">(මුරපදය)</span>
                   </label>
-                  <input
-                    type="password"
-                    name="password"
-                    value={registerData.password}
-                    onChange={handleRegisterChange}
-                    placeholder="Create password"
-                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800 font-mono"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={registerData.password}
+                      onChange={handleRegisterChange}
+                      placeholder="Create password"
+                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer transition-colors"
+                      aria-label="Toggle password visibility"
+                    >
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </div>
                 </div>
 
-                <div className="space-y-0.5">
-                  <label className="block text-stone-700 font-medium text-[10px] uppercase tracking-wider">
-                    Email <span className="text-stone-400 font-normal">(optional)</span>
+                {/* Row 4: Email */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Email <span className="text-stone-400 font-normal">(Optional)</span>
                   </label>
                   <input
                     type="email"
@@ -552,19 +540,48 @@ export default function CustomerLoginPage() {
                     value={registerData.email}
                     onChange={handleRegisterChange}
                     placeholder="name@email.com"
-                    className="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-stone-800"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
+              </div>
+
+              {/* WhatsApp Checkbox */}
+              <div className="pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer text-xs text-stone-600 hover:text-stone-900">
+                  <input
+                    type="checkbox"
+                    checked={sameAsPhone}
+                    onChange={(e) => setSameAsPhone(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded text-rose-600 focus:ring-rose-500 border-stone-300"
+                  />
+                  <span>WhatsApp number is the same as contact phone</span>
+                </label>
+
+                {!sameAsPhone && (
+                  <div className="mt-2 space-y-1">
+                    <label className="block text-xs font-medium text-stone-800 mb-1">
+                      WhatsApp Number
+                    </label>
+                    <input
+                      type="tel"
+                      name="whatsapp"
+                      value={registerData.whatsapp}
+                      onChange={handleRegisterChange}
+                      placeholder="077 123 4567"
+                      className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm placeholder:text-stone-400 focus:outline-none transition-all shadow-2xs"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Submit Action Button */}
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-[#c1272d] hover:bg-[#a61c22] active:scale-99 text-white py-2.5 px-6 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/10 cursor-pointer mt-1"
+                className="w-full h-11 sm:h-12 bg-[#c1272d] hover:bg-[#a61c22] active:scale-[0.99] text-white rounded-xl text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/15 cursor-pointer mt-1"
               >
                 <span>{isLoading ? 'Creating Account...' : 'Create Account'}</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-4 h-4" />
               </button>
             </form>
           )}
