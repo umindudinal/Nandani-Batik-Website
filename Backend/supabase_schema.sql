@@ -13,6 +13,11 @@ CREATE TABLE IF NOT EXISTS public.sarees (
     category TEXT NOT NULL DEFAULT 'pure-silk',
     category_label TEXT,
     fabric TEXT,
+    fabric_type TEXT,
+    design_type TEXT,
+    colour_type TEXT,
+    main_colour TEXT,
+    main_colours JSONB DEFAULT '[]'::jsonb,
     primary_color TEXT,
     color_hex TEXT,
     price NUMERIC(10, 2) NOT NULL DEFAULT 0,
@@ -148,6 +153,21 @@ INSERT INTO public.categories (id, name, sinhala_name, description, image) VALUE
 ('party-wear', 'Party & Evening', 'උත්සව සහ සාද සාරි', 'Statement sarees designed with dramatic pallus and modern artistic flair', '/sarees/saree 4.1.png'),
 ('office-daily', 'Office & Casual', 'කාර්යාලීය සහ සරල විලාසිතා', 'Subtle elegance, geometric patterns, and dignified tones for professional wear', '')
 ON CONFLICT (id) DO NOTHING;
+
+-- ==============================================================================
+-- 9. MIGRATION FOR FABRIC, DESIGN & COLOUR CATEGORIZATION ATTRIBUTES
+-- ==============================================================================
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS fabric_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS design_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS colour_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS main_colour TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS main_colours JSONB DEFAULT '[]'::jsonb;
+
+-- Create indexes for fast filtering
+CREATE INDEX IF NOT EXISTS idx_sarees_fabric_type ON public.sarees(fabric_type);
+CREATE INDEX IF NOT EXISTS idx_sarees_design_type ON public.sarees(design_type);
+CREATE INDEX IF NOT EXISTS idx_sarees_colour_type ON public.sarees(colour_type);
+CREATE INDEX IF NOT EXISTS idx_sarees_main_colour ON public.sarees(main_colour);
 
 -- 8. INITIAL SAREES SEED DATA
 INSERT INTO public.sarees (
@@ -324,3 +344,18 @@ INSERT INTO public.sarees (
     ARRAY['Raw Silk', 'Formal Evening', 'Artisan Handcraft']
 )
 ON CONFLICT (id) DO NOTHING;
+
+-- ==============================================================================
+-- 9. MIGRATION FOR FABRIC, DESIGN & COLOUR CATEGORIZATION ATTRIBUTES
+-- ==============================================================================
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS fabric_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS design_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS colour_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS main_colour TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS main_colours JSONB DEFAULT '[]'::jsonb;
+
+-- Create indexes for fast filtering
+CREATE INDEX IF NOT EXISTS idx_sarees_fabric_type ON public.sarees(fabric_type);
+CREATE INDEX IF NOT EXISTS idx_sarees_design_type ON public.sarees(design_type);
+CREATE INDEX IF NOT EXISTS idx_sarees_colour_type ON public.sarees(colour_type);
+CREATE INDEX IF NOT EXISTS idx_sarees_main_colour ON public.sarees(main_colour);

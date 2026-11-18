@@ -15,12 +15,22 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { categories } from '../data/categories';
+import {
+  FABRIC_TYPES,
+  DESIGN_TYPES,
+  COLOUR_TYPES,
+  MAIN_COLOURS,
+} from '../constants/sareeAttributes';
 import SareeCard from '../components/sarees/SareeCard';
 
 export default function ShopPage({ selectedCategory, setSelectedCategory }) {
   const { sarees, categories: liveCategories, isSareesLoading } = useCart();
   const categoryList = liveCategories && liveCategories.length > 0 ? liveCategories : categories;
   const [activeCategory, setActiveCategory] = useState(selectedCategory || 'all');
+  const [selectedFabricType, setSelectedFabricType] = useState('all');
+  const [selectedDesignType, setSelectedDesignType] = useState('all');
+  const [selectedColourType, setSelectedColourType] = useState('all');
+  const [selectedMainColour, setSelectedMainColour] = useState('all');
   const [selectedColor, setSelectedColor] = useState('all');
   const [selectedFabric, setSelectedFabric] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
@@ -63,11 +73,31 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
         if (activeCategory !== 'all' && saree.category !== activeCategory) {
           return false;
         }
-        // Color Filter
+        // Fabric Type Filter
+        if (selectedFabricType !== 'all' && saree.fabricType !== selectedFabricType) {
+          return false;
+        }
+        // Design Type Filter
+        if (selectedDesignType !== 'all' && saree.designType !== selectedDesignType) {
+          return false;
+        }
+        // Colour Type Filter
+        if (selectedColourType !== 'all' && saree.colourType !== selectedColourType) {
+          return false;
+        }
+        // Main Colour Filter
+        if (selectedMainColour !== 'all') {
+          const matchesColor =
+            saree.mainColour === selectedMainColour ||
+            (Array.isArray(saree.mainColours) && saree.mainColours.includes(selectedMainColour)) ||
+            (saree.primaryColor && saree.primaryColor.toLowerCase().includes(selectedMainColour.toLowerCase()));
+          if (!matchesColor) return false;
+        }
+        // Legacy Color Filter
         if (selectedColor !== 'all' && saree.primaryColor !== selectedColor) {
           return false;
         }
-        // Fabric Filter
+        // Legacy Fabric Filter
         if (selectedFabric !== 'all' && saree.fabric !== selectedFabric) {
           return false;
         }
@@ -82,6 +112,10 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
             (saree.name && saree.name.toLowerCase().includes(q)) ||
             (saree.sinhalaName && saree.sinhalaName.toLowerCase().includes(q)) ||
             (saree.fabric && saree.fabric.toLowerCase().includes(q)) ||
+            (saree.fabricType && saree.fabricType.toLowerCase().includes(q)) ||
+            (saree.designType && saree.designType.toLowerCase().includes(q)) ||
+            (saree.colourType && saree.colourType.toLowerCase().includes(q)) ||
+            (saree.mainColour && saree.mainColour.toLowerCase().includes(q)) ||
             (saree.primaryColor && saree.primaryColor.toLowerCase().includes(q));
           if (!matches) return false;
         }
@@ -93,11 +127,27 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
         if (sortBy === 'newest') return (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0);
         return 0; // 'featured' retains original order
       });
-  }, [sarees, activeCategory, selectedColor, selectedFabric, maxPrice, searchQuery, sortBy]);
+  }, [
+    sarees,
+    activeCategory,
+    selectedFabricType,
+    selectedDesignType,
+    selectedColourType,
+    selectedMainColour,
+    selectedColor,
+    selectedFabric,
+    maxPrice,
+    searchQuery,
+    sortBy,
+  ]);
 
   const handleResetFilters = () => {
     setActiveCategory('all');
     if (setSelectedCategory) setSelectedCategory('all');
+    setSelectedFabricType('all');
+    setSelectedDesignType('all');
+    setSelectedColourType('all');
+    setSelectedMainColour('all');
     setSelectedColor('all');
     setSelectedFabric('all');
     setMaxPrice(10000);
@@ -107,6 +157,10 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
 
   const isFiltered =
     activeCategory !== 'all' ||
+    selectedFabricType !== 'all' ||
+    selectedDesignType !== 'all' ||
+    selectedColourType !== 'all' ||
+    selectedMainColour !== 'all' ||
     selectedColor !== 'all' ||
     selectedFabric !== 'all' ||
     maxPrice < 10000 ||
@@ -227,11 +281,47 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
               </span>
             )}
 
-            {selectedColor !== 'all' && (
+            {selectedFabricType !== 'all' && (
               <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
-                <span>Color: {selectedColor}</span>
+                <span>Fabric: {selectedFabricType}</span>
                 <button
-                  onClick={() => setSelectedColor('all')}
+                  onClick={() => setSelectedFabricType('all')}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {selectedDesignType !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>Design: {selectedDesignType}</span>
+                <button
+                  onClick={() => setSelectedDesignType('all')}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {selectedColourType !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>Colour Type: {selectedColourType}</span>
+                <button
+                  onClick={() => setSelectedColourType('all')}
+                  className="hover:text-stone-900 cursor-pointer"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+
+            {selectedMainColour !== 'all' && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-stone-200/80 text-stone-800 text-[11px] font-medium">
+                <span>Colour: {selectedMainColour}</span>
+                <button
+                  onClick={() => setSelectedMainColour('all')}
                   className="hover:text-stone-900 cursor-pointer"
                 >
                   <X className="w-3 h-3" />
@@ -287,7 +377,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
         {/* Catalog Grid with Unified Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-10 items-start">
           {/* Desktop Left Sidebar Filter (Unified Atelier Panel) */}
-          <aside className="hidden lg:block lg:sticky lg:top-24 self-start bg-white border border-stone-200/90 p-6 space-y-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <aside className="hidden lg:block lg:sticky lg:top-24 self-start bg-white border border-stone-200/90 p-5 space-y-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] max-h-[calc(100vh-7rem)] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-200">
               <h3 className="font-serif text-sm uppercase tracking-wider text-stone-900 font-medium">
                 Refine Selection
@@ -295,15 +385,15 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
               {isFiltered && (
                 <button
                   onClick={handleResetFilters}
-                  className="text-[11px] text-stone-400 hover:text-stone-900 uppercase tracking-widest cursor-pointer"
+                  className="text-[11px] text-amber-900 hover:text-stone-900 uppercase tracking-widest cursor-pointer font-medium"
                 >
-                  Reset
+                  Reset All
                 </button>
               )}
             </div>
 
             {/* Categories List */}
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
                 Saree Categories
               </span>
@@ -320,7 +410,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                         setActiveCategory(c.id);
                         if (setSelectedCategory) setSelectedCategory(c.id);
                       }}
-                      className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer ${
+                      className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer rounded-xs ${
                         activeCategory === c.id
                           ? 'bg-[#0b1a30] text-white font-medium'
                           : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
@@ -331,6 +421,145 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                     </button>
                   );
                 })}
+              </div>
+            </div>
+
+            {/* Fabric Type Filter */}
+            <div className="space-y-2.5 pt-4 border-t border-stone-100">
+              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                Fabric Type
+              </span>
+              <div className="space-y-1 text-xs">
+                <button
+                  onClick={() => setSelectedFabricType('all')}
+                  className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer rounded-xs ${
+                    selectedFabricType === 'all'
+                      ? 'bg-[#0b1a30] text-white font-medium'
+                      : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                  }`}
+                >
+                  <span>All Fabrics</span>
+                  {selectedFabricType === 'all' && <Check className="w-3 h-3" />}
+                </button>
+                {FABRIC_TYPES.map((fab) => (
+                  <button
+                    key={fab}
+                    onClick={() => setSelectedFabricType(fab)}
+                    className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer rounded-xs ${
+                      selectedFabricType === fab
+                        ? 'bg-[#0b1a30] text-white font-medium'
+                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
+                    }`}
+                  >
+                    <span className="truncate">{fab}</span>
+                    {selectedFabricType === fab && <Check className="w-3 h-3 shrink-0" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Design Type Filter */}
+            <div className="space-y-2.5 pt-4 border-t border-stone-100">
+              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                Design Motif
+              </span>
+              <div className="flex flex-wrap gap-1 text-xs">
+                <button
+                  onClick={() => setSelectedDesignType('all')}
+                  className={`px-2 py-1 rounded text-[11px] border transition-colors cursor-pointer ${
+                    selectedDesignType === 'all'
+                      ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                      : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                  }`}
+                >
+                  All
+                </button>
+                {DESIGN_TYPES.map((des) => (
+                  <button
+                    key={des}
+                    onClick={() => setSelectedDesignType(des)}
+                    className={`px-2 py-1 rounded text-[11px] border transition-colors cursor-pointer ${
+                      selectedDesignType === des
+                        ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                        : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                    }`}
+                  >
+                    {des.replace(' Design', '')}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Colour Type Filter */}
+            <div className="space-y-2.5 pt-4 border-t border-stone-100">
+              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                Colour Scheme
+              </span>
+              <div className="grid grid-cols-2 gap-1 text-xs">
+                <button
+                  onClick={() => setSelectedColourType('all')}
+                  className={`px-2 py-1 text-center rounded text-[11px] border transition-colors cursor-pointer ${
+                    selectedColourType === 'all'
+                      ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                      : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                  }`}
+                >
+                  All Types
+                </button>
+                {COLOUR_TYPES.map((ct) => (
+                  <button
+                    key={ct}
+                    onClick={() => setSelectedColourType(ct)}
+                    className={`px-2 py-1 text-center rounded text-[11px] border transition-colors cursor-pointer truncate ${
+                      selectedColourType === ct
+                        ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                        : 'border-stone-200 text-stone-600 hover:bg-stone-50'
+                    }`}
+                  >
+                    {ct}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Colours Palette */}
+            <div className="space-y-2.5 pt-4 border-t border-stone-100">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
+                  Main Colours
+                </span>
+                {selectedMainColour !== 'all' && (
+                  <button
+                    onClick={() => setSelectedMainColour('all')}
+                    className="text-[10px] text-stone-400 hover:text-stone-900"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
+                {MAIN_COLOURS.map((col) => (
+                  <button
+                    key={col.name}
+                    onClick={() =>
+                      setSelectedMainColour(selectedMainColour === col.name ? 'all' : col.name)
+                    }
+                    className={`flex items-center gap-2 px-2 py-1.5 border rounded-xs transition-all cursor-pointer text-left ${
+                      selectedMainColour === col.name
+                        ? 'border-stone-900 bg-stone-50 font-medium text-stone-900 shadow-xs'
+                        : 'border-stone-200/70 text-stone-600 hover:bg-stone-50'
+                    }`}
+                  >
+                    <span
+                      className="w-3.5 h-3.5 rounded-full shrink-0 border"
+                      style={{
+                        backgroundColor: col.hex,
+                        borderColor: col.border || '#cbd5e1',
+                      }}
+                    />
+                    <span className="text-[11px] truncate">{col.name}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -356,59 +585,6 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
               <div className="flex justify-between text-[11px] text-stone-400">
                 <span>Rs. 1,000</span>
                 <span>Rs. 10,000</span>
-              </div>
-            </div>
-
-            {/* Color Swatch Selector */}
-            {/* <div className="space-y-3 pt-4 border-t border-stone-100">
-              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
-                Color Palette
-              </span>
-              <div className="grid grid-cols-2 gap-1.5 text-xs">
-                {colors.map((color) => (
-                  <button
-                    key={color.name}
-                    onClick={() => setSelectedColor(color.name)}
-                    className={`flex items-center gap-2 px-2 py-1.5 border transition-all cursor-pointer ${
-                      selectedColor === color.name
-                        ? 'border-stone-900 bg-stone-50 font-medium text-stone-900'
-                        : 'border-transparent text-stone-600 hover:bg-stone-50'
-                    }`}
-                  >
-                    {color.name === 'all' ? (
-                      <span className="w-3.5 h-3.5 rounded-full border border-stone-300 bg-gradient-to-tr from-stone-800 via-amber-400 to-rose-400 shrink-0" />
-                    ) : (
-                      <span
-                        className="w-3.5 h-3.5 rounded-full border border-stone-300 shrink-0"
-                        style={{ backgroundColor: color.hex }}
-                      />
-                    )}
-                    <span className="text-[11px] truncate">{color.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div> */}
-
-            {/* Fabric Filter */}
-            <div className="space-y-3 pt-4 border-t border-stone-100">
-              <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
-                Textile Weave
-              </span>
-              <div className="space-y-1 text-xs">
-                {fabrics.map((f) => (
-                  <button
-                    key={f.id}
-                    onClick={() => setSelectedFabric(f.id)}
-                    className={`w-full text-left px-2.5 py-1.5 transition-colors flex items-center justify-between cursor-pointer ${
-                      selectedFabric === f.id
-                        ? 'bg-[#0b1a30] text-white font-medium'
-                        : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900'
-                    }`}
-                  >
-                    <span className="truncate">{f.label}</span>
-                    {selectedFabric === f.id && <Check className="w-3 h-3 shrink-0" />}
-                  </button>
-                ))}
               </div>
             </div>
           </aside>
@@ -530,50 +706,127 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                 </div>
               </div>
 
-              {/* Colors Mobile */}
+              {/* Fabric Type Mobile */}
               <div className="space-y-2 pt-4 border-t border-stone-100">
                 <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
-                  Color Palette
+                  Fabric Type
                 </h4>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {colors.map((c) => (
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setSelectedFabricType('all')}
+                    className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                      selectedFabricType === 'all'
+                        ? 'bg-[#0b1a30] text-white font-medium'
+                        : 'text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    <span>All Fabric Types</span>
+                    {selectedFabricType === 'all' && <Check className="w-3 h-3" />}
+                  </button>
+                  {FABRIC_TYPES.map((fab) => (
                     <button
-                      key={c.name}
-                      onClick={() => setSelectedColor(c.name)}
-                      className={`text-left p-1.5 text-[11px] border flex items-center gap-1.5 transition-colors ${
-                        selectedColor === c.name
-                          ? 'border-stone-900 bg-stone-50 font-medium text-stone-900'
-                          : 'border-transparent text-stone-700 hover:bg-stone-50'
+                      key={fab}
+                      onClick={() => setSelectedFabricType(fab)}
+                      className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
+                        selectedFabricType === fab
+                          ? 'bg-[#0b1a30] text-white font-medium'
+                          : 'text-stone-700 hover:bg-stone-50'
                       }`}
                     >
-                      <span
-                        className="w-3 h-3 rounded-full shrink-0 border border-stone-300"
-                        style={{ backgroundColor: c.hex }}
-                      />
-                      <span className="truncate">{c.label}</span>
+                      <span className="truncate">{fab}</span>
+                      {selectedFabricType === fab && <Check className="w-3 h-3" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Fabric Mobile */}
+              {/* Design Type Mobile */}
               <div className="space-y-2 pt-4 border-t border-stone-100">
                 <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
-                  Textile
+                  Design Motif
                 </h4>
-                <div className="space-y-1">
-                  {fabrics.map((f) => (
+                <div className="flex flex-wrap gap-1">
+                  <button
+                    onClick={() => setSelectedDesignType('all')}
+                    className={`px-2.5 py-1 text-xs border rounded transition-colors ${
+                      selectedDesignType === 'all'
+                        ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                        : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {DESIGN_TYPES.map((des) => (
                     <button
-                      key={f.id}
-                      onClick={() => setSelectedFabric(f.id)}
-                      className={`w-full text-left px-3 py-1.5 text-xs transition-colors flex items-center justify-between ${
-                        selectedFabric === f.id
-                          ? 'bg-[#0b1a30] text-white font-medium'
-                          : 'text-stone-700 hover:bg-stone-50'
+                      key={des}
+                      onClick={() => setSelectedDesignType(des)}
+                      className={`px-2.5 py-1 text-xs border rounded transition-colors ${
+                        selectedDesignType === des
+                          ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                          : 'border-stone-200 text-stone-700 hover:bg-stone-50'
                       }`}
                     >
-                      <span className="truncate">{f.label}</span>
-                      {selectedFabric === f.id && <Check className="w-3 h-3" />}
+                      {des.replace(' Design', '')}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Colour Type Mobile */}
+              <div className="space-y-2 pt-4 border-t border-stone-100">
+                <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
+                  Colour Scheme
+                </h4>
+                <div className="grid grid-cols-2 gap-1 text-xs">
+                  <button
+                    onClick={() => setSelectedColourType('all')}
+                    className={`px-2 py-1 text-center border rounded transition-colors ${
+                      selectedColourType === 'all'
+                        ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                        : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                    }`}
+                  >
+                    All Types
+                  </button>
+                  {COLOUR_TYPES.map((ct) => (
+                    <button
+                      key={ct}
+                      onClick={() => setSelectedColourType(ct)}
+                      className={`px-2 py-1 text-center border rounded transition-colors truncate ${
+                        selectedColourType === ct
+                          ? 'bg-[#0b1a30] text-white border-[#0b1a30] font-medium'
+                          : 'border-stone-200 text-stone-700 hover:bg-stone-50'
+                      }`}
+                    >
+                      {ct}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Main Colours Mobile */}
+              <div className="space-y-2 pt-4 border-t border-stone-100">
+                <h4 className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">
+                  Main Colours
+                </h4>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {MAIN_COLOURS.map((c) => (
+                    <button
+                      key={c.name}
+                      onClick={() =>
+                        setSelectedMainColour(selectedMainColour === c.name ? 'all' : c.name)
+                      }
+                      className={`text-left p-1.5 text-[11px] border rounded-xs flex items-center gap-1.5 transition-colors ${
+                        selectedMainColour === c.name
+                          ? 'border-stone-900 bg-stone-50 font-medium text-stone-900 shadow-xs'
+                          : 'border-stone-200/70 text-stone-700 hover:bg-stone-50'
+                      }`}
+                    >
+                      <span
+                        className="w-3.5 h-3.5 rounded-full shrink-0 border"
+                        style={{ backgroundColor: c.hex, borderColor: c.border || '#cbd5e1' }}
+                      />
+                      <span className="truncate">{c.name}</span>
                     </button>
                   ))}
                 </div>

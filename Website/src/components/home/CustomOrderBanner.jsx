@@ -7,7 +7,7 @@ export default function CustomOrderBanner({ setActivePage }) {
   );
 
   return (
-    <section className="py-16 bg-[#faf8f5] border-t border-stone-200/80">
+    <section className="py-16 bg-brand-cream border-t border-stone-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-[#0b1a30] p-8 sm:p-12 lg:p-16 text-white relative">
           <div className="max-w-3xl space-y-4">

@@ -160,6 +160,11 @@ function mapDbSareeToJs(item) {
     category: item.category,
     categoryLabel: item.category_label || item.categoryLabel,
     fabric: item.fabric,
+    fabricType: item.fabric_type || item.fabricType || null,
+    designType: item.design_type || item.designType || null,
+    colourType: item.colour_type || item.colourType || null,
+    mainColour: item.main_colour || item.mainColour || (Array.isArray(item.main_colours) && item.main_colours.length ? item.main_colours[0] : null) || item.primary_color || null,
+    mainColours: Array.isArray(item.main_colours) ? item.main_colours : (item.main_colour ? [item.main_colour] : (item.primary_color ? [item.primary_color] : [])),
     primaryColor: item.primary_color || item.primaryColor,
     colorHex: item.color_hex || item.colorHex,
     price: Number(item.price),
@@ -193,6 +198,11 @@ function mapJsSareeToDb(item) {
     category: item.category || 'pure-silk',
     category_label: item.categoryLabel || null,
     fabric: item.fabric || null,
+    fabric_type: item.fabricType || null,
+    design_type: item.designType || null,
+    colour_type: item.colourType || null,
+    main_colour: item.mainColour || (Array.isArray(item.mainColours) && item.mainColours.length ? item.mainColours[0] : null) || null,
+    main_colours: Array.isArray(item.mainColours) ? item.mainColours : (item.mainColour ? [item.mainColour] : []),
     primary_color: item.primaryColor || null,
     color_hex: item.colorHex || null,
     price: item.price ? Number(item.price) : 0,
@@ -394,7 +404,7 @@ app.get('/api/stats', async (req, res) => {
 // 3. SAREES: List All (with optional filter)
 app.get('/api/sarees', async (req, res) => {
   try {
-    const { category, inStock, search } = req.query;
+    const { category, inStock, search, fabricType, designType, colourType, mainColour } = req.query;
 
     if (isSupabaseConfigured() && supabase) {
       let query = supabase.from('sarees').select('*').order('created_at', { ascending: false });
@@ -404,6 +414,18 @@ app.get('/api/sarees', async (req, res) => {
       }
       if (inStock !== undefined) {
         query = query.eq('in_stock', inStock === 'true');
+      }
+      if (fabricType && fabricType !== 'all') {
+        query = query.eq('fabric_type', fabricType);
+      }
+      if (designType && designType !== 'all') {
+        query = query.eq('design_type', designType);
+      }
+      if (colourType && colourType !== 'all') {
+        query = query.eq('colour_type', colourType);
+      }
+      if (mainColour && mainColour !== 'all') {
+        query = query.or(`main_colour.eq.${mainColour},primary_color.ilike.%${mainColour}%`);
       }
 
       const { data, error } = await query;
@@ -416,7 +438,9 @@ app.get('/api/sarees', async (req, res) => {
           (item) =>
             item.name.toLowerCase().includes(s) ||
             (item.sinhalaName && item.sinhalaName.toLowerCase().includes(s)) ||
-            (item.fabric && item.fabric.toLowerCase().includes(s))
+            (item.fabric && item.fabric.toLowerCase().includes(s)) ||
+            (item.fabricType && item.fabricType.toLowerCase().includes(s)) ||
+            (item.designType && item.designType.toLowerCase().includes(s))
         );
       }
       return res.json(result);
@@ -432,13 +456,32 @@ app.get('/api/sarees', async (req, res) => {
     if (inStock !== undefined) {
       list = list.filter((s) => String(s.inStock) === inStock);
     }
+    if (fabricType && fabricType !== 'all') {
+      list = list.filter((s) => s.fabricType === fabricType);
+    }
+    if (designType && designType !== 'all') {
+      list = list.filter((s) => s.designType === designType);
+    }
+    if (colourType && colourType !== 'all') {
+      list = list.filter((s) => s.colourType === colourType);
+    }
+    if (mainColour && mainColour !== 'all') {
+      list = list.filter(
+        (s) =>
+          s.mainColour === mainColour ||
+          (Array.isArray(s.mainColours) && s.mainColours.includes(mainColour)) ||
+          s.primaryColor === mainColour
+      );
+    }
     if (search) {
       const s = search.toLowerCase();
       list = list.filter(
         (item) =>
           item.name.toLowerCase().includes(s) ||
           (item.sinhalaName && item.sinhalaName.toLowerCase().includes(s)) ||
-          (item.fabric && item.fabric.toLowerCase().includes(s))
+          (item.fabric && item.fabric.toLowerCase().includes(s)) ||
+          (item.fabricType && item.fabricType.toLowerCase().includes(s)) ||
+          (item.designType && item.designType.toLowerCase().includes(s))
       );
     }
 
