@@ -7,11 +7,36 @@ import CategoryList from './components/CategoryList';
 import OrderList from './components/OrderList';
 import SareeModal from './components/SareeModal';
 import CategoryModal from './components/CategoryModal';
+import LoginPage from './components/LoginPage';
 import Toast from './components/Toast';
 import { api } from './api/client';
 import { Loader2 } from 'lucide-react';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      return !!(
+        localStorage.getItem('nandani_admin_auth') ||
+        sessionStorage.getItem('nandani_admin_auth')
+      );
+    } catch {
+      return false;
+    }
+  });
+
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    try {
+      localStorage.removeItem('nandani_admin_auth');
+      sessionStorage.removeItem('nandani_admin_auth');
+    } catch { }
+    setIsAuthenticated(false);
+    showToast('You have been signed out safely.', 'info');
+  };
+
   const getInitialTab = () => {
     try {
       const search = new URLSearchParams(window.location.search);
@@ -23,7 +48,7 @@ export default function App() {
       if (['overview', 'sarees', 'categories', 'orders'].includes(hash)) {
         return hash;
       }
-    } catch {}
+    } catch { }
     return 'overview';
   };
 
@@ -92,6 +117,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     loadAllData(false);
     // Auto-poll updates every 4 seconds so database changes show up immediately
     const interval = setInterval(() => {
@@ -108,7 +135,7 @@ export default function App() {
       clearInterval(interval);
       window.removeEventListener('focus', handleFocus);
     };
-  }, [loadAllData]);
+  }, [isAuthenticated, loadAllData]);
 
   // Open modal for Adding
   const handleOpenAddModal = () => {
@@ -240,6 +267,15 @@ export default function App() {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <>
+        <LoginPage onLoginSuccess={handleLoginSuccess} />
+        <Toast toast={toast} onClose={() => setToast(null)} />
+      </>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0a1120] text-slate-300 flex flex-col items-center justify-center gap-3">
@@ -263,6 +299,7 @@ export default function App() {
         stats={stats}
         isMobileOpen={isMobileMenuOpen}
         onCloseMobile={() => setIsMobileMenuOpen(false)}
+        onLogout={handleLogout}
       />
 
       {/* Main Content Area - Scrollable Content */}
@@ -272,6 +309,7 @@ export default function App() {
           onRefresh={() => loadAllData(false)}
           isRefreshing={isRefreshing}
           onToggleMobileMenu={() => setIsMobileMenuOpen((prev) => !prev)}
+          onLogout={handleLogout}
         />
 
         <main className="flex-1 overflow-y-auto">

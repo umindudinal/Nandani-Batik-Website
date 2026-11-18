@@ -1,11 +1,12 @@
 import React from 'react';
-import { RefreshCw, Menu } from 'lucide-react';
+import { RefreshCw, Menu, LogOut } from 'lucide-react';
 
 export default function Header({
   activeTab,
   onRefresh,
   isRefreshing,
   onToggleMobileMenu,
+  onLogout,
 }) {
   const titles = {
     overview: {
@@ -61,7 +62,7 @@ export default function Header({
           <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
         </button>
 
-        {/* Admin Avatar */}
+        {/* Admin Avatar & Logout */}
         <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
           <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-200 bg-white shadow-xs shrink-0">
             <img
@@ -70,6 +71,17 @@ export default function Header({
               className="w-full h-full object-cover"
             />
           </div>
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors ml-0.5 shrink-0"
+              title="Sign Out of Dashboard"
+              aria-label="Sign Out"
+            >
+              <LogOut size={16} />
+            </button>
+          )}
         </div>
       </div>
     </header>

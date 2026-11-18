@@ -5,6 +5,7 @@ import {
   Package,
   Layers,
   X,
+  LogOut,
 } from 'lucide-react';
 
 export default function Sidebar({
@@ -13,6 +14,7 @@ export default function Sidebar({
   stats,
   isMobileOpen,
   onCloseMobile,
+  onLogout,
 }) {
   const navItems = [
     {
@@ -53,9 +55,8 @@ export default function Sidebar({
 
       {/* Sidebar Container */}
       <aside
-        className={`w-64 bg-[#0a1120] text-slate-300 flex flex-col shrink-0 h-screen border-r border-slate-800 select-none overflow-hidden fixed lg:sticky top-0 z-50 transition-transform duration-300 ease-in-out ${
-          isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
-        }`}
+        className={`w-64 bg-[#0a1120] text-slate-300 flex flex-col shrink-0 h-screen border-r border-slate-800 select-none overflow-hidden fixed lg:sticky top-0 z-50 transition-transform duration-300 ease-in-out ${isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
+          }`}
       >
         {/* Brand Header */}
         <div className="px-5 py-4 sm:py-5 border-b border-slate-800/80 shrink-0 flex items-center justify-between">
@@ -103,11 +104,10 @@ export default function Sidebar({
                   setActiveTab(item.id);
                   if (onCloseMobile) onCloseMobile();
                 }}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors text-left ${
-                  isActive
-                    ? 'bg-slate-800/90 text-white font-semibold shadow-xs'
-                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-                }`}
+                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-colors text-left ${isActive
+                  ? 'bg-slate-800/90 text-white font-semibold shadow-xs'
+                  : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
+                  }`}
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Icon
@@ -119,17 +119,16 @@ export default function Sidebar({
 
                 {item.badge !== undefined && item.badge !== null && (
                   <span
-                    className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md ${
-                      item.badgeVariant === 'alert'
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                        : item.badgeVariant === 'success'
+                    className={`text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md ${item.badgeVariant === 'alert'
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      : item.badgeVariant === 'success'
                         ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                         : item.badgeVariant === 'warning'
-                        ? 'bg-slate-800 text-amber-400 border border-amber-500/20'
-                        : isActive
-                        ? 'bg-slate-700 text-slate-200'
-                        : 'bg-slate-800/80 text-slate-400'
-                    }`}
+                          ? 'bg-slate-800 text-amber-400 border border-amber-500/20'
+                          : isActive
+                            ? 'bg-slate-700 text-slate-200'
+                            : 'bg-slate-800/80 text-slate-400'
+                      }`}
                   >
                     {item.badge}
                   </span>
@@ -139,19 +138,32 @@ export default function Sidebar({
           })}
         </nav>
 
-        {/* Admin User Footer */}
-        <div className="p-3.5 border-t border-slate-800/80 bg-slate-950/40 flex items-center gap-2.5 shrink-0">
-          <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-700 bg-white shrink-0">
-            <img
-              src="/nandani-logo.jpg"
-              alt="Admin"
-              className="w-full h-full object-cover"
-            />
+        {/* Admin User Footer with Logout Button */}
+        <div className="p-3.5 border-t border-slate-800/80 bg-slate-950/40 flex items-center justify-between gap-2.5 shrink-0">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-slate-700 bg-white shrink-0">
+              <img
+                src="/nandani-logo.jpg"
+                alt="Admin"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-medium text-slate-200 truncate">Nandani Batik</div>
+              <div className="text-[10px] text-slate-400 truncate">Store Administrator</div>
+            </div>
           </div>
-          <div className="min-w-0">
-            <div className="text-xs font-medium text-slate-200 truncate">Nandani Batik</div>
-            <div className="text-[10px] text-slate-400 truncate">Store Administrator</div>
-          </div>
+
+          {onLogout && (
+            <button
+              onClick={onLogout}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-slate-800 transition-colors shrink-0"
+              title="Sign Out of Dashboard"
+              aria-label="Sign Out"
+            >
+              <LogOut size={16} />
+            </button>
+          )}
         </div>
       </aside>
     </>

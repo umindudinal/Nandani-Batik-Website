@@ -360,7 +360,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
             </div>
 
             {/* Color Swatch Selector */}
-            <div className="space-y-3 pt-4 border-t border-stone-100">
+            {/* <div className="space-y-3 pt-4 border-t border-stone-100">
               <span className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold block">
                 Color Palette
               </span>
@@ -387,7 +387,7 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                   </button>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Fabric Filter */}
             <div className="space-y-3 pt-4 border-t border-stone-100">
@@ -410,13 +410,6 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Atelier Assurance */}
-            <div className="pt-4 border-t border-stone-100 text-[10px] uppercase tracking-widest text-stone-400 space-y-1">
-              <p>• 100% Hand-Drawn Batik</p>
-              <p>• Islandwide Delivery (Rs. 350)</p>
-              <p>• Cash on Delivery Available</p>
             </div>
           </aside>
 
