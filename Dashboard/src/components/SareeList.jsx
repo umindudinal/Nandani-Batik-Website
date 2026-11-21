@@ -294,8 +294,9 @@ export default function SareeList({
       {viewMode === 'table' ? (
         <div className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden">
           {filteredSarees.length === 0 ? (
-            <div className="p-12 text-center text-slate-400 text-xs">
-              No sarees match the selected search or filter criteria.
+            <div className="p-12 text-center text-slate-400 text-xs space-y-2">
+              <p className="font-medium text-slate-700">දැනට කිසිදු සාරියක් ඇතුළත් කර නොමැත.</p>
+              <p className="text-slate-400">ඔබේ පළමු සාරි නිෂ්පාදනය එක් කිරීමට ඉහත 'Add Saree' බොත්තම ඔබන්න.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -467,6 +468,11 @@ export default function SareeList({
               </table>
             </div>
           )}
+        </div>
+      ) : filteredSarees.length === 0 ? (
+        <div className="bg-white rounded-xl border border-slate-200/90 p-12 text-center text-slate-400 text-xs space-y-2">
+          <p className="font-medium text-slate-700">දැනට කිසිදු සාරියක් ඇතුළත් කර නොමැත.</p>
+          <p className="text-slate-400">ඔබේ පළමු සාරි නිෂ්පාදනය එක් කිරීමට ඉහත 'Add Saree' බොත්තම ඔබන්න.</p>
         </div>
       ) : (
         /* Grid View */
