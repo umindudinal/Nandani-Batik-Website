@@ -383,7 +383,6 @@ export const CartProvider = ({ children }) => {
         sarees,
         categories,
         refreshSarees,
-        refreshCategories,
         isSareesLoading,
         cart,
         wishlist,
