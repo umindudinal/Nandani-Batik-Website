@@ -10,8 +10,12 @@ CREATE TABLE IF NOT EXISTS public.sarees (
     id TEXT PRIMARY KEY,
     name TEXT NOT NULL,
     sinhala_name TEXT,
-    category TEXT NOT NULL DEFAULT 'pure-silk',
+    category TEXT NOT NULL DEFAULT 'silk-batik',
     category_label TEXT,
+    fabric_type TEXT,
+    design_type TEXT,
+    colour_type TEXT,
+    main_colour TEXT,
     fabric TEXT,
     primary_color TEXT,
     color_hex TEXT,
@@ -142,11 +146,10 @@ FOR INSERT WITH CHECK (bucket_id = 'saree-images');
 -- 7. INITIAL CATEGORIES SEED DATA
 INSERT INTO public.categories (id, name, sinhala_name, description, image) VALUES
 ('all', 'All Sarees', 'සියලුම සාරි', 'Explore the full bespoke Nandani Batik saree collection', ''),
-('pure-silk', 'Pure Silk Batik', 'පිරිසිදු සිල්ක් බතික්', 'Ultra-luxurious mulberry and raw silk sarees with vibrant hand-waxed motifs', '/sarees/saree 2.1.png'),
-('handloom-cotton', 'Handloom Cotton', 'හැන්ඩ්ලූම් කපු බතික්', 'Breathable, lightweight 100% handspun cotton sarees for tropical comfort', '/sarees/saree 3.2.png'),
-('bridal-kandyan', 'Bridal & Kandyan', 'මංගල සහ ඔසරිය', 'Ceremonial bridal drapes and traditional Osariya sets with regal craftsmanship', '/sarees/saree 1.1.png'),
-('party-wear', 'Party & Evening', 'උත්සව සහ සාද සාරි', 'Statement sarees designed with dramatic pallus and modern artistic flair', '/sarees/saree 4.1.png'),
-('office-daily', 'Office & Casual', 'කාර්යාලීය සහ සරල විලාසිතා', 'Subtle elegance, geometric patterns, and dignified tones for professional wear', '')
+('normal-voil', 'Normal Voil Sarees', 'නෝමල් වොයිල් සාරි', 'Lightweight, airy, everyday elegant voile batik sarees', '/sarees/saree 3.2.png'),
+('super-voil', 'Super Voil Sarees', 'සුපර් වොයිල් සාරි', 'Premium ultra-soft voile sarees with refined artisan motifs', '/sarees/saree 4.1.png'),
+('cotton-batik', 'Cotton Batik Sarees', 'කොටන් බතික් සාරි', '100% breathable pure cotton batik sarees crafted for all occasions', '/sarees/saree 1.1.png'),
+('silk-batik', 'Silk Batik Sarees', 'සිල්ක් බතික් සාරි', 'Luxurious authentic silk batik sarees with rich hand-waxed lustre', '/sarees/saree 2.1.png')
 ON CONFLICT (id) DO NOTHING;
 
 -- 8. INITIAL SAREES SEED DATA

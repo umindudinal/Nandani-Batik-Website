@@ -11,6 +11,49 @@ import {
 } from 'lucide-react';
 import { api } from '../api/client';
 
+// 4 Primary Fabric Types
+export const FABRIC_TYPES = [
+  'Normal Voil Sarees',
+  'Super Voil Sarees',
+  'Cotton Batik Sarees',
+  'Silk Batik Sarees',
+];
+
+// 7 Saree Design Types
+export const DESIGN_TYPES = [
+  'Floral Design',
+  'Traditional Design',
+  'Peacock Design',
+  'Elephant Design',
+  'Abstract Design',
+  'Geometric Design',
+  'Nature Design',
+];
+
+// 4 Colour Combination Types
+export const COLOUR_TYPES = [
+  'Single Colour',
+  'Two Colour',
+  'Three Colour',
+  'Multi Colour',
+];
+
+// 12 Main Atelier Colours with hex codes and Sinhala names
+export const MAIN_COLOURS = [
+  { name: 'Black', hex: '#000000', sinhala: 'කළු' },
+  { name: 'Red', hex: '#dc2626', sinhala: 'රතු' },
+  { name: 'Blue', hex: '#2563eb', sinhala: 'නිල්' },
+  { name: 'Green', hex: '#16a34a', sinhala: 'කොළ' },
+  { name: 'Purple', hex: '#9333ea', sinhala: 'දම්' },
+  { name: 'Pink', hex: '#ec4899', sinhala: 'රෝස' },
+  { name: 'Yellow', hex: '#eab308', sinhala: 'කහ' },
+  { name: 'Brown', hex: '#78350f', sinhala: 'දුඹුරු' },
+  { name: 'White', hex: '#ffffff', sinhala: 'සුදු' },
+  { name: 'Maroon', hex: '#800000', sinhala: 'මැරූන්' },
+  { name: 'Orange', hex: '#ea580c', sinhala: 'තැඹිලි' },
+  { name: 'Navy Blue', hex: '#0b1a30', sinhala: 'නාවික නිල්' },
+];
+
 export default function SareeModal({
   isOpen,
   onClose,
@@ -22,16 +65,20 @@ export default function SareeModal({
   const [formData, setFormData] = useState({
     name: '',
     sinhalaName: '',
-    category: 'pure-silk',
-    categoryLabel: 'Pure Silk',
-    fabric: '100% Pure Mulberry Silk',
-    primaryColor: 'Dark Blue',
+    fabricType: 'Normal Voil Sarees',
+    designType: 'Floral Design',
+    colourType: 'Single Colour',
+    mainColour: 'Navy Blue',
+    category: 'normal-voil',
+    categoryLabel: 'Normal Voil Sarees',
+    fabric: 'Normal Voile Cotton',
+    primaryColor: 'Navy Blue',
     colorHex: '#0b1a30',
     price: '',
     originalPrice: '',
     discountPercent: 0,
     inStock: true,
-    isNew: false,
+    isNew: true,
     isBestseller: false,
     image: '',
     hoverImage: '',
@@ -40,9 +87,9 @@ export default function SareeModal({
     palluDetails: '',
     blousePiece: '0.8m Hand-batik matching blouse fabric included',
     length: '6.0 Meters (includes unstitched blouse piece)',
-    washCare: 'Dry clean recommended to preserve pure silk luster',
+    washCare: 'Gentle hand wash or dry clean recommended to preserve batik vibrancy',
     craftTime: '3-4 days of handcrafted wax resist batik',
-    tags: 'Pure Silk, Handmade Batik, Nandani Signature',
+    tags: 'Normal Voile, Handmade Batik, Nandani Signature',
   });
 
   const [isUploading, setIsUploading] = useState(false);
@@ -52,18 +99,30 @@ export default function SareeModal({
 
   useEffect(() => {
     if (initialData) {
+      const ft = initialData.fabricType || initialData.categoryLabel || 'Normal Voil Sarees';
+      const mc = initialData.mainColour || initialData.primaryColor || 'Navy Blue';
       setFormData({
         ...initialData,
+        fabricType: ft,
+        designType: initialData.designType || 'Floral Design',
+        colourType: initialData.colourType || 'Single Colour',
+        mainColour: mc,
+        primaryColor: initialData.primaryColor || mc,
+        colorHex: initialData.colorHex || '#0b1a30',
         tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : (initialData.tags || ''),
       });
     } else {
       setFormData({
         name: '',
         sinhalaName: '',
-        category: 'pure-silk',
-        categoryLabel: 'Pure Silk',
-        fabric: '100% Pure Mulberry Silk',
-        primaryColor: 'Dark Blue',
+        fabricType: 'Normal Voil Sarees',
+        designType: 'Floral Design',
+        colourType: 'Single Colour',
+        mainColour: 'Navy Blue',
+        category: 'normal-voil',
+        categoryLabel: 'Normal Voil Sarees',
+        fabric: 'Normal Voile Cotton',
+        primaryColor: 'Navy Blue',
         colorHex: '#0b1a30',
         price: '',
         originalPrice: '',
@@ -78,9 +137,9 @@ export default function SareeModal({
         palluDetails: '',
         blousePiece: '0.8m Hand-batik matching blouse fabric included',
         length: '6.0 Meters (includes unstitched blouse piece)',
-        washCare: 'Dry clean recommended to preserve pure silk luster',
+        washCare: 'Gentle hand wash or dry clean recommended to preserve batik vibrancy',
         craftTime: '3-4 days of artisan wax batik',
-        tags: 'Pure Silk, Handmade Wax Batik',
+        tags: 'Normal Voile, Handmade Wax Batik',
       });
     }
     setCurrentStep(1);
@@ -88,6 +147,32 @@ export default function SareeModal({
   }, [initialData, isOpen]);
 
   if (!isOpen) return null;
+
+  const handleFabricTypeChange = (fabricName) => {
+    const slugMap = {
+      'Normal Voil Sarees': 'normal-voil',
+      'Super Voil Sarees': 'super-voil',
+      'Cotton Batik Sarees': 'cotton-batik',
+      'Silk Batik Sarees': 'silk-batik',
+    };
+    const catId = slugMap[fabricName] || 'normal-voil';
+    setFormData((prev) => ({
+      ...prev,
+      fabricType: fabricName,
+      category: catId,
+      categoryLabel: fabricName,
+    }));
+  };
+
+  const handleMainColourChange = (colorName) => {
+    const colObj = MAIN_COLOURS.find((c) => c.name === colorName);
+    setFormData((prev) => ({
+      ...prev,
+      mainColour: colorName,
+      primaryColor: colorName,
+      colorHex: colObj ? colObj.hex : prev.colorHex,
+    }));
+  };
 
   const handleCategoryChange = (catId) => {
     const catObj = categories.find((c) => c.id === catId);
@@ -370,23 +455,116 @@ export default function SareeModal({
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Collection Category
-                </label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => handleCategoryChange(e.target.value)}
-                  className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                >
-                  {categories
-                    .filter((c) => c.id !== 'all')
-                    .map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name} {c.sinhalaName || c.sinhala_name ? `(${c.sinhalaName || c.sinhala_name})` : ''}
+              {/* 4 Classification Attributes Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+                {/* 1. Fabric Type */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-800 mb-1">
+                    1. Fabric Type (රෙදි වර්ගය) <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={formData.fabricType}
+                    onChange={(e) => handleFabricTypeChange(e.target.value)}
+                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    {FABRIC_TYPES.map((ft) => (
+                      <option key={ft} value={ft}>
+                        {ft}
                       </option>
                     ))}
-                </select>
+                  </select>
+                </div>
+
+                {/* 2. Design Type */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-800 mb-1">
+                    2. Design Type (මෝස්තර වර්ගය) <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={formData.designType}
+                    onChange={(e) => setFormData({ ...formData, designType: e.target.value })}
+                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    {DESIGN_TYPES.map((dt) => (
+                      <option key={dt} value={dt}>
+                        {dt}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 3. Colour Type */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-800 mb-1">
+                    3. Colour Type (වර්ණ වර්ගය) <span className="text-rose-500">*</span>
+                  </label>
+                  <select
+                    value={formData.colourType}
+                    onChange={(e) => setFormData({ ...formData, colourType: e.target.value })}
+                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    {COLOUR_TYPES.map((ct) => (
+                      <option key={ct} value={ct}>
+                        {ct}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* 4. Main Colour */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-800 mb-1">
+                    4. Main Colour (ප්‍රධාන වර්ණය) <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-5 h-5 rounded-full border border-slate-300 shrink-0"
+                      style={{
+                        backgroundColor:
+                          MAIN_COLOURS.find((c) => c.name === formData.mainColour)?.hex || formData.colorHex || '#0b1a30',
+                      }}
+                    />
+                    <select
+                      value={formData.mainColour}
+                      onChange={(e) => handleMainColourChange(e.target.value)}
+                      className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                    >
+                      {MAIN_COLOURS.map((mc) => (
+                        <option key={mc.name} value={mc.name}>
+                          {mc.name} ({mc.sinhala})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Colour Visual Swatch Selector */}
+              <div>
+                <label className="block text-[11px] font-mono text-slate-500 uppercase tracking-wider mb-1.5">
+                  Select Main Colour Palette (12 Colours)
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {MAIN_COLOURS.map((col) => (
+                    <button
+                      type="button"
+                      key={col.name}
+                      onClick={() => handleMainColourChange(col.name)}
+                      title={`${col.name} (${col.sinhala})`}
+                      className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] border transition-all ${
+                        formData.mainColour === col.name
+                          ? 'border-[#0a1120] bg-[#0a1120] text-white font-medium shadow-xs scale-105'
+                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-400'
+                      }`}
+                    >
+                      <span
+                        className="w-2.5 h-2.5 rounded-full border border-white/50 shrink-0"
+                        style={{ backgroundColor: col.hex }}
+                      />
+                      <span>{col.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div>
@@ -691,16 +869,21 @@ export default function SareeModal({
                   Primary Color Swatch
                 </label>
                 <div className="flex flex-wrap gap-1.5 mb-2">
-                  {colorsList.map((col) => (
+                  {MAIN_COLOURS.map((col) => (
                     <button
                       type="button"
                       key={col.name}
                       onClick={() =>
-                        setFormData({ ...formData, primaryColor: col.name, colorHex: col.hex })
+                        setFormData({
+                          ...formData,
+                          mainColour: col.name,
+                          primaryColor: col.name,
+                          colorHex: col.hex,
+                        })
                       }
-                      title={col.name}
+                      title={`${col.name} (${col.sinhala})`}
                       className={`w-6 h-6 rounded-full border transition-all ${
-                        formData.primaryColor === col.name
+                        formData.mainColour === col.name || formData.primaryColor === col.name
                           ? 'ring-2 ring-slate-900 ring-offset-1 scale-110'
                           : 'border-slate-300 hover:scale-105'
                       }`}

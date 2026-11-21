@@ -86,9 +86,13 @@ function mapDbSareeToJs(item) {
     name: item.name,
     sinhalaName: item.sinhala_name || item.sinhalaName,
     category: item.category,
-    categoryLabel: item.category_label || item.categoryLabel,
+    categoryLabel: item.category_label || item.categoryLabel || item.fabricType,
+    fabricType: item.fabric_type || item.fabricType || item.category_label || item.categoryLabel,
+    designType: item.design_type || item.designType,
+    colourType: item.colour_type || item.colourType,
+    mainColour: item.main_colour || item.mainColour || item.primary_color || item.primaryColor,
     fabric: item.fabric,
-    primaryColor: item.primary_color || item.primaryColor,
+    primaryColor: item.primary_color || item.primaryColor || item.main_colour || item.mainColour,
     colorHex: item.color_hex || item.colorHex,
     price: Number(item.price),
     originalPrice: item.original_price != null ? Number(item.original_price) : Number(item.price),
@@ -118,10 +122,14 @@ function mapJsSareeToDb(item) {
     id: item.id,
     name: item.name,
     sinhala_name: item.sinhalaName || null,
-    category: item.category || 'pure-silk',
-    category_label: item.categoryLabel || null,
+    category: item.category || 'silk-batik',
+    category_label: item.categoryLabel || item.fabricType || null,
+    fabric_type: item.fabricType || item.categoryLabel || null,
+    design_type: item.designType || null,
+    colour_type: item.colourType || null,
+    main_colour: item.mainColour || item.primaryColor || null,
     fabric: item.fabric || null,
-    primary_color: item.primaryColor || null,
+    primary_color: item.primaryColor || item.mainColour || null,
     color_hex: item.colorHex || null,
     price: item.price ? Number(item.price) : 0,
     original_price: item.originalPrice ? Number(item.originalPrice) : null,
@@ -322,13 +330,25 @@ app.get('/api/stats', async (req, res) => {
 // 3. SAREES: List All (with optional filter)
 app.get('/api/sarees', async (req, res) => {
   try {
-    const { category, inStock, search } = req.query;
+    const { category, fabricType, designType, colourType, mainColour, inStock, search } = req.query;
 
     if (isSupabaseConfigured() && supabase) {
       let query = supabase.from('sarees').select('*').order('created_at', { ascending: false });
 
       if (category && category !== 'all') {
-        query = query.eq('category', category);
+        query = query.or(`category.eq.${category},fabric_type.eq.${category}`);
+      }
+      if (fabricType && fabricType !== 'all') {
+        query = query.eq('fabric_type', fabricType);
+      }
+      if (designType && designType !== 'all') {
+        query = query.eq('design_type', designType);
+      }
+      if (colourType && colourType !== 'all') {
+        query = query.eq('colour_type', colourType);
+      }
+      if (mainColour && mainColour !== 'all') {
+        query = query.or(`main_colour.eq.${mainColour},primary_color.eq.${mainColour}`);
       }
       if (inStock !== undefined) {
         query = query.eq('in_stock', inStock === 'true');
@@ -344,6 +364,10 @@ app.get('/api/sarees', async (req, res) => {
           (item) =>
             item.name.toLowerCase().includes(s) ||
             (item.sinhalaName && item.sinhalaName.toLowerCase().includes(s)) ||
+            (item.fabricType && item.fabricType.toLowerCase().includes(s)) ||
+            (item.designType && item.designType.toLowerCase().includes(s)) ||
+            (item.colourType && item.colourType.toLowerCase().includes(s)) ||
+            (item.mainColour && item.mainColour.toLowerCase().includes(s)) ||
             (item.fabric && item.fabric.toLowerCase().includes(s))
         );
       }
@@ -355,7 +379,19 @@ app.get('/api/sarees', async (req, res) => {
     let list = db.sarees || [];
 
     if (category && category !== 'all') {
-      list = list.filter((s) => s.category === category);
+      list = list.filter((s) => s.category === category || s.fabricType === category);
+    }
+    if (fabricType && fabricType !== 'all') {
+      list = list.filter((s) => s.fabricType === fabricType);
+    }
+    if (designType && designType !== 'all') {
+      list = list.filter((s) => s.designType === designType);
+    }
+    if (colourType && colourType !== 'all') {
+      list = list.filter((s) => s.colourType === colourType);
+    }
+    if (mainColour && mainColour !== 'all') {
+      list = list.filter((s) => s.mainColour === mainColour || s.primaryColor === mainColour);
     }
     if (inStock !== undefined) {
       list = list.filter((s) => String(s.inStock) === inStock);
@@ -366,6 +402,10 @@ app.get('/api/sarees', async (req, res) => {
         (item) =>
           item.name.toLowerCase().includes(s) ||
           (item.sinhalaName && item.sinhalaName.toLowerCase().includes(s)) ||
+          (item.fabricType && item.fabricType.toLowerCase().includes(s)) ||
+          (item.designType && item.designType.toLowerCase().includes(s)) ||
+          (item.colourType && item.colourType.toLowerCase().includes(s)) ||
+          (item.mainColour && item.mainColour.toLowerCase().includes(s)) ||
           (item.fabric && item.fabric.toLowerCase().includes(s))
       );
     }
@@ -1318,8 +1358,8 @@ app.delete('/api/categories/:id', async (req, res) => {
         .neq('id', 'all')
         .limit(1);
 
-      const fallbackId = otherCats?.[0]?.id || 'pure-silk';
-      const fallbackLabel = otherCats?.[0]?.name || 'Pure Silk';
+      const fallbackId = otherCats?.[0]?.id || 'silk-batik';
+      const fallbackLabel = otherCats?.[0]?.name || 'Silk Batik Sarees';
 
       // Reassign sarees to fallback category
       await supabase
@@ -1347,8 +1387,8 @@ app.delete('/api/categories/:id', async (req, res) => {
     }
 
     const remainingCat = db.categories.find((c) => c.id !== 'all') || {
-      id: 'pure-silk',
-      name: 'Pure Silk',
+      id: 'silk-batik',
+      name: 'Silk Batik Sarees',
     };
 
     if (db.sarees) {

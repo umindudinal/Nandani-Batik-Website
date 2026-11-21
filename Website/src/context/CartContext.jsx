@@ -44,7 +44,7 @@ export const CartProvider = ({ children }) => {
         return { page: 'shop', category: catParam, sareeId: null };
       }
       if (path === '/bridal') {
-        return { page: 'bridal', category: 'bridal-kandyan', sareeId: null };
+        return { page: 'bridal', category: 'all', sareeId: null };
       }
       if (path === '/about' || path === '/heritage') {
         return { page: 'about', category: 'all', sareeId: null };

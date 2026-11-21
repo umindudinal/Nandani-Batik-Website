@@ -27,7 +27,7 @@ export default function BridalPage({ setActivePage }) {
 
   const goToShop = () => {
     if (navigateTo) {
-      navigateTo('shop', 'bridal-kandyan');
+      navigateTo('shop', 'silk-batik');
     } else if (setActivePage) {
       setActivePage('shop');
     }
@@ -37,8 +37,9 @@ export default function BridalPage({ setActivePage }) {
   // Find bridal sarees or fall back gracefully to silk pieces
   const bridalSarees = sarees.filter(
     (s) =>
-      s.category === 'bridal-kandyan' ||
-      s.category === 'bridal' ||
+      s.category === 'silk-batik' ||
+      s.fabricType === 'Silk Batik Sarees' ||
+      s.designType === 'Traditional Design' ||
       (Array.isArray(s.tags) && (s.tags.includes('Bridal Collection') || s.tags.includes('Bridal')))
   );
   const displayedSarees = bridalSarees.length > 0 ? bridalSarees : sarees.slice(0, 3);

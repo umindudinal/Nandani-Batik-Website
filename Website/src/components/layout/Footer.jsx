@@ -154,42 +154,34 @@ export default function Footer({ setActivePage, setSelectedCategory }) {
             <ul className="space-y-2.5 text-xs text-stone-400 font-light">
               <li>
                 <button
-                  onClick={() => handlePageClick('shop', 'pure-silk')}
+                  onClick={() => handlePageClick('shop', 'normal-voil')}
                   className="hover:text-amber-200 transition-colors"
                 >
-                  Pure Silk Batiks
+                  Normal Voil Sarees
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => handlePageClick('shop', 'handloom-cotton')}
+                  onClick={() => handlePageClick('shop', 'super-voil')}
                   className="hover:text-amber-200 transition-colors"
                 >
-                  Handloom Cotton
+                  Super Voil Sarees
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => handlePageClick('shop', 'bridal-kandyan')}
+                  onClick={() => handlePageClick('shop', 'cotton-batik')}
                   className="hover:text-amber-200 transition-colors"
                 >
-                  Bridal & Kandyan
+                  Cotton Batik Sarees
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => handlePageClick('shop', 'party-wear')}
+                  onClick={() => handlePageClick('shop', 'silk-batik')}
                   className="hover:text-amber-200 transition-colors"
                 >
-                  Party & Evening Sarees
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handlePageClick('shop', 'office-daily')}
-                  className="hover:text-amber-200 transition-colors"
-                >
-                  Everyday & Office Wear
+                  Silk Batik Sarees
                 </button>
               </li>
               <li>

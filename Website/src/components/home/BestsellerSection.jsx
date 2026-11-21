@@ -9,17 +9,16 @@ export default function BestsellerSection({ setActivePage, setSelectedCategory }
 
   const categoriesList = [
     { id: 'all', label: 'All Sarees (සියල්ල)' },
-    { id: 'pure-silk', label: 'Pure Silk (සිල්ක්)' },
-    { id: 'handloom-cotton', label: 'Handloom Cotton (කපු)' },
-    { id: 'bridal-kandyan', label: 'Bridal & Kandyan (මංගල)' },
-    { id: 'party-wear', label: 'Party & Festive (සාද)' },
-    { id: 'office-daily', label: 'Office & Casual (කාර්යාලීය)' },
+    { id: 'normal-voil', label: 'Normal Voil (නෝමල් වොයිල්)' },
+    { id: 'super-voil', label: 'Super Voil (සුපර් වොයිල්)' },
+    { id: 'cotton-batik', label: 'Cotton Batik (කොටන්)' },
+    { id: 'silk-batik', label: 'Silk Batik (සිල්ක්)' },
   ];
 
   const filteredSarees =
     activeTab === 'all'
       ? sarees.slice(0, 8)
-      : sarees.filter((s) => s.category === activeTab).slice(0, 8);
+      : sarees.filter((s) => s.category === activeTab || (activeTab === 'normal-voil' && s.fabricType === 'Normal Voil Sarees') || (activeTab === 'super-voil' && s.fabricType === 'Super Voil Sarees') || (activeTab === 'cotton-batik' && s.fabricType === 'Cotton Batik Sarees') || (activeTab === 'silk-batik' && s.fabricType === 'Silk Batik Sarees')).slice(0, 8);
 
   const handleViewAll = () => {
     if (setSelectedCategory) {
