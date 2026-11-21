@@ -207,7 +207,7 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
               aria-label="Shopping Cart"
             >
               <ShoppingBag className="w-3.5 h-3.5 text-amber-300" />
-              <span className="text-xs font-semibold tracking-wide">Cart</span>
+              <span className="text-xs font-semibold tracking-wide">Bag</span>
               {cartCount > 0 && (
                 <span className="bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.2 rounded-full min-w-4 text-center leading-tight">
                   {cartCount}

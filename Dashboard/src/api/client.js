@@ -172,4 +172,22 @@ export const api = {
     }
     return res.json();
   },
+
+  // Customers
+  async getCustomers() {
+    const res = await fetch(`${API_BASE_URL}/customers`);
+    if (!res.ok) throw new Error('Failed to fetch customers');
+    return res.json();
+  },
+
+  async deleteCustomer(id) {
+    const res = await fetch(`${API_BASE_URL}/customers/${id}`, {
+      method: 'DELETE',
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to delete customer');
+    }
+    return res.json();
+  },
 };

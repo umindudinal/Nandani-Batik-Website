@@ -864,8 +864,50 @@ app.get('/api/customers', async (req, res) => {
     }
 
     const db = getLocalDb();
-    const customers = db.customers || [];
-    res.json(customers);
+    if (!db.customers) db.customers = [];
+
+    // Auto-sync customer records from orders if not already present in db.customers
+    if (Array.isArray(db.orders) && db.orders.length > 0) {
+      let modified = false;
+      for (const order of db.orders) {
+        if (!order.phone) continue;
+        const cleanPhone = (order.phone || '').replace(/[\s-+]/g, '');
+        const exists = db.customers.some(
+          (c) => (c.phone || '').replace(/[\s-+]/g, '') === cleanPhone
+        );
+        if (!exists) {
+          const custOrders = db.orders.filter(
+            (o) => (o.phone || '').replace(/[\s-+]/g, '') === cleanPhone
+          );
+          const totalSpent = custOrders
+            .filter((o) => o.status !== 'cancelled')
+            .reduce((sum, o) => sum + (Number(o.grandTotal) || 0), 0);
+
+          db.customers.push({
+            id: `cust-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+            fullName: order.customerName || 'Valued Customer',
+            phone: order.phone,
+            whatsapp: order.whatsapp || order.phone,
+            email: order.email || '',
+            address: order.address || '',
+            district: order.district || 'Colombo',
+            city: order.city || '',
+            postalCode: order.postalCode || '',
+            notes: order.notes || '',
+            ordersCount: custOrders.length,
+            totalSpent: totalSpent,
+            createdAt: order.createdAt || new Date().toISOString(),
+            updatedAt: order.createdAt || new Date().toISOString(),
+          });
+          modified = true;
+        }
+      }
+      if (modified) {
+        saveLocalDb(db);
+      }
+    }
+
+    res.json(db.customers);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -1080,6 +1122,26 @@ const handleCustomerRegister = async (req, res) => {
 
 app.post('/api/customers', handleCustomerRegister);
 app.post('/api/customers/register', handleCustomerRegister);
+
+// 16.5 CUSTOMERS: Delete Customer (Admin only)
+app.delete('/api/customers/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (isSupabaseConfigured() && supabase) {
+      const { error } = await supabase.from('customers').delete().eq('id', id);
+      if (error) throw error;
+      return res.json({ success: true, message: 'Customer record deleted successfully' });
+    }
+
+    const db = getLocalDb();
+    if (!db.customers) db.customers = [];
+    db.customers = db.customers.filter((c) => c.id !== id);
+    saveLocalDb(db);
+    res.json({ success: true, message: 'Customer record deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // 17. CUSTOMERS: Login Authentication
 app.post('/api/customers/login', async (req, res) => {

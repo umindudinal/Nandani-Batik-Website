@@ -4,6 +4,7 @@ import Header from './components/Header';
 import Overview from './components/Overview';
 import SareeList from './components/SareeList';
 import OrderList from './components/OrderList';
+import CustomerList from './components/CustomerList';
 import SareeModal from './components/SareeModal';
 import LoginPage from './components/LoginPage';
 import Toast from './components/Toast';
@@ -39,11 +40,11 @@ export default function App() {
     try {
       const search = new URLSearchParams(window.location.search);
       const tab = search.get('tab');
-      if (['overview', 'sarees', 'orders'].includes(tab)) {
+      if (['overview', 'sarees', 'orders', 'customers'].includes(tab)) {
         return tab;
       }
       const hash = window.location.hash.replace('#', '');
-      if (['overview', 'sarees', 'orders'].includes(hash)) {
+      if (['overview', 'sarees', 'orders', 'customers'].includes(hash)) {
         return hash;
       }
     } catch { }
@@ -70,6 +71,7 @@ export default function App() {
   const [sarees, setSarees] = useState([]);
   const [orders, setOrders] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [stats, setStats] = useState(null);
   const [systemHealth, setSystemHealth] = useState(null);
 
@@ -88,13 +90,14 @@ export default function App() {
   const loadAllData = useCallback(async (isSilent = false) => {
     if (!isSilent) setIsRefreshing(true);
     try {
-      const [sareesRes, ordersRes, categoriesRes, statsRes, healthRes] =
+      const [sareesRes, ordersRes, categoriesRes, statsRes, healthRes, customersRes] =
         await Promise.allSettled([
           api.getSarees(),
           api.getOrders(),
           api.getCategories(),
           api.getStats(),
           api.getHealth(),
+          api.getCustomers(),
         ]);
 
       if (sareesRes.status === 'fulfilled') setSarees(sareesRes.value);
@@ -102,6 +105,7 @@ export default function App() {
       if (categoriesRes.status === 'fulfilled') setCategories(categoriesRes.value);
       if (statsRes.status === 'fulfilled') setStats(statsRes.value);
       if (healthRes.status === 'fulfilled') setSystemHealth(healthRes.value);
+      if (customersRes.status === 'fulfilled') setCustomers(customersRes.value);
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
       showToast('Could not reach backend server. Please make sure Backend is running.', 'error');
@@ -228,6 +232,17 @@ export default function App() {
     }
   };
 
+  // Delete Customer
+  const handleDeleteCustomer = async (id) => {
+    try {
+      await api.deleteCustomer(id);
+      showToast('Customer record removed', 'info');
+      loadAllData(true);
+    } catch (err) {
+      showToast(`Failed to delete customer: ${err.message}`, 'error');
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <>
@@ -303,6 +318,14 @@ export default function App() {
               orders={orders}
               onUpdateOrderStatus={handleUpdateOrderStatus}
               onDeleteOrder={handleDeleteOrder}
+            />
+          )}
+
+          {activeTab === 'customers' && (
+            <CustomerList
+              customers={customers}
+              orders={orders}
+              onDeleteCustomer={handleDeleteCustomer}
             />
           )}
         </main>

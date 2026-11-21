@@ -21,6 +21,10 @@ export default function Header({
       title: 'Customer Orders',
       subtitle: 'Review and process incoming website orders and customer dispatches',
     },
+    customers: {
+      title: 'Customer Directory & Profiles',
+      subtitle: 'Review registered clients, contact numbers, primary delivery locations, and order histories',
+    },
   };
 
   const current = titles[activeTab] || titles.overview;

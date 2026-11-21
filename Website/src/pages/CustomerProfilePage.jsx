@@ -278,7 +278,6 @@ export default function CustomerProfilePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-stone-100">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-[11px] font-mono tracking-widest uppercase text-stone-400">
-                <Sparkles className="w-3.5 h-3.5 text-stone-400" />
                 <span>Nandani Client Portal</span>
               </div>
               <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-stone-900 font-normal tracking-tight">

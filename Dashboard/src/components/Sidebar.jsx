@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   ShoppingBag,
   Package,
+  Users,
   X,
   LogOut,
 } from 'lucide-react';
@@ -33,6 +34,12 @@ export default function Sidebar({
       icon: Package,
       badge: stats?.pendingOrders ? `${stats.pendingOrders} New` : stats?.totalOrders,
       badgeVariant: stats?.pendingOrders ? 'alert' : 'neutral',
+    },
+    {
+      id: 'customers',
+      label: 'Customers',
+      icon: Users,
+      badge: stats?.totalCustomers,
     },
   ];
 
