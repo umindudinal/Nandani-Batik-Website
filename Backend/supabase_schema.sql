@@ -41,17 +41,7 @@ CREATE TABLE IF NOT EXISTS public.sarees (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. CATEGORIES TABLE
-CREATE TABLE IF NOT EXISTS public.categories (
-    id TEXT PRIMARY KEY,
-    name TEXT NOT NULL,
-    sinhala_name TEXT,
-    description TEXT,
-    image TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- 3. ORDERS TABLE
+-- 2. ORDERS TABLE
 CREATE TABLE IF NOT EXISTS public.orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_reference TEXT NOT NULL UNIQUE,
@@ -97,7 +87,6 @@ CREATE INDEX IF NOT EXISTS idx_customers_email ON public.customers(email);
 
 -- 5. ENABLE ROW LEVEL SECURITY (RLS)
 ALTER TABLE public.sarees ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
 
@@ -108,13 +97,6 @@ CREATE POLICY "Public read sarees" ON public.sarees FOR SELECT USING (true);
 
 DROP POLICY IF EXISTS "Allow saree management" ON public.sarees;
 CREATE POLICY "Allow saree management" ON public.sarees FOR ALL USING (true) WITH CHECK (true);
-
--- Categories: Public read, all manage
-DROP POLICY IF EXISTS "Public read categories" ON public.categories;
-CREATE POLICY "Public read categories" ON public.categories FOR SELECT USING (true);
-
-DROP POLICY IF EXISTS "Allow category management" ON public.categories;
-CREATE POLICY "Allow category management" ON public.categories FOR ALL USING (true) WITH CHECK (true);
 
 -- Orders: Public can create orders, dashboard can view and update
 DROP POLICY IF EXISTS "Public insert orders" ON public.orders;
@@ -142,15 +124,6 @@ FOR SELECT USING (bucket_id = 'saree-images');
 DROP POLICY IF EXISTS "Public upload saree images" ON storage.objects;
 CREATE POLICY "Public upload saree images" ON storage.objects
 FOR INSERT WITH CHECK (bucket_id = 'saree-images');
-
--- 7. INITIAL CATEGORIES SEED DATA
-INSERT INTO public.categories (id, name, sinhala_name, description, image) VALUES
-('all', 'All Sarees', 'සියලුම සාරි', 'Explore the full bespoke Nandani Batik saree collection', ''),
-('normal-voil', 'Normal Voil Sarees', 'නෝමල් වොයිල් සාරි', 'Lightweight, airy, everyday elegant voile batik sarees', '/sarees/saree 3.2.png'),
-('super-voil', 'Super Voil Sarees', 'සුපර් වොයිල් සාරි', 'Premium ultra-soft voile sarees with refined artisan motifs', '/sarees/saree 4.1.png'),
-('cotton-batik', 'Cotton Batik Sarees', 'කොටන් බතික් සාරි', '100% breathable pure cotton batik sarees crafted for all occasions', '/sarees/saree 1.1.png'),
-('silk-batik', 'Silk Batik Sarees', 'සිල්ක් බතික් සාරි', 'Luxurious authentic silk batik sarees with rich hand-waxed lustre', '/sarees/saree 2.1.png')
-ON CONFLICT (id) DO NOTHING;
 
 -- 8. INITIAL SAREES SEED DATA
 INSERT INTO public.sarees (

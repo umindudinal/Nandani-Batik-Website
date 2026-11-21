@@ -129,50 +129,6 @@ export const api = {
     return res.json();
   },
 
-  // Categories
-  async getCategories() {
-    const res = await fetch(`${API_BASE_URL}/categories`);
-    if (!res.ok) throw new Error('Failed to fetch categories');
-    return res.json();
-  },
-
-  async createCategory(data) {
-    const res = await fetch(`${API_BASE_URL}/categories`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Failed to create category');
-    }
-    return res.json();
-  },
-
-  async updateCategory(id, data) {
-    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Failed to update category');
-    }
-    return res.json();
-  },
-
-  async deleteCategory(id) {
-    const res = await fetch(`${API_BASE_URL}/categories/${id}`, {
-      method: 'DELETE',
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Failed to delete category');
-    }
-    return res.json();
-  },
-
   // Customers
   async getCustomers() {
     const res = await fetch(`${API_BASE_URL}/customers`);

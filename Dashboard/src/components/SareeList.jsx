@@ -20,7 +20,6 @@ import {
 
 export default function SareeList({
   sarees,
-  categories,
   onOpenAddModal,
   onOpenEditModal,
   onToggleField,

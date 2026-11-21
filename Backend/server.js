@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { supabase, isSupabaseConfigured, uploadImageToSupabase } from './supabaseClient.js';
-import { initialSarees, initialCategories } from './data/initialData.js';
+import { initialSarees } from './data/initialData.js';
 
 dotenv.config();
 
@@ -35,7 +35,6 @@ function getLocalDb() {
   if (!fs.existsSync(dbPath)) {
     const defaultData = {
       sarees: [...initialSarees],
-      categories: [...initialCategories],
       orders: [],
       customers: []
     };
@@ -45,12 +44,13 @@ function getLocalDb() {
   try {
     const raw = fs.readFileSync(dbPath, 'utf8');
     const parsed = JSON.parse(raw);
+    if (!parsed.sarees) parsed.sarees = [];
     if (!parsed.orders) parsed.orders = [];
     if (!parsed.customers) parsed.customers = [];
     return parsed;
   } catch (err) {
     console.error('Error reading local db:', err);
-    return { sarees: initialSarees, categories: initialCategories, orders: [], customers: [] };
+    return { sarees: initialSarees, orders: [], customers: [] };
   }
 }
 
@@ -1181,235 +1181,6 @@ app.post('/api/customers/login', async (req, res) => {
   }
 });
 
-// 14. CATEGORIES: List
-app.get('/api/categories', async (req, res) => {
-  try {
-    if (isSupabaseConfigured() && supabase) {
-      const { data, error } = await supabase.from('categories').select('*').order('created_at', { ascending: true });
-      if (error) throw error;
-      const normalized = (data || []).map((c) => ({
-        id: c.id,
-        name: c.name,
-        sinhalaName: c.sinhala_name || c.sinhalaName || '',
-        sinhala_name: c.sinhala_name || c.sinhalaName || '',
-        description: c.description || '',
-        image: c.image || '',
-        created_at: c.created_at,
-      }));
-      return res.json(normalized);
-    }
-    const db = getLocalDb();
-    const categories = db.categories || initialCategories;
-    const normalized = categories.map((c) => ({
-      id: c.id,
-      name: c.name,
-      sinhalaName: c.sinhalaName || c.sinhala_name || '',
-      sinhala_name: c.sinhalaName || c.sinhala_name || '',
-      description: c.description || '',
-      image: c.image || '',
-    }));
-    res.json(normalized);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 14.1 CATEGORIES: Create
-app.post('/api/categories', async (req, res) => {
-  try {
-    const { name, sinhalaName, description, image, id } = req.body;
-    if (!name || !name.trim()) {
-      return res.status(400).json({ error: 'Category name is required' });
-    }
-
-    const catId = (id || name)
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '');
-
-    if (isSupabaseConfigured() && supabase) {
-      const payload = {
-        id: catId,
-        name: name.trim(),
-        sinhala_name: sinhalaName?.trim() || '',
-        description: description?.trim() || '',
-        image: image?.trim() || '',
-      };
-      const { data, error } = await supabase
-        .from('categories')
-        .upsert(payload)
-        .select()
-        .single();
-      if (error) throw error;
-      return res.status(201).json({
-        id: data.id,
-        name: data.name,
-        sinhalaName: data.sinhala_name || '',
-        sinhala_name: data.sinhala_name || '',
-        description: data.description || '',
-        image: data.image || '',
-      });
-    }
-
-    const db = getLocalDb();
-    if (!db.categories) db.categories = [...initialCategories];
-    const newCat = {
-      id: catId,
-      name: name.trim(),
-      sinhalaName: sinhalaName?.trim() || '',
-      description: description?.trim() || '',
-      image: image?.trim() || '',
-    };
-    db.categories.push(newCat);
-    saveLocalDb(db);
-    res.status(201).json(newCat);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 14.2 CATEGORIES: Update
-app.put('/api/categories/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { name, sinhalaName, description, image } = req.body;
-
-    if (!name || !name.trim()) {
-      return res.status(400).json({ error: 'Category name is required' });
-    }
-
-    if (isSupabaseConfigured() && supabase) {
-      const updateData = {
-        name: name.trim(),
-        sinhala_name: sinhalaName?.trim() || '',
-        description: description?.trim() || '',
-        image: image?.trim() || '',
-      };
-
-      const { data, error } = await supabase
-        .from('categories')
-        .update(updateData)
-        .eq('id', id)
-        .select()
-        .single();
-      if (error) throw error;
-
-      // Update category_label on sarees that have this category
-      await supabase
-        .from('sarees')
-        .update({ category_label: name.trim() })
-        .eq('category', id);
-
-      return res.json({
-        id: data.id,
-        name: data.name,
-        sinhalaName: data.sinhala_name || '',
-        sinhala_name: data.sinhala_name || '',
-        description: data.description || '',
-        image: data.image || '',
-      });
-    }
-
-    const db = getLocalDb();
-    if (!db.categories) db.categories = [...initialCategories];
-    const idx = db.categories.findIndex((c) => c.id === id);
-    if (idx === -1) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
-
-    db.categories[idx] = {
-      ...db.categories[idx],
-      name: name.trim(),
-      sinhalaName: sinhalaName?.trim() || '',
-      description: description?.trim() || '',
-      image: image?.trim() || '',
-    };
-
-    if (db.sarees) {
-      db.sarees.forEach((s) => {
-        if (s.category === id) {
-          s.categoryLabel = name.trim();
-        }
-      });
-    }
-
-    saveLocalDb(db);
-    res.json(db.categories[idx]);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 14.3 CATEGORIES: Delete
-app.delete('/api/categories/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (id === 'all') {
-      return res.status(400).json({ error: 'Cannot delete default "All Sarees" category' });
-    }
-
-    if (isSupabaseConfigured() && supabase) {
-      // Find fallback category
-      const { data: otherCats } = await supabase
-        .from('categories')
-        .select('id, name')
-        .neq('id', id)
-        .neq('id', 'all')
-        .limit(1);
-
-      const fallbackId = otherCats?.[0]?.id || 'silk-batik';
-      const fallbackLabel = otherCats?.[0]?.name || 'Silk Batik Sarees';
-
-      // Reassign sarees to fallback category
-      await supabase
-        .from('sarees')
-        .update({ category: fallbackId, category_label: fallbackLabel })
-        .eq('category', id);
-
-      // Delete the category
-      const { error } = await supabase.from('categories').delete().eq('id', id);
-      if (error) throw error;
-
-      return res.json({
-        success: true,
-        message: `Category "${id}" deleted. Existing sarees were reassigned to "${fallbackLabel}".`,
-      });
-    }
-
-    const db = getLocalDb();
-    if (!db.categories) db.categories = [...initialCategories];
-    const initialLen = db.categories.length;
-    db.categories = db.categories.filter((c) => c.id !== id);
-
-    if (db.categories.length === initialLen) {
-      return res.status(404).json({ error: 'Category not found' });
-    }
-
-    const remainingCat = db.categories.find((c) => c.id !== 'all') || {
-      id: 'silk-batik',
-      name: 'Silk Batik Sarees',
-    };
-
-    if (db.sarees) {
-      db.sarees.forEach((s) => {
-        if (s.category === id) {
-          s.category = remainingCat.id;
-          s.categoryLabel = remainingCat.name;
-        }
-      });
-    }
-
-    saveLocalDb(db);
-    res.json({
-      success: true,
-      message: `Category "${id}" deleted. Existing sarees reassigned to "${remainingCat.name}".`,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // 15. SEED: Populate Supabase if empty
 app.post('/api/seed', async (req, res) => {
   try {
@@ -1419,23 +1190,12 @@ app.post('/api/seed', async (req, res) => {
       });
     }
 
-    // Insert categories
-    for (const cat of initialCategories) {
-      await supabase.from('categories').upsert({
-        id: cat.id,
-        name: cat.name,
-        sinhala_name: cat.sinhalaName,
-        description: cat.description,
-        image: cat.image,
-      });
-    }
-
     // Insert sarees
     for (const s of initialSarees) {
       await supabase.from('sarees').upsert(mapJsSareeToDb(s));
     }
 
-    res.json({ success: true, message: 'Successfully seeded categories and sarees to Supabase!' });
+    res.json({ success: true, message: 'Successfully seeded database!' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

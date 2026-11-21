@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { supabase, isSupabaseConfigured } from './supabaseClient.js';
-import { initialSarees, initialCategories } from './data/initialData.js';
+import { initialSarees } from './data/initialData.js';
 
 dotenv.config();
 
@@ -14,24 +14,7 @@ async function runSeed() {
 
   console.log('Connecting to Supabase at:', process.env.SUPABASE_URL);
 
-  // 1. Seed Categories
-  console.log('Seeding categories...');
-  for (const cat of initialCategories) {
-    const { error } = await supabase.from('categories').upsert({
-      id: cat.id,
-      name: cat.name,
-      sinhala_name: cat.sinhalaName,
-      description: cat.description,
-      image: cat.image,
-    });
-    if (error) {
-      console.warn(`Category ${cat.name} error:`, error.message);
-    } else {
-      console.log(`✓ Category: ${cat.name}`);
-    }
-  }
-
-  // 2. Seed Sarees
+  // 1. Seed Sarees
   console.log('\nSeeding sarees...');
   for (const s of initialSarees) {
     const payload = {

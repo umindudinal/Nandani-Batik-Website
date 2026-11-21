@@ -19,7 +19,6 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
     setIsSearchOpen,
     customerProfile,
     sarees = [],
-    categories: liveCategories = [],
     navigateTo,
   } = useCart();
 

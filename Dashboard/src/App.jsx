@@ -70,7 +70,6 @@ export default function App() {
   }, []);
   const [sarees, setSarees] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [stats, setStats] = useState(null);
   const [systemHealth, setSystemHealth] = useState(null);
@@ -90,11 +89,10 @@ export default function App() {
   const loadAllData = useCallback(async (isSilent = false) => {
     if (!isSilent) setIsRefreshing(true);
     try {
-      const [sareesRes, ordersRes, categoriesRes, statsRes, healthRes, customersRes] =
+      const [sareesRes, ordersRes, statsRes, healthRes, customersRes] =
         await Promise.allSettled([
           api.getSarees(),
           api.getOrders(),
-          api.getCategories(),
           api.getStats(),
           api.getHealth(),
           api.getCustomers(),
@@ -102,7 +100,6 @@ export default function App() {
 
       if (sareesRes.status === 'fulfilled') setSarees(sareesRes.value);
       if (ordersRes.status === 'fulfilled') setOrders(ordersRes.value);
-      if (categoriesRes.status === 'fulfilled') setCategories(categoriesRes.value);
       if (statsRes.status === 'fulfilled') setStats(statsRes.value);
       if (healthRes.status === 'fulfilled') setSystemHealth(healthRes.value);
       if (customersRes.status === 'fulfilled') setCustomers(customersRes.value);
@@ -305,7 +302,6 @@ export default function App() {
           {activeTab === 'sarees' && (
             <SareeList
               sarees={sarees}
-              categories={categories}
               onOpenAddModal={handleOpenAddModal}
               onOpenEditModal={handleOpenEditModal}
               onToggleField={handleToggleField}
@@ -336,7 +332,6 @@ export default function App() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         initialData={editingSaree}
-        categories={categories}
         onSave={handleSaveSaree}
       />
 

@@ -58,7 +58,6 @@ export default function SareeModal({
   isOpen,
   onClose,
   initialData,
-  categories,
   onSave,
 }) {
   const [currentStep, setCurrentStep] = useState(1);
@@ -171,15 +170,6 @@ export default function SareeModal({
       mainColour: colorName,
       primaryColor: colorName,
       colorHex: colObj ? colObj.hex : prev.colorHex,
-    }));
-  };
-
-  const handleCategoryChange = (catId) => {
-    const catObj = categories.find((c) => c.id === catId);
-    setFormData((prev) => ({
-      ...prev,
-      category: catId,
-      categoryLabel: catObj ? catObj.name : catId,
     }));
   };
 

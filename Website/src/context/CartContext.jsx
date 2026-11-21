@@ -203,25 +203,9 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Fetch categories dynamically from backend
-  const refreshCategories = async () => {
-    try {
-      const res = await fetch(`${API_BASE_URL}/categories`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setCategories((prev) => (areDataEqual(prev, data) ? prev : data));
-        }
-      }
-    } catch (err) {
-      console.debug('Backend offline, using static categories');
-    }
-  };
-
   useEffect(() => {
     // Initial fetch (displays spinner once during first load)
     refreshSarees(true);
-    refreshCategories();
 
     // Cross-tab real-time sync with Dashboard (instant update without polling flicker)
     let channel = null;
@@ -231,7 +215,6 @@ export const CartProvider = ({ children }) => {
         channel.onmessage = (event) => {
           if (event?.data?.type === 'SAREES_UPDATED') {
             refreshSarees(false);
-            refreshCategories();
           }
         };
       }
@@ -242,7 +225,6 @@ export const CartProvider = ({ children }) => {
     const handleStorage = (e) => {
       if (e.key === 'nandani_store_sync') {
         refreshSarees(false);
-        refreshCategories();
       }
     };
     window.addEventListener('storage', handleStorage);
@@ -250,7 +232,6 @@ export const CartProvider = ({ children }) => {
     // Silently check when user switches back to the website window
     const handleFocus = () => {
       refreshSarees(false);
-      refreshCategories();
     };
     window.addEventListener('focus', handleFocus);
 

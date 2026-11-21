@@ -24,8 +24,8 @@ import {
 import SareeCard from '../components/sarees/SareeCard';
 
 export default function ShopPage({ selectedCategory, setSelectedCategory }) {
-  const { sarees, categories: liveCategories, isSareesLoading } = useCart();
-  const categoryList = liveCategories && liveCategories.length > 0 ? liveCategories : categories;
+  const { sarees, isSareesLoading } = useCart();
+  const categoryList = categories;
 
   const [activeCategory, setActiveCategory] = useState(selectedCategory || 'all');
   const [selectedFabricType, setSelectedFabricType] = useState('all');

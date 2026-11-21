@@ -41,48 +41,5 @@ export const MAIN_COLOURS = [
   { name: 'Navy Blue', hex: '#0b1a30', sinhala: 'නාවික නිල්' },
 ];
 
-export const initialCategories = [
-  {
-    id: 'all',
-    name: 'All Sarees',
-    sinhalaName: 'සියලුම සාරි',
-    fabricType: 'All',
-    description: 'Explore the full bespoke Nandani Batik saree collection',
-    image: '',
-  },
-  {
-    id: 'normal-voil',
-    name: 'Normal Voil Sarees',
-    sinhalaName: 'නෝමල් වොයිල් සාරි',
-    fabricType: 'Normal Voil Sarees',
-    description: 'Lightweight, airy, everyday elegant voile batik sarees',
-    image: '/sarees/saree 3.2.png',
-  },
-  {
-    id: 'super-voil',
-    name: 'Super Voil Sarees',
-    sinhalaName: 'සුපර් වොයිල් සාරි',
-    fabricType: 'Super Voil Sarees',
-    description: 'Premium ultra-soft voile sarees with refined artisan motifs',
-    image: '/sarees/saree 4.1.png',
-  },
-  {
-    id: 'cotton-batik',
-    name: 'Cotton Batik Sarees',
-    sinhalaName: 'කොටන් බතික් සාරි',
-    fabricType: 'Cotton Batik Sarees',
-    description: '100% breathable pure cotton batik sarees crafted for all occasions',
-    image: '/sarees/saree 1.1.png',
-  },
-  {
-    id: 'silk-batik',
-    name: 'Silk Batik Sarees',
-    sinhalaName: 'සිල්ක් බතික් සාරි',
-    fabricType: 'Silk Batik Sarees',
-    description: 'Luxurious authentic silk batik sarees with rich hand-waxed lustre',
-    image: '/sarees/saree 2.1.png',
-  },
-];
-
 // Clean empty sarees catalog - add your sarees via Admin Dashboard
 export const initialSarees = [];
