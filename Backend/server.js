@@ -36,81 +36,8 @@ function getLocalDb() {
     const defaultData = {
       sarees: [...initialSarees],
       categories: [...initialCategories],
-      orders: [
-        {
-          id: 'ord-demo-01',
-          orderReference: 'NB-842109',
-          customerName: 'Kavindi Perera',
-          phone: '077 123 4567',
-          whatsapp: '077 123 4567',
-          address: 'No 45, Temple Road',
-          district: 'Colombo',
-          city: 'Nugegoda',
-          notes: 'Please deliver on Saturday morning if possible.',
-          paymentMethod: 'cod',
-          paymentStatus: 'pending',
-          items: [
-            {
-              id: 'nb-saree-01',
-              name: 'Nil Manel Royal Indigo Silk Batik Saree',
-              price: 28500,
-              quantity: 1,
-              image: '/sarees/saree 1.1.png'
-            }
-          ],
-          subtotal: 28500,
-          shippingFee: 0,
-          grandTotal: 28500,
-          status: 'confirmed',
-          createdAt: new Date(Date.now() - 3600000 * 5).toISOString()
-        },
-        {
-          id: 'ord-demo-02',
-          orderReference: 'NB-519382',
-          customerName: 'Anuki Fernando',
-          phone: '071 987 6543',
-          whatsapp: '071 987 6543',
-          address: '24/B, Flower Road',
-          district: 'Kandy',
-          city: 'Kandy',
-          notes: 'Gift wrapping requested.',
-          paymentMethod: 'bank',
-          paymentStatus: 'paid',
-          items: [
-            {
-              id: 'nb-saree-04',
-              name: 'Amber Sunburst Handloom Cotton Batik Saree',
-              price: 16500,
-              quantity: 1,
-              image: '/sarees/saree 4.1.png'
-            }
-          ],
-          subtotal: 16500,
-          shippingFee: 0,
-          grandTotal: 16500,
-          status: 'processing',
-          createdAt: new Date(Date.now() - 3600000 * 24).toISOString()
-        }
-      ],
-      customers: [
-        {
-          id: 'cust-demo-01',
-          fullName: 'Kavindi Perera',
-          phone: '077 123 4567',
-          whatsapp: '077 123 4567',
-          email: 'kavindi@example.com',
-          password: 'password123',
-          address: 'No 45, Temple Road',
-          district: 'Colombo',
-          city: 'Nugegoda',
-          postalCode: '10250',
-          notes: 'Prefers morning delivery.',
-          ordersCount: 1,
-          totalSpent: 28500,
-          createdAt: new Date(Date.now() - 3600000 * 24 * 7).toISOString(),
-          updatedAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-        }
-      ]
+      orders: [],
+      customers: []
     };
     fs.writeFileSync(dbPath, JSON.stringify(defaultData, null, 2));
     return defaultData;
@@ -118,6 +45,7 @@ function getLocalDb() {
   try {
     const raw = fs.readFileSync(dbPath, 'utf8');
     const parsed = JSON.parse(raw);
+    if (!parsed.orders) parsed.orders = [];
     if (!parsed.customers) parsed.customers = [];
     return parsed;
   } catch (err) {
