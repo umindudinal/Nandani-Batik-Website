@@ -231,8 +231,8 @@ export default function CustomerProfilePage() {
   if (!customerProfile) {
     return (
       <div className="min-h-[75vh] bg-[#fbfaf8] flex items-center justify-center p-6">
-        <div className="w-full max-w-md bg-white rounded-2xl p-8 sm:p-10 shadow-sm border border-stone-200/80 text-center space-y-6">
-          <div className="w-14 h-14 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center mx-auto text-stone-700">
+        <div className="w-full max-w-md bg-white p-8 sm:p-10 shadow-sm border border-stone-200/80 text-center space-y-6">
+          <div className="w-14 h-14 bg-stone-100 border border-stone-200 flex items-center justify-center mx-auto text-stone-700">
             <User className="w-6 h-6 stroke-[1.5]" />
           </div>
 
@@ -251,7 +251,7 @@ export default function CustomerProfilePage() {
           <div className="pt-2 flex flex-col gap-3">
             <button
               onClick={() => (navigateTo ? navigateTo('login') : setActivePage('login'))}
-              className="w-full bg-[#c1272d] hover:bg-[#a61c22] text-white py-3 px-6 rounded-xl text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+              className="w-full bg-[#c1272d] hover:bg-[#a61c22] text-white py-3 px-6 text-xs font-semibold uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
             >
               <span>Sign In / Register</span>
               <ArrowRight className="w-4 h-4" />
@@ -259,7 +259,7 @@ export default function CustomerProfilePage() {
 
             <button
               onClick={() => (navigateTo ? navigateTo('shop') : setActivePage('shop'))}
-              className="w-full border border-stone-200 hover:border-stone-400 text-stone-700 py-3 px-6 rounded-xl text-xs font-medium transition-colors cursor-pointer"
+              className="w-full border border-stone-200 hover:border-stone-400 text-stone-700 py-3 px-6 text-xs font-medium transition-colors cursor-pointer"
             >
               Return to Saree Collection
             </button>
@@ -274,7 +274,7 @@ export default function CustomerProfilePage() {
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* EDITORIAL ATELIER CLIENT HEADER (Natural, Non-AI, Elegant) */}
-        <div className="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 shadow-xs">
+        <div className="bg-white border border-stone-200/80 p-6 sm:p-8 shadow-xs">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-stone-100">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-[11px] font-mono tracking-widest uppercase text-stone-400">
@@ -308,7 +308,7 @@ export default function CustomerProfilePage() {
             <div className="flex items-center gap-2.5 shrink-0">
               <button
                 onClick={() => (navigateTo ? navigateTo('shop') : setActivePage('shop'))}
-                className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-4 py-2.5 text-xs font-medium transition-colors cursor-pointer"
               >
                 <ShoppingBag className="w-3.5 h-3.5 text-stone-300" />
                 <span>Shop Sarees</span>
@@ -316,7 +316,7 @@ export default function CustomerProfilePage() {
 
               <button
                 onClick={handleSignOut}
-                className="inline-flex items-center gap-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 bg-stone-100 hover:bg-stone-200 text-stone-700 px-3.5 py-2.5 text-xs font-medium transition-colors cursor-pointer"
                 title="Sign Out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -372,7 +372,7 @@ export default function CustomerProfilePage() {
           <div className="lg:col-span-4 space-y-6">
             
             {/* Primary Delivery Address Card */}
-            <div className="bg-white rounded-2xl border border-stone-200/80 p-5 sm:p-6 space-y-4 shadow-xs">
+            <div className="bg-white border border-stone-200/80 p-5 sm:p-6 space-y-4 shadow-xs">
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-mono tracking-wider uppercase text-stone-400 font-semibold">
                   Default Delivery Address
@@ -401,7 +401,7 @@ export default function CustomerProfilePage() {
             </div>
 
             {/* Atelier Concierge & WhatsApp Assistance */}
-            <div className="bg-[#faf8f5] rounded-2xl border border-[#ede7df] p-5 sm:p-6 space-y-3">
+            <div className="bg-[#faf8f5] border border-[#ede7df] p-5 sm:p-6 space-y-3">
               <div className="space-y-1">
                 <span className="text-[10px] font-mono tracking-wider uppercase text-stone-500 font-semibold block">
                   Artisan Support
@@ -419,7 +419,7 @@ export default function CustomerProfilePage() {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 px-4 rounded-xl text-xs font-medium transition-colors shadow-2xs"
+                className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white py-2.5 px-4 text-xs font-medium transition-colors shadow-2xs"
               >
                 <MessageCircle className="w-3.5 h-3.5" />
                 <span>Chat via WhatsApp (+94 77 892 4115)</span>
@@ -447,7 +447,7 @@ export default function CustomerProfilePage() {
                   <button
                     onClick={() => fetchCustomerOrders(customerProfile.phone)}
                     disabled={isLoadingOrders}
-                    className="inline-flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 bg-white border border-stone-200 px-3 py-1.5 rounded-lg shadow-2xs hover:bg-stone-50 transition-colors cursor-pointer"
+                    className="inline-flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 bg-white border border-stone-200 px-3 py-1.5 shadow-2xs hover:bg-stone-50 transition-colors cursor-pointer"
                     title="Refresh order history"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isLoadingOrders ? 'animate-spin' : ''}`} />
@@ -456,20 +456,20 @@ export default function CustomerProfilePage() {
                 </div>
 
                 {orderError && (
-                  <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-3 text-amber-800 text-xs">
+                  <div className="p-4 bg-amber-50 border border-amber-200 flex items-center gap-3 text-amber-800 text-xs">
                     <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
                     <span>{orderError}</span>
                   </div>
                 )}
 
                 {isLoadingOrders ? (
-                  <div className="p-12 text-center bg-white rounded-2xl border border-stone-200/80 space-y-3">
+                  <div className="p-12 text-center bg-white border border-stone-200/80 space-y-3">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto text-stone-400" />
                     <p className="text-xs text-stone-500">Retrieving order details from atelier records...</p>
                   </div>
                 ) : orders.length === 0 ? (
-                  <div className="p-12 text-center bg-white rounded-2xl border border-stone-200/80 space-y-4">
-                    <div className="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400">
+                  <div className="p-12 text-center bg-white border border-stone-200/80 space-y-4">
+                    <div className="w-14 h-14 bg-stone-100 flex items-center justify-center mx-auto text-stone-400">
                       <ShoppingBag className="w-6 h-6 stroke-[1.5]" />
                     </div>
                     <div className="space-y-1">
@@ -480,7 +480,7 @@ export default function CustomerProfilePage() {
                     </div>
                     <button
                       onClick={() => (navigateTo ? navigateTo('shop') : setActivePage('shop'))}
-                      className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-5 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-5 py-2.5 text-xs font-medium transition-colors cursor-pointer"
                     >
                       <span>Explore Handcrafted Sarees</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -499,7 +499,7 @@ export default function CustomerProfilePage() {
                       return (
                         <div
                           key={order.id || order.orderReference}
-                          className="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden"
+                          className="bg-white border border-stone-200/80 shadow-xs overflow-hidden"
                         >
                           {/* Order Card Header */}
                           <div className="p-4 sm:p-5 bg-stone-50/70 border-b border-stone-100 flex flex-wrap items-center justify-between gap-3">
@@ -509,7 +509,7 @@ export default function CustomerProfilePage() {
                                   #{order.orderReference}
                                 </span>
                                 <span
-                                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${statusInfo.badgeClass}`}
+                                  className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[11px] font-medium border ${statusInfo.badgeClass}`}
                                 >
                                   {statusInfo.icon}
                                   <span>{statusInfo.label}</span>
@@ -540,7 +540,7 @@ export default function CustomerProfilePage() {
                                 href={waUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors shrink-0"
+                                className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#20ba59] text-white px-3 py-1.5 text-xs font-medium transition-colors shrink-0"
                                 title="Chat regarding this order"
                               >
                                 <MessageCircle className="w-3.5 h-3.5" />
@@ -557,7 +557,7 @@ export default function CustomerProfilePage() {
                                 className="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-4"
                               >
                                 <div className="flex items-center gap-3.5 min-w-0">
-                                  <div className="w-12 h-14 bg-stone-100 rounded-lg overflow-hidden shrink-0 border border-stone-200/80">
+                                  <div className="w-12 h-14 bg-stone-100 overflow-hidden shrink-0 border border-stone-200/80">
                                     <img
                                       src={item.image || '/sarees/saree 1.1.png'}
                                       alt={item.title || 'Saree'}
@@ -593,7 +593,7 @@ export default function CustomerProfilePage() {
                               </span>
                             </div>
 
-                            <span className="px-2 py-0.5 rounded bg-stone-100 text-stone-600 font-medium text-[10px]">
+                            <span className="px-2 py-0.5 bg-stone-100 text-stone-600 font-medium text-[10px]">
                               {order.paymentMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Bank Transfer'}
                             </span>
                           </div>
@@ -607,7 +607,7 @@ export default function CustomerProfilePage() {
 
             {/* VIEW 2: PROFILE & DELIVERY ADDRESS FORM */}
             {activeTab === 'details' && (
-              <div className="bg-white rounded-2xl border border-stone-200/80 p-6 sm:p-8 shadow-xs space-y-6">
+              <div className="bg-white border border-stone-200/80 p-6 sm:p-8 shadow-xs space-y-6">
                 <div className="space-y-1 pb-4 border-b border-stone-100">
                   <h2 className="font-serif text-xl sm:text-2xl text-stone-900 font-normal">
                     Personal & Delivery Details
@@ -618,7 +618,7 @@ export default function CustomerProfilePage() {
                 </div>
 
                 {saveSuccess && (
-                  <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs">
+                  <div className="p-3.5 bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-emerald-800 text-xs">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                     <span>Your details have been updated successfully!</span>
                   </div>
@@ -637,7 +637,7 @@ export default function CustomerProfilePage() {
                         name="fullName"
                         value={formData.fullName}
                         onChange={handleProfileChange}
-                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none transition-all"
+                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none transition-all"
                       />
                     </div>
 
@@ -652,7 +652,7 @@ export default function CustomerProfilePage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleProfileChange}
-                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none transition-all"
+                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none transition-all"
                       />
                     </div>
 
@@ -666,7 +666,7 @@ export default function CustomerProfilePage() {
                         name="whatsapp"
                         value={formData.whatsapp}
                         onChange={handleProfileChange}
-                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none transition-all"
+                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none transition-all"
                       />
                     </div>
 
@@ -680,7 +680,7 @@ export default function CustomerProfilePage() {
                         name="email"
                         value={formData.email}
                         onChange={handleProfileChange}
-                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none transition-all"
+                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none transition-all"
                       />
                     </div>
 
@@ -696,7 +696,7 @@ export default function CustomerProfilePage() {
                         value={formData.address}
                         onChange={handleProfileChange}
                         placeholder="House No, Road / Street"
-                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none transition-all"
+                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none transition-all"
                       />
                     </div>
 
@@ -710,7 +710,7 @@ export default function CustomerProfilePage() {
                           name="district"
                           value={formData.district}
                           onChange={handleProfileChange}
-                          className="w-full h-11 px-4 pr-10 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none appearance-none cursor-pointer transition-all"
+                          className="w-full h-11 px-4 pr-10 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none appearance-none cursor-pointer transition-all"
                         >
                           {districts.map((d) => (
                             <option key={d} value={d}>
@@ -733,7 +733,7 @@ export default function CustomerProfilePage() {
                         value={formData.city}
                         onChange={handleProfileChange}
                         placeholder="e.g. Maharagama"
-                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 rounded-xl text-stone-900 text-xs focus:outline-none transition-all"
+                        className="w-full h-11 px-4 bg-[#f8f9fa] focus:bg-white border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs focus:outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -742,7 +742,7 @@ export default function CustomerProfilePage() {
                     <button
                       type="submit"
                       disabled={isSavingProfile}
-                      className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-6 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all shadow-xs cursor-pointer"
+                      className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-6 py-2.5 text-xs font-semibold uppercase tracking-wider transition-all shadow-xs cursor-pointer"
                     >
                       <Save className="w-3.5 h-3.5" />
                       <span>{isSavingProfile ? 'Saving...' : 'Save Profile'}</span>
@@ -765,8 +765,8 @@ export default function CustomerProfilePage() {
                 </div>
 
                 {wishlist.length === 0 ? (
-                  <div className="p-12 text-center bg-white rounded-2xl border border-stone-200/80 space-y-4">
-                    <div className="w-14 h-14 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400">
+                  <div className="p-12 text-center bg-white border border-stone-200/80 space-y-4">
+                    <div className="w-14 h-14 bg-stone-100 flex items-center justify-center mx-auto text-stone-400">
                       <Heart className="w-6 h-6 stroke-[1.5]" />
                     </div>
                     <div className="space-y-1">
@@ -777,7 +777,7 @@ export default function CustomerProfilePage() {
                     </div>
                     <button
                       onClick={() => (navigateTo ? navigateTo('shop') : setActivePage('shop'))}
-                      className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-5 py-2.5 rounded-xl text-xs font-medium transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 bg-[#1a1a1a] hover:bg-stone-800 text-white px-5 py-2.5 text-xs font-medium transition-colors cursor-pointer"
                     >
                       <span>Explore Saree Collection</span>
                       <ArrowRight className="w-3.5 h-3.5" />
@@ -788,7 +788,7 @@ export default function CustomerProfilePage() {
                     {wishlist.map((saree) => (
                       <div
                         key={saree.id}
-                        className="bg-white rounded-2xl border border-stone-200/80 overflow-hidden shadow-xs hover:shadow-sm transition-shadow group"
+                        className="bg-white border border-stone-200/80 overflow-hidden shadow-xs hover:shadow-sm transition-shadow group"
                       >
                         <div className="aspect-3/4 overflow-hidden bg-stone-100 relative">
                           <img
@@ -812,7 +812,7 @@ export default function CustomerProfilePage() {
                                 setActivePage('saree-detail');
                               }
                             }}
-                            className="w-full mt-1 inline-flex items-center justify-center gap-1.5 bg-[#1a1a1a] hover:bg-stone-800 text-white py-2 px-3 rounded-lg text-xs font-medium transition-colors cursor-pointer"
+                            className="w-full mt-1 inline-flex items-center justify-center gap-1.5 bg-[#1a1a1a] hover:bg-stone-800 text-white py-2 px-3 text-xs font-medium transition-colors cursor-pointer"
                           >
                             <span>View Saree</span>
                             <ChevronRight className="w-3.5 h-3.5" />
