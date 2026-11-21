@@ -445,8 +445,8 @@ export default function SareeModal({
                 />
               </div>
 
-              {/* 4 Classification Attributes Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+              {/* 3 Classification Attributes Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
                 {/* 1. Fabric Type */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-1">
@@ -500,61 +500,6 @@ export default function SareeModal({
                     ))}
                   </select>
                 </div>
-
-                {/* 4. Main Colour */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-800 mb-1">
-                    4. Main Colour <span className="text-rose-500">*</span>
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="w-5 h-5 rounded-full border border-slate-300 shrink-0"
-                      style={{
-                        backgroundColor:
-                          MAIN_COLOURS.find((c) => c.name === formData.mainColour)?.hex || formData.colorHex || '#0b1a30',
-                      }}
-                    />
-                    <select
-                      value={formData.mainColour}
-                      onChange={(e) => handleMainColourChange(e.target.value)}
-                      className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                    >
-                      {MAIN_COLOURS.map((mc) => (
-                        <option key={mc.name} value={mc.name}>
-                          {mc.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Main Colour Visual Swatch Selector */}
-              <div>
-                <label className="block text-[11px] font-mono text-slate-500 uppercase tracking-wider mb-1.5">
-                  Select Main Colour Palette (12 Colours)
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {MAIN_COLOURS.map((col) => (
-                    <button
-                      type="button"
-                      key={col.name}
-                      onClick={() => handleMainColourChange(col.name)}
-                      title={col.name}
-                      className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] border transition-all ${
-                        formData.mainColour === col.name
-                          ? 'border-[#0a1120] bg-[#0a1120] text-white font-medium shadow-xs scale-105'
-                          : 'border-slate-200 bg-white text-slate-700 hover:border-slate-400'
-                      }`}
-                    >
-                      <span
-                        className="w-2.5 h-2.5 rounded-full border border-white/50 shrink-0"
-                        style={{ backgroundColor: col.hex }}
-                      />
-                      <span>{col.name}</span>
-                    </button>
-                  ))}
-                </div>
               </div>
 
               <div>
@@ -574,100 +519,197 @@ export default function SareeModal({
 
           {/* STEP 2: PHOTOS & MEDIA */}
           {currentStep === 2 && (
-            <div className="space-y-5 animate-in fade-in-50 duration-150">
-              {/* Primary Photo */}
-              <div className="space-y-2">
-                <label className="block text-xs font-medium text-slate-700">
-                  Primary Cover Photo <span className="text-rose-500">*</span>
-                </label>
-
-                <div className="flex flex-col sm:flex-row gap-4 items-start p-4 rounded-xl border border-slate-200 bg-slate-50/50">
-                  {/* Thumbnail preview */}
-                  <div className="relative w-32 h-36 rounded-lg border border-slate-200 bg-white overflow-hidden shrink-0 flex items-center justify-center">
-                    {formData.image && formData.image.trim() ? (
-                      <img
-                        src={formData.image.trim()}
-                        alt="Cover Preview"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.src = '/sarees/saree 1.1.png';
-                        }}
-                      />
-                    ) : (
-                      <div className="text-center p-2 text-slate-400">
-                        <ImageIcon size={28} className="mx-auto mb-1 opacity-40" />
-                        <span className="text-[10px] block">No photo</span>
-                      </div>
-                    )}
-                    {isUploading && (
-                      <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center text-white">
-                        <Loader2 size={20} className="animate-spin text-brand-gold" />
-                      </div>
-                    )}
+            <div className="space-y-4 animate-in fade-in-50 duration-150">
+              {/* Dual Photo Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 1. Primary Photo */}
+                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-slate-800">
+                      Primary Cover Photo <span className="text-rose-500">*</span>
+                    </label>
+                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">
+                      Cover
+                    </span>
                   </div>
 
-                  {/* Upload Controls */}
-                  <div className="flex-1 space-y-2">
-                    <div>
-                      <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors shadow-xs">
-                        <Upload size={13} className="text-slate-500" />
-                        <span>{isUploading ? 'Uploading...' : 'Choose Image File'}</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          disabled={isUploading}
-                          onChange={(e) => handleFileUpload(e, false)}
-                          className="hidden"
+                  <div className="flex gap-3 items-start">
+                    {/* Thumbnail preview */}
+                    <div className="relative w-24 h-28 rounded-lg border border-slate-200 bg-white overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+                      {formData.image && formData.image.trim() ? (
+                        <img
+                          src={formData.image.trim()}
+                          alt="Cover Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = '/sarees/saree 1.1.png';
+                          }}
                         />
-                      </label>
-                      <span className="text-[11px] text-slate-400 ml-2">or paste URL below</span>
+                      ) : (
+                        <div className="text-center p-1.5 text-slate-400">
+                          <ImageIcon size={22} className="mx-auto mb-1 opacity-40" />
+                          <span className="text-[10px] block">No photo</span>
+                        </div>
+                      )}
+                      {isUploading && (
+                        <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center text-white">
+                          <Loader2 size={18} className="animate-spin text-brand-gold" />
+                        </div>
+                      )}
                     </div>
 
-                    <input
-                      type="text"
-                      placeholder="e.g. /sarees/saree 1.1.png or https://..."
-                      value={formData.image}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          image: e.target.value,
-                          hoverImage: formData.hoverImage || e.target.value,
-                        })
-                      }
-                      className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none font-mono text-[11px]"
-                    />
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                      Main photo shown on the website catalog cards and product detail banner.
-                    </p>
+                    {/* Upload Controls */}
+                    <div className="flex-1 space-y-1.5">
+                      <div>
+                        <label className="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors shadow-xs">
+                          <Upload size={12} className="text-slate-500" />
+                          <span>{isUploading ? 'Uploading...' : 'Choose File'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={isUploading}
+                            onChange={(e) => handleFileUpload(e, false)}
+                            className="hidden"
+                          />
+                        </label>
+                        <span className="text-[10px] text-slate-400 ml-1.5">or paste URL</span>
+                      </div>
+
+                      <input
+                        type="text"
+                        placeholder="e.g. /sarees/saree 1.1.png or URL"
+                        value={formData.image}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            image: e.target.value,
+                            hoverImage: formData.hoverImage || e.target.value,
+                          })
+                        }
+                        className="w-full text-xs p-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none font-mono text-[11px]"
+                      />
+                      <p className="text-[10px] text-slate-400">Main catalog photo</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Secondary Hover Photo */}
+                <div className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-semibold text-slate-800">
+                      Secondary / Hover Angle Photo
+                    </label>
+                    <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-semibold">
+                      Hover
+                    </span>
+                  </div>
+
+                  <div className="flex gap-3 items-start">
+                    {/* Thumbnail preview */}
+                    <div className="relative w-24 h-28 rounded-lg border border-slate-200 bg-white overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+                      {formData.hoverImage && formData.hoverImage.trim() ? (
+                        <img
+                          src={formData.hoverImage.trim()}
+                          alt="Hover Preview"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = '/sarees/saree 1.2.png';
+                          }}
+                        />
+                      ) : (
+                        <div className="text-center p-1.5 text-slate-400">
+                          <ImageIcon size={22} className="mx-auto mb-1 opacity-40" />
+                          <span className="text-[10px] block">No photo</span>
+                        </div>
+                      )}
+                      {isHoverUploading && (
+                        <div className="absolute inset-0 bg-slate-900/60 flex items-center justify-center text-white">
+                          <Loader2 size={18} className="animate-spin text-brand-gold" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Upload Controls */}
+                    <div className="flex-1 space-y-1.5">
+                      <div>
+                        <label className="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors shadow-xs">
+                          <Upload size={12} className="text-slate-500" />
+                          <span>{isHoverUploading ? 'Uploading...' : 'Choose File'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            disabled={isHoverUploading}
+                            onChange={(e) => handleFileUpload(e, true)}
+                            className="hidden"
+                          />
+                        </label>
+                        <span className="text-[10px] text-slate-400 ml-1.5">or paste URL</span>
+                      </div>
+
+                      <input
+                        type="text"
+                        placeholder="e.g. /sarees/saree 1.2.png or URL"
+                        value={formData.hoverImage || ''}
+                        onChange={(e) => setFormData({ ...formData, hoverImage: e.target.value })}
+                        className="w-full text-xs p-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none font-mono text-[11px]"
+                      />
+                      <p className="text-[10px] text-slate-400">Card hover & detail angle</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Secondary Hover Photo */}
-              <div className="space-y-2 pt-2 border-t border-slate-100">
-                <label className="block text-xs font-medium text-slate-700">
-                  Secondary / Hover Angle Photo (Optional)
-                </label>
-
-                <div className="flex items-center gap-2">
-                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-xs font-medium text-slate-700 transition-colors shrink-0">
-                    <Upload size={12} className="text-slate-500" />
-                    <span>{isHoverUploading ? 'Uploading...' : 'Upload'}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      disabled={isHoverUploading}
-                      onChange={(e) => handleFileUpload(e, true)}
-                      className="hidden"
-                    />
+              {/* SELECT MAIN COLOUR PALETTE (12 COLOURS) */}
+              <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-xs space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-[11px] font-mono text-slate-500 uppercase tracking-wider">
+                    SELECT MAIN COLOUR PALETTE (12 COLOURS) <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    placeholder="Hover Image URL (displayed when customers hover over the saree)"
-                    value={formData.hoverImage || ''}
-                    onChange={(e) => setFormData({ ...formData, hoverImage: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none font-mono text-[11px]"
-                  />
+                  {formData.mainColour && (
+                    <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
+                      <span className="text-slate-400 text-[11px]">Selected:</span>
+                      <span
+                        className="w-2.5 h-2.5 rounded-full border border-slate-300 inline-block shrink-0"
+                        style={{
+                          backgroundColor:
+                            MAIN_COLOURS.find((c) => c.name === formData.mainColour)?.hex || formData.colorHex || '#0b1a30',
+                        }}
+                      />
+                      <span className="font-semibold text-slate-800 text-[11px]">{formData.mainColour}</span>
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-[11px] text-slate-500 leading-relaxed">
+                  Look at your saree photos above and select the matching primary colour:
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 pt-0.5">
+                  {MAIN_COLOURS.map((col) => {
+                    const isSelected = formData.mainColour === col.name;
+                    const isWhite = col.name === 'White' || col.hex === '#ffffff';
+                    return (
+                      <button
+                        type="button"
+                        key={col.name}
+                        onClick={() => handleMainColourChange(col.name)}
+                        title={col.name}
+                        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded text-[11px] border transition-all ${
+                          isSelected
+                            ? 'border-[#0a1120] bg-[#0a1120] text-white font-medium shadow-xs scale-105'
+                            : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                      >
+                        <span
+                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                            isWhite ? 'border border-slate-300' : isSelected ? 'border border-white/60' : 'border border-transparent'
+                          }`}
+                          style={{ backgroundColor: col.hex }}
+                        />
+                        <span>{col.name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
