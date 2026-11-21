@@ -28,10 +28,30 @@ export async function getSarees(req, res) {
         query = query.eq('in_stock', inStock === 'true');
       }
 
-      const { data, error } = await query;
+      let { data, error } = await query;
+      if (error && error.message && error.message.includes('schema cache')) {
+        console.warn('Supabase query schema cache notice. Falling back to select * query...');
+        const fallback = await supabase.from('sarees').select('*').order('created_at', { ascending: false });
+        if (!fallback.error) {
+          data = fallback.data;
+          error = null;
+        }
+      }
       if (error) throw error;
 
       let result = (data || []).map(mapDbSareeToJs);
+      if (fabricType && fabricType !== 'all') {
+        result = result.filter((s) => s.fabricType === fabricType || s.categoryLabel === fabricType);
+      }
+      if (designType && designType !== 'all') {
+        result = result.filter((s) => s.designType === designType);
+      }
+      if (colourType && colourType !== 'all') {
+        result = result.filter((s) => s.colourType === colourType);
+      }
+      if (mainColour && mainColour !== 'all') {
+        result = result.filter((s) => s.mainColour === mainColour || s.primaryColor === mainColour);
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
@@ -131,8 +151,29 @@ export async function createSaree(req, res) {
       const dbPayload = mapJsSareeToDb(newSaree);
       dbPayload.created_at = newSaree.createdAt;
 
-      const { data, error } = await supabase.from('sarees').insert([dbPayload]).select().single();
-      if (error) throw error;
+      let { data, error } = await supabase.from('sarees').insert([dbPayload]).select().single();
+      if (error) {
+        // If Supabase table is missing the newly added taxonomy columns, retry gracefully
+        if (error.message && error.message.includes('schema cache')) {
+          console.warn('Supabase schema cache notice: columns missing in database table. Retrying with legacy columns...');
+          const fallbackPayload = { ...dbPayload };
+          delete fallbackPayload.fabric_type;
+          delete fallbackPayload.design_type;
+          delete fallbackPayload.colour_type;
+          delete fallbackPayload.main_colour;
+          const retry = await supabase.from('sarees').insert([fallbackPayload]).select().single();
+          if (!retry.error) {
+            return res.status(201).json({
+              ...mapDbSareeToJs(retry.data),
+              fabricType: newSaree.fabricType,
+              designType: newSaree.designType,
+              colourType: newSaree.colourType,
+              mainColour: newSaree.mainColour,
+            });
+          }
+        }
+        throw error;
+      }
       return res.status(201).json(mapDbSareeToJs(data));
     }
 
@@ -155,13 +196,38 @@ export async function updateSaree(req, res) {
 
     if (isSupabaseConfigured() && supabase) {
       const dbPayload = mapJsSareeToDb({ ...body, id });
-      const { data, error } = await supabase
+      let { data, error } = await supabase
         .from('sarees')
         .update(dbPayload)
         .eq('id', id)
         .select()
         .single();
-      if (error) throw error;
+      if (error) {
+        if (error.message && error.message.includes('schema cache')) {
+          console.warn('Supabase schema cache notice in update. Retrying with legacy columns...');
+          const fallbackPayload = { ...dbPayload };
+          delete fallbackPayload.fabric_type;
+          delete fallbackPayload.design_type;
+          delete fallbackPayload.colour_type;
+          delete fallbackPayload.main_colour;
+          const retry = await supabase
+            .from('sarees')
+            .update(fallbackPayload)
+            .eq('id', id)
+            .select()
+            .single();
+          if (!retry.error) {
+            return res.json({
+              ...mapDbSareeToJs(retry.data),
+              fabricType: body.fabricType,
+              designType: body.designType,
+              colourType: body.colourType,
+              mainColour: body.mainColour,
+            });
+          }
+        }
+        throw error;
+      }
       return res.json(mapDbSareeToJs(data));
     }
 

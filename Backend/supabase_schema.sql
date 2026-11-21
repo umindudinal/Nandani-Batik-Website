@@ -41,6 +41,12 @@ CREATE TABLE IF NOT EXISTS public.sarees (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Ensure taxonomy columns exist if the table was previously created
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS fabric_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS design_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS colour_type TEXT;
+ALTER TABLE public.sarees ADD COLUMN IF NOT EXISTS main_colour TEXT;
+
 -- 2. ORDERS TABLE
 CREATE TABLE IF NOT EXISTS public.orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
