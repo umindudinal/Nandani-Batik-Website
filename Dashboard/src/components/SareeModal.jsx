@@ -38,20 +38,20 @@ export const COLOUR_TYPES = [
   'Multi Colour',
 ];
 
-// 12 Main Atelier Colours with hex codes and Sinhala names
+// 12 Main Atelier Colours with hex codes
 export const MAIN_COLOURS = [
-  { name: 'Black', hex: '#000000', sinhala: 'කළු' },
-  { name: 'Red', hex: '#dc2626', sinhala: 'රතු' },
-  { name: 'Blue', hex: '#2563eb', sinhala: 'නිල්' },
-  { name: 'Green', hex: '#16a34a', sinhala: 'කොළ' },
-  { name: 'Purple', hex: '#9333ea', sinhala: 'දම්' },
-  { name: 'Pink', hex: '#ec4899', sinhala: 'රෝස' },
-  { name: 'Yellow', hex: '#eab308', sinhala: 'කහ' },
-  { name: 'Brown', hex: '#78350f', sinhala: 'දුඹුරු' },
-  { name: 'White', hex: '#ffffff', sinhala: 'සුදු' },
-  { name: 'Maroon', hex: '#800000', sinhala: 'මැරූන්' },
-  { name: 'Orange', hex: '#ea580c', sinhala: 'තැඹිලි' },
-  { name: 'Navy Blue', hex: '#0b1a30', sinhala: 'නාවික නිල්' },
+  { name: 'Black', hex: '#000000' },
+  { name: 'Red', hex: '#dc2626' },
+  { name: 'Blue', hex: '#2563eb' },
+  { name: 'Green', hex: '#16a34a' },
+  { name: 'Purple', hex: '#9333ea' },
+  { name: 'Pink', hex: '#ec4899' },
+  { name: 'Yellow', hex: '#eab308' },
+  { name: 'Brown', hex: '#78350f' },
+  { name: 'White', hex: '#ffffff' },
+  { name: 'Maroon', hex: '#800000' },
+  { name: 'Orange', hex: '#ea580c' },
+  { name: 'Navy Blue', hex: '#0b1a30' },
 ];
 
 export default function SareeModal({
@@ -434,11 +434,11 @@ export default function SareeModal({
 
               <div>
                 <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Sinhala Title (සිංහල නම)
+                  Local Title / Sub-title
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. නිල් මානෙල් රාජකීය සිල්ක් බතික් සාරිය"
+                  placeholder="e.g. Nil Manel Royal Indigo Silk Saree"
                   value={formData.sinhalaName || ''}
                   onChange={(e) => setFormData({ ...formData, sinhalaName: e.target.value })}
                   className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -450,7 +450,7 @@ export default function SareeModal({
                 {/* 1. Fabric Type */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-1">
-                    1. Fabric Type (රෙදි වර්ගය) <span className="text-rose-500">*</span>
+                    1. Fabric Type <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={formData.fabricType}
@@ -468,7 +468,7 @@ export default function SareeModal({
                 {/* 2. Design Type */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-1">
-                    2. Design Type (මෝස්තර වර්ගය) <span className="text-rose-500">*</span>
+                    2. Design Type <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={formData.designType}
@@ -486,7 +486,7 @@ export default function SareeModal({
                 {/* 3. Colour Type */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-1">
-                    3. Colour Type (වර්ණ වර්ගය) <span className="text-rose-500">*</span>
+                    3. Colour Type <span className="text-rose-500">*</span>
                   </label>
                   <select
                     value={formData.colourType}
@@ -504,7 +504,7 @@ export default function SareeModal({
                 {/* 4. Main Colour */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-1">
-                    4. Main Colour (ප්‍රධාන වර්ණය) <span className="text-rose-500">*</span>
+                    4. Main Colour <span className="text-rose-500">*</span>
                   </label>
                   <div className="flex items-center gap-2">
                     <span
@@ -521,7 +521,7 @@ export default function SareeModal({
                     >
                       {MAIN_COLOURS.map((mc) => (
                         <option key={mc.name} value={mc.name}>
-                          {mc.name} ({mc.sinhala})
+                          {mc.name}
                         </option>
                       ))}
                     </select>
@@ -540,7 +540,7 @@ export default function SareeModal({
                       type="button"
                       key={col.name}
                       onClick={() => handleMainColourChange(col.name)}
-                      title={`${col.name} (${col.sinhala})`}
+                      title={col.name}
                       className={`flex items-center gap-1.5 px-2 py-1 rounded text-[11px] border transition-all ${
                         formData.mainColour === col.name
                           ? 'border-[#0a1120] bg-[#0a1120] text-white font-medium shadow-xs scale-105'
@@ -871,7 +871,7 @@ export default function SareeModal({
                           colorHex: col.hex,
                         })
                       }
-                      title={`${col.name} (${col.sinhala})`}
+                      title={col.name}
                       className={`w-6 h-6 rounded-full border transition-all ${
                         formData.mainColour === col.name || formData.primaryColor === col.name
                           ? 'ring-2 ring-slate-900 ring-offset-1 scale-110'
