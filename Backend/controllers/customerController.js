@@ -121,13 +121,13 @@ export async function registerCustomer(req, res) {
     } = req.body;
 
     if (!fullName || !fullName.trim()) {
-      return res.status(400).json({ error: 'Full name is required (සම්පූර්ණ නම අවශ්‍යයි)' });
+      return res.status(400).json({ error: 'Full name is required' });
     }
     if (!phone || !phone.trim()) {
-      return res.status(400).json({ error: 'Contact phone number is required (දුරකථන අංකය අවශ්‍යයි)' });
+      return res.status(400).json({ error: 'Contact phone number is required' });
     }
     if (!address || !address.trim()) {
-      return res.status(400).json({ error: 'Delivery address is required (බෙදාහැරීමේ ලිපිනය අවශ්‍යයි)' });
+      return res.status(400).json({ error: 'Delivery address is required' });
     }
 
     const cleanPhone = phone.trim();
@@ -295,7 +295,7 @@ export async function loginCustomer(req, res) {
   try {
     const { identifier, password } = req.body;
     if (!identifier || !identifier.trim()) {
-      return res.status(400).json({ error: 'Email or phone number is required (ඊමේල් හෝ දුරකථන අංකය ඇතුළත් කරන්න)' });
+      return res.status(400).json({ error: 'Email or phone number is required' });
     }
 
     const clean = identifier.trim();
@@ -337,14 +337,14 @@ export async function loginCustomer(req, res) {
 
     if (!foundCustomer) {
       return res.status(404).json({
-        error: 'ගිණුමක් හමු නොවීය. කරුණාකර පළමුව ලියාපදිංචි වන්න (Account not found. Please create an account).'
+        error: 'Account not found. Please create an account.'
       });
     }
 
     // If account has password and user provided password, check match
     if (customerPassword && password && customerPassword !== password) {
       return res.status(401).json({
-        error: 'මුරපදය වැරදියි. කරුණාකර නැවත උත්සාහ කරන්න (Incorrect password).'
+        error: 'Incorrect password. Please try again.'
       });
     }
 
@@ -352,7 +352,7 @@ export async function loginCustomer(req, res) {
       success: true,
       customer: foundCustomer,
       token: `nb_client_${Date.now()}`,
-      message: 'සාදරයෙන් පිළිගනිමු! (Login successful)',
+      message: 'Login successful',
     });
   } catch (err) {
     console.error('Customer login error:', err);

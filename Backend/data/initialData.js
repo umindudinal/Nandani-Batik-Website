@@ -25,20 +25,20 @@ export const COLOUR_TYPES = [
   'Multi Colour',
 ];
 
-// 12 Main Atelier Colours with hex codes and Sinhala names
+// 12 Main Atelier Colours with hex codes
 export const MAIN_COLOURS = [
-  { name: 'Black', hex: '#000000', sinhala: 'කළු' },
-  { name: 'Red', hex: '#dc2626', sinhala: 'රතු' },
-  { name: 'Blue', hex: '#2563eb', sinhala: 'නිල්' },
-  { name: 'Green', hex: '#16a34a', sinhala: 'කොළ' },
-  { name: 'Purple', hex: '#9333ea', sinhala: 'දම්' },
-  { name: 'Pink', hex: '#ec4899', sinhala: 'රෝස' },
-  { name: 'Yellow', hex: '#eab308', sinhala: 'කහ' },
-  { name: 'Brown', hex: '#78350f', sinhala: 'දුඹුරු' },
-  { name: 'White', hex: '#ffffff', sinhala: 'සුදු' },
-  { name: 'Maroon', hex: '#800000', sinhala: 'මැරූන්' },
-  { name: 'Orange', hex: '#ea580c', sinhala: 'තැඹිලි' },
-  { name: 'Navy Blue', hex: '#0b1a30', sinhala: 'නාවික නිල්' },
+  { name: 'Black', hex: '#000000' },
+  { name: 'Red', hex: '#dc2626' },
+  { name: 'Blue', hex: '#2563eb' },
+  { name: 'Green', hex: '#16a34a' },
+  { name: 'Purple', hex: '#9333ea' },
+  { name: 'Pink', hex: '#ec4899' },
+  { name: 'Yellow', hex: '#eab308' },
+  { name: 'Brown', hex: '#78350f' },
+  { name: 'White', hex: '#ffffff' },
+  { name: 'Maroon', hex: '#800000' },
+  { name: 'Orange', hex: '#ea580c' },
+  { name: 'Navy Blue', hex: '#0b1a30' },
 ];
 
 // Clean empty sarees catalog - add your sarees via Admin Dashboard
