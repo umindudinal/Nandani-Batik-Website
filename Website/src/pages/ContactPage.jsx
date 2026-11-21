@@ -15,7 +15,7 @@ import {
   ArrowRight,
   Sparkles,
 } from 'lucide-react';
-import { faqs } from '../data/testimonials';
+import { faqs } from '../data/faqs';
 import { useCart } from '../context/CartContext';
 
 export default function ContactPage() {

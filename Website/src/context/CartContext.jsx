@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { sarees as staticSarees } from '../data/sarees';
 import { categories as staticCategories } from '../data/categories';
 
 const CartContext = createContext();
