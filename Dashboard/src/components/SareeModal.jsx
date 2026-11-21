@@ -308,18 +308,6 @@ export default function SareeModal({
     }
   };
 
-  const colorsList = [
-    { name: 'Dark Blue', hex: '#0b1a30' },
-    { name: 'Emerald Green', hex: '#047857' },
-    { name: 'Crimson Red', hex: '#991b1b' },
-    { name: 'Mustard Gold', hex: '#b45309' },
-    { name: 'Turquoise', hex: '#0891b2' },
-    { name: 'Midnight Black', hex: '#18181b' },
-    { name: 'Pastel Pink', hex: '#f472b6' },
-    { name: 'Royal Maroon', hex: '#7f1d1d' },
-    { name: 'Terracotta', hex: '#ea580c' },
-  ];
-
   const steps = [
     { num: 1, label: 'General Info', short: 'Info' },
     { num: 2, label: 'Photos & Media', short: 'Photos' },
@@ -446,7 +434,7 @@ export default function SareeModal({
               </div>
 
               {/* 3 Classification Attributes Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 ">
                 {/* 1. Fabric Type */}
                 <div>
                   <label className="block text-xs font-semibold text-slate-800 mb-1">
@@ -828,27 +816,38 @@ export default function SareeModal({
           {/* STEP 4: ARTISAN SPECIFICATIONS */}
           {currentStep === 4 && (
             <div className="space-y-4 animate-in fade-in-50 duration-150">
+              {/* Summary Banner of Chosen Product Style & Color */}
+              <div className="p-3 rounded-xl border border-slate-200/90 bg-slate-50/80 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500 font-medium">Selected Style:</span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-800">
+                    {formData.fabricType}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-800">
+                    {formData.designType}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
+                  <span className="text-slate-400 text-[11px]">Primary Colour:</span>
+                  <span
+                    className="w-3 h-3 rounded-full border border-slate-300 shrink-0"
+                    style={{ backgroundColor: formData.colorHex || '#0b1a30' }}
+                  />
+                  <span className="font-semibold text-slate-800 text-[11px]">
+                    {formData.mainColour || formData.primaryColor}
+                  </span>
+                </div>
+              </div>
+
+              {/* Dimensions & Draping */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
-                    Fabric Material
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 100% Pure Mulberry Silk"
-                    value={formData.fabric || ''}
-                    onChange={(e) => setFormData({ ...formData, fabric: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Saree Length
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. 6.0 Meters (includes blouse)"
+                    placeholder="e.g. 6.0 Meters (includes unstitched blouse piece)"
                     value={formData.length || ''}
                     onChange={(e) => setFormData({ ...formData, length: e.target.value })}
                     className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -856,20 +855,36 @@ export default function SareeModal({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Blouse Piece Included
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. 0.8m unstitched matching fabric"
+                    placeholder="e.g. 0.8m Hand-batik matching blouse fabric included"
                     value={formData.blousePiece || ''}
                     onChange={(e) => setFormData({ ...formData, blousePiece: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border rounded-lg focus:outline-none focus:border-slate-800"
+                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Fabric & Craftsmanship Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Fabric Material & Weave
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 100% Pure Voile Cotton"
+                    value={formData.fabric || ''}
+                    onChange={(e) => setFormData({ ...formData, fabric: e.target.value })}
+                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Crafting Duration
                   </label>
                   <input
@@ -882,81 +897,45 @@ export default function SareeModal({
                 </div>
               </div>
 
+              {/* Pallu & Border Art Details */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Pallu & Border Details (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Intricate dual-tone hand-waxed floral chandelier with fine crackle effect"
+                  value={formData.palluDetails || ''}
+                  onChange={(e) => setFormData({ ...formData, palluDetails: e.target.value })}
+                  className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                />
+              </div>
+
+              {/* Care Instructions */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Wash & Maintenance Care
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Dry clean recommended to preserve luster and dye vibrancy"
+                  placeholder="e.g. Gentle hand wash or dry clean recommended to preserve batik vibrancy"
                   value={formData.washCare || ''}
                   onChange={(e) => setFormData({ ...formData, washCare: e.target.value })}
-                  className="w-full text-xs p-2 bg-white border rounded-lg focus:outline-none focus:border-slate-800"
+                  className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
                 />
-              </div>
-
-              {/* Color Swatch Picker */}
-              <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                  Primary Color Swatch
-                </label>
-                <div className="flex flex-wrap gap-1.5 mb-2">
-                  {MAIN_COLOURS.map((col) => (
-                    <button
-                      type="button"
-                      key={col.name}
-                      onClick={() =>
-                        setFormData({
-                          ...formData,
-                          mainColour: col.name,
-                          primaryColor: col.name,
-                          colorHex: col.hex,
-                        })
-                      }
-                      title={col.name}
-                      className={`w-6 h-6 rounded-full border transition-all ${
-                        formData.mainColour === col.name || formData.primaryColor === col.name
-                          ? 'ring-2 ring-slate-900 ring-offset-1 scale-110'
-                          : 'border-slate-300 hover:scale-105'
-                      }`}
-                      style={{ backgroundColor: col.hex }}
-                    />
-                  ))}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Color Name (e.g. Dark Blue)"
-                    value={formData.primaryColor}
-                    onChange={(e) => setFormData({ ...formData, primaryColor: e.target.value })}
-                    className="text-xs p-1.5 bg-white border border-slate-200 rounded-lg flex-1"
-                  />
-                  <div className="flex items-center gap-1.5 border border-slate-200 rounded-lg p-1 bg-white">
-                    <input
-                      type="color"
-                      value={formData.colorHex || '#0b1a30'}
-                      onChange={(e) => setFormData({ ...formData, colorHex: e.target.value })}
-                      className="w-5 h-5 rounded cursor-pointer border-0 bg-transparent"
-                    />
-                    <span className="text-[10px] font-mono text-slate-500 pr-1">
-                      {formData.colorHex}
-                    </span>
-                  </div>
-                </div>
               </div>
 
               {/* Tags */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 mb-1">
-                  Tags (comma separated)
+                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                  Search & Filter Tags (comma separated)
                 </label>
                 <input
                   type="text"
-                  placeholder="Pure Silk, Wax Batik, Signature"
+                  placeholder="e.g. Normal Voile, Handmade Wax Batik, Casual Chic"
                   value={formData.tags || ''}
                   onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
-                  className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none text-[11px]"
+                  className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none font-mono text-[11px]"
                 />
               </div>
             </div>
