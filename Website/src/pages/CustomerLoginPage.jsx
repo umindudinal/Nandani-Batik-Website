@@ -225,7 +225,7 @@ export default function CustomerLoginPage() {
   return (
     <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden bg-linear-to-br from-[#f8ece6] via-[#fbf7f4] to-[#f4e6de] flex items-center justify-center p-2 sm:p-4 lg:p-6 text-stone-900 antialiased selection:bg-[#0b1a30] selection:text-white">
       {/* Outer Card Wrapper */}
-      <div className="w-full max-w-5xl max-h-[96vh] bg-white rounded-2xl sm:rounded-3xl shadow-2xl shadow-stone-900/10 border border-stone-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+      <div className="w-full max-w-5xl max-h-[96vh] bg-white shadow-2xl shadow-stone-900/10 border border-stone-200/80 overflow-hidden grid grid-cols-1 lg:grid-cols-2">
         {/* LEFT COLUMN: Clean Form Area */}
         <div className="p-5 sm:p-7 lg:p-7 flex flex-col justify-between overflow-y-auto max-h-[96vh] space-y-3.5 scrollbar-thin">
           {/* Top atelier breadcrumb & back */}
@@ -271,14 +271,14 @@ export default function CustomerLoginPage() {
 
           {/* Notifications */}
           {errorMessage && (
-            <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-700 text-xs animate-shake">
+            <div className="p-2.5 bg-rose-50 border border-rose-200 flex items-center gap-2 text-rose-700 text-xs animate-shake">
               <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {successMessage && (
-            <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs">
+            <div className="p-2.5 bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-emerald-800 text-xs">
               <CheckCircle className="w-3.5 h-3.5 shrink-0 text-emerald-600" />
               <span>{successMessage}</span>
             </div>
@@ -286,7 +286,7 @@ export default function CustomerLoginPage() {
 
           {/* If already logged in, show logged in banner with direct link to profile */}
           {customerProfile && (
-            <div className="p-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-xs space-y-2">
+            <div className="p-3 bg-amber-50/80 border border-amber-200/80 text-xs space-y-2">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-stone-900">
                   Signed in as {customerProfile.fullName}
@@ -305,7 +305,7 @@ export default function CustomerLoginPage() {
               <button
                 type="button"
                 onClick={() => (navigateTo ? navigateTo('profile') : setActivePage('profile'))}
-                className="w-full bg-[#0b1a30] hover:bg-stone-900 text-white py-1.5 px-3 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                className="w-full bg-[#0b1a30] hover:bg-stone-900 text-white py-1.5 px-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
                 <span>Go to My Profile & Orders (මගේ ඇණවුම්)</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -321,7 +321,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="button"
                   onClick={() => handleSocialMock('google')}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-300 bg-[#f8f9fa] hover:bg-white rounded-xl text-xs font-medium text-stone-700 transition-all shadow-2xs cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-300 bg-[#f8f9fa] hover:bg-white text-xs font-medium text-stone-700 transition-all shadow-2xs cursor-pointer"
                 >
                   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                     <path
@@ -347,7 +347,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="button"
                   onClick={() => handleSocialMock('facebook')}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-300 bg-[#f8f9fa] hover:bg-white rounded-xl text-xs font-medium text-stone-700 transition-all shadow-2xs cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-3 border border-stone-200 hover:border-stone-300 bg-[#f8f9fa] hover:bg-white text-xs font-medium text-stone-700 transition-all shadow-2xs cursor-pointer"
                 >
                   <svg className="w-4 h-4 fill-[#1877F2] shrink-0" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -378,7 +378,7 @@ export default function CustomerLoginPage() {
                     value={loginIdentifier}
                     onChange={(e) => setLoginIdentifier(e.target.value)}
                     placeholder="example@gmail.com"
-                    className="w-full h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -394,7 +394,7 @@ export default function CustomerLoginPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full h-11 px-3.5 pr-11 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                      className="w-full h-11 px-3.5 pr-11 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                     />
                     <button
                       type="button"
@@ -414,7 +414,7 @@ export default function CustomerLoginPage() {
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 border-stone-300 cursor-pointer"
+                      className="w-4 h-4 text-rose-600 focus:ring-rose-500 border-stone-300 cursor-pointer"
                     />
                     <span>Remember Me</span>
                   </label>
@@ -434,7 +434,7 @@ export default function CustomerLoginPage() {
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full h-11 sm:h-12 bg-[#c1272d] hover:bg-[#a61c22] active:scale-[0.99] text-white rounded-xl text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/15 cursor-pointer mt-1"
+                  className="w-full h-11 sm:h-12 bg-[#c1272d] hover:bg-[#a61c22] active:scale-[0.99] text-white text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/15 cursor-pointer mt-1"
                 >
                   <span>{isLoading ? 'Signing In...' : 'Log In'}</span>
                   <ArrowRight className="w-4 h-4" />
@@ -457,7 +457,7 @@ export default function CustomerLoginPage() {
                     value={registerData.fullName}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Kavindi Perera"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -473,7 +473,7 @@ export default function CustomerLoginPage() {
                     value={registerData.phone}
                     onChange={handleRegisterChange}
                     placeholder="077 123 4567"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -489,7 +489,7 @@ export default function CustomerLoginPage() {
                     value={registerData.address}
                     onChange={handleRegisterChange}
                     placeholder="House No, Road / Street"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -503,7 +503,7 @@ export default function CustomerLoginPage() {
                       name="district"
                       value={registerData.district}
                       onChange={handleRegisterChange}
-                      className="w-full h-10 sm:h-11 px-3.5 pr-8 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none appearance-none cursor-pointer transition-all shadow-2xs"
+                      className="w-full h-10 sm:h-11 px-3.5 pr-8 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none appearance-none cursor-pointer transition-all shadow-2xs"
                     >
                       {districts.map((d) => (
                         <option key={d} value={d}>
@@ -526,7 +526,7 @@ export default function CustomerLoginPage() {
                     value={registerData.city}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Maharagama"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
 
@@ -542,7 +542,7 @@ export default function CustomerLoginPage() {
                       value={registerData.password}
                       onChange={handleRegisterChange}
                       placeholder="Create password"
-                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                     />
                     <button
                       type="button"
@@ -566,7 +566,7 @@ export default function CustomerLoginPage() {
                     value={registerData.email}
                     onChange={handleRegisterChange}
                     placeholder="name@email.com"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
               </div>
@@ -578,7 +578,7 @@ export default function CustomerLoginPage() {
                     type="checkbox"
                     checked={sameAsPhone}
                     onChange={(e) => setSameAsPhone(e.target.checked)}
-                    className="w-3.5 h-3.5 rounded text-rose-600 focus:ring-rose-500 border-stone-300"
+                    className="w-3.5 h-3.5 text-rose-600 focus:ring-rose-500 border-stone-300"
                   />
                   <span>WhatsApp number is the same as contact phone</span>
                 </label>
@@ -594,7 +594,7 @@ export default function CustomerLoginPage() {
                       value={registerData.whatsapp}
                       onChange={handleRegisterChange}
                       placeholder="077 123 4567"
-                      className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-2 focus:ring-stone-900/10 rounded-xl text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                      className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                     />
                   </div>
                 )}
@@ -604,7 +604,7 @@ export default function CustomerLoginPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full h-11 sm:h-12 bg-[#c1272d] hover:bg-[#a61c22] active:scale-[0.99] text-white rounded-xl text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/15 cursor-pointer mt-1"
+                className="w-full h-11 sm:h-12 bg-[#c1272d] hover:bg-[#a61c22] active:scale-[0.99] text-white text-xs sm:text-sm font-semibold tracking-wide flex items-center justify-center gap-2 transition-all shadow-md shadow-rose-900/15 cursor-pointer mt-1"
               >
                 <span>{isLoading ? 'Creating Account...' : 'Create Account'}</span>
                 <ArrowRight className="w-4 h-4" />
