@@ -108,6 +108,8 @@ export async function getCustomerByPhone(req, res) {
 export async function registerCustomer(req, res) {
   try {
     const {
+      id,
+      customerId,
       fullName,
       phone,
       whatsapp,
@@ -131,19 +133,46 @@ export async function registerCustomer(req, res) {
     }
 
     const cleanPhone = phone.trim();
+    const cleanEmail = email && email.trim() ? email.trim().toLowerCase() : null;
+    const targetId = id || customerId || null;
 
     if (isSupabaseConfigured() && supabase) {
-      const { data: existing } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('phone', cleanPhone)
-        .maybeSingle();
+      // Find existing customer by ID, Email, or Phone
+      let existing = null;
+
+      if (targetId) {
+        const { data } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('id', targetId)
+          .maybeSingle();
+        if (data) existing = data;
+      }
+
+      if (!existing && cleanEmail) {
+        const { data } = await supabase
+          .from('customers')
+          .select('*')
+          .ilike('email', cleanEmail)
+          .maybeSingle();
+        if (data) existing = data;
+      }
+
+      if (!existing && cleanPhone) {
+        const { data } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('phone', cleanPhone)
+          .maybeSingle();
+        if (data) existing = data;
+      }
 
       if (existing) {
         const updatePayload = {
           full_name: fullName.trim(),
-          whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
-          email: (email && email.trim()) || existing.email,
+          phone: cleanPhone || existing.phone,
+          whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone || existing.whatsapp,
+          email: cleanEmail || existing.email,
           address: address.trim(),
           district: district || existing.district || 'Colombo',
           city: (city && city.trim()) || existing.city,
@@ -173,7 +202,7 @@ export async function registerCustomer(req, res) {
           full_name: fullName.trim(),
           phone: cleanPhone,
           whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
-          email: (email && email.trim()) || null,
+          email: cleanEmail || null,
           password: password || null,
           address: address.trim(),
           district: district || 'Colombo',
@@ -192,7 +221,49 @@ export async function registerCustomer(req, res) {
           .select()
           .single();
 
-        if (insertErr) throw insertErr;
+        if (insertErr) {
+          // If unique constraint violation (e.g. email or phone already registered), attempt fallback update
+          if (insertErr.code === '23505') {
+            let fallbackQuery = supabase.from('customers').select('*');
+            if (cleanEmail) {
+              fallbackQuery = fallbackQuery.ilike('email', cleanEmail);
+            } else {
+              fallbackQuery = fallbackQuery.eq('phone', cleanPhone);
+            }
+            const { data: matched } = await fallbackQuery.maybeSingle();
+            if (matched) {
+              const { data: updatedRow, error: retryErr } = await supabase
+                .from('customers')
+                .update({
+                  full_name: fullName.trim(),
+                  phone: cleanPhone,
+                  whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
+                  email: cleanEmail || matched.email,
+                  address: address.trim(),
+                  district: district || matched.district || 'Colombo',
+                  city: (city && city.trim()) || matched.city,
+                  postal_code: (postalCode && postalCode.trim()) || matched.postal_code,
+                  notes: (notes && notes.trim()) || matched.notes,
+                  updated_at: new Date().toISOString(),
+                })
+                .eq('id', matched.id)
+                .select()
+                .single();
+
+              if (!retryErr && updatedRow) {
+                return res.json({
+                  success: true,
+                  isNew: false,
+                  customer: mapDbCustomerToJs(updatedRow),
+                  token: `nb_client_${Date.now()}`,
+                  message: 'Customer profile updated successfully',
+                });
+              }
+            }
+          }
+          throw insertErr;
+        }
+
         return res.status(201).json({
           success: true,
           isNew: true,
@@ -207,17 +278,21 @@ export async function registerCustomer(req, res) {
     const db = getLocalDb();
     if (!db.customers) db.customers = [];
 
-    const existingIdx = db.customers.findIndex(
-      (c) => c.phone && c.phone.trim() === cleanPhone
-    );
+    const existingIdx = db.customers.findIndex((c) => {
+      if (targetId && c.id === targetId) return true;
+      if (cleanEmail && c.email && c.email.toLowerCase() === cleanEmail) return true;
+      if (cleanPhone && c.phone && (c.phone === cleanPhone || c.phone.replace(/[\s-]/g, '') === cleanPhone)) return true;
+      return false;
+    });
 
     if (existingIdx !== -1) {
       const existing = db.customers[existingIdx];
       const updated = {
         ...existing,
         fullName: fullName.trim(),
-        whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
-        email: (email && email.trim()) || existing.email,
+        phone: cleanPhone || existing.phone,
+        whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone || existing.whatsapp,
+        email: cleanEmail || existing.email,
         address: address.trim(),
         district: district || existing.district || 'Colombo',
         city: (city && city.trim()) || existing.city,
@@ -242,7 +317,7 @@ export async function registerCustomer(req, res) {
         fullName: fullName.trim(),
         phone: cleanPhone,
         whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
-        email: (email && email.trim()) || '',
+        email: cleanEmail || '',
         password: password || '',
         address: address.trim(),
         district: district || 'Colombo',
@@ -415,7 +490,25 @@ export async function googleCustomerAuth(req, res) {
         .select()
         .single();
 
-      if (insertErr) throw insertErr;
+      if (insertErr) {
+        if (insertErr.code === '23505') {
+          const { data: matched } = await supabase
+            .from('customers')
+            .select('*')
+            .ilike('email', cleanEmail)
+            .maybeSingle();
+          if (matched) {
+            return res.json({
+              success: true,
+              isNew: false,
+              customer: mapDbCustomerToJs(matched),
+              token: `nb_client_${Date.now()}`,
+              message: 'Welcome back! Login successful',
+            });
+          }
+        }
+        throw insertErr;
+      }
 
       return res.status(201).json({
         success: true,

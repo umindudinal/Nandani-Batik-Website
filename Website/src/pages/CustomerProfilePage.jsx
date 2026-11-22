@@ -140,10 +140,14 @@ export default function CustomerProfilePage() {
 
     try {
       const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const payload = {
+        ...formData,
+        id: customerProfile?.id,
+      };
       const res = await fetch(`${apiBase}/customers/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();

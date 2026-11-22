@@ -136,6 +136,7 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            id: customerProfile?.id,
             fullName: formData.fullName,
             phone: formData.phone,
             whatsapp: formData.whatsapp || formData.phone,
