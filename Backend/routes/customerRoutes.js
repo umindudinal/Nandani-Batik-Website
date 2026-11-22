@@ -4,6 +4,7 @@ import {
   getCustomerByPhone,
   registerCustomer,
   loginCustomer,
+  googleCustomerAuth,
   deleteCustomer,
 } from '../controllers/customerController.js';
 
@@ -14,6 +15,8 @@ router.get('/by-phone/:phone', getCustomerByPhone);
 router.post('/', registerCustomer);
 router.post('/register', registerCustomer);
 router.post('/login', loginCustomer);
+router.post('/google-login', googleCustomerAuth);
+router.post('/google-auth', googleCustomerAuth);
 router.delete('/:id', deleteCustomer);
 
 export default router;

@@ -190,7 +190,15 @@ export default function Navbar({ activePage, setActivePage, selectedCategory, se
               }
               aria-label="Customer Account"
             >
-              <User className={`w-4 h-4 ${customerProfile ? 'text-amber-600' : 'text-slate-600'}`} />
+              {customerProfile?.photoURL ? (
+                <img
+                  src={customerProfile.photoURL}
+                  alt={customerProfile.fullName || 'User'}
+                  className="w-4 h-4 rounded-full object-cover"
+                />
+              ) : (
+                <User className={`w-4 h-4 ${customerProfile ? 'text-amber-600' : 'text-slate-600'}`} />
+              )}
               <span className="hidden sm:inline font-sans text-xs">
                 {customerProfile
                   ? customerProfile.fullName.split(' ')[0]

@@ -96,20 +96,23 @@ export default function CustomerProfilePage() {
         postalCode: customerProfile.postalCode || '',
         notes: customerProfile.notes || '',
       });
-      fetchCustomerOrders(customerProfile.phone);
+      fetchCustomerOrders(customerProfile.phone, customerProfile.email);
     }
   }, [customerProfile]);
 
-  // Fetch orders matching customer's phone
-  const fetchCustomerOrders = async (phone) => {
-    if (!phone) return;
+  // Fetch orders matching customer's phone or email
+  const fetchCustomerOrders = async (phone, email) => {
+    if (!phone && !email) return;
     setIsLoadingOrders(true);
     setOrderError('');
 
     try {
       const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-      const cleanPhone = phone.replace(/[\s-+]/g, '');
-      const res = await fetch(`${apiBase}/orders?phone=${encodeURIComponent(cleanPhone)}`);
+      const cleanPhone = (phone || '').replace(/[\s-+]/g, '');
+      const params = new URLSearchParams();
+      if (cleanPhone) params.append('phone', cleanPhone);
+      if (email) params.append('email', email);
+      const res = await fetch(`${apiBase}/orders?${params.toString()}`);
 
       if (!res.ok) {
         throw new Error('Failed to load orders');
@@ -439,12 +442,12 @@ export default function CustomerProfilePage() {
                       Order History
                     </h2>
                     <p className="text-xs text-stone-500">
-                      View all orders placed under phone number {customerProfile.phone}
+                      View all orders placed under {customerProfile.email || customerProfile.phone}
                     </p>
                   </div>
 
                   <button
-                    onClick={() => fetchCustomerOrders(customerProfile.phone)}
+                    onClick={() => fetchCustomerOrders(customerProfile.phone, customerProfile.email)}
                     disabled={isLoadingOrders}
                     className="inline-flex items-center gap-1.5 text-xs text-stone-600 hover:text-stone-900 bg-white border border-stone-200 px-3 py-1.5 shadow-2xs hover:bg-stone-50 transition-colors cursor-pointer"
                     title="Refresh order history"
@@ -474,7 +477,7 @@ export default function CustomerProfilePage() {
                     <div className="space-y-1">
                       <h3 className="font-serif text-lg text-stone-900">No Orders Placed Yet</h3>
                       <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                        You have not placed any saree orders with phone number <strong>{customerProfile.phone}</strong> yet.
+                        You have not placed any saree orders with <strong>{customerProfile.email || customerProfile.phone}</strong> yet.
                       </p>
                     </div>
                     <button

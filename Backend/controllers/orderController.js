@@ -4,16 +4,21 @@ import { mapDbOrderToJs, mapJsOrderToDb } from '../utils/mappers.js';
 // 1. List Orders
 export async function getOrders(req, res) {
   try {
-    const { status, phone } = req.query;
+    const { status, phone, email } = req.query;
 
     if (isSupabaseConfigured() && supabase) {
       let query = supabase.from('orders').select('*').order('created_at', { ascending: false });
       if (status && status !== 'all') {
         query = query.eq('status', status);
       }
-      if (phone && phone.trim()) {
+      if (phone && phone.trim() && email && email.trim()) {
+        const clean = phone.replace(/[\s-+]/g, '');
+        query = query.or(`phone.ilike.%${clean}%,whatsapp.ilike.%${clean}%,email.ilike.%${email.trim()}%`);
+      } else if (phone && phone.trim()) {
         const clean = phone.replace(/[\s-+]/g, '');
         query = query.or(`phone.ilike.%${clean}%,whatsapp.ilike.%${clean}%`);
+      } else if (email && email.trim()) {
+        query = query.ilike('email', `%${email.trim()}%`);
       }
       const { data, error } = await query;
       if (error) throw error;
@@ -25,12 +30,16 @@ export async function getOrders(req, res) {
     if (status && status !== 'all') {
       orders = orders.filter((o) => o.status === status);
     }
-    if (phone && phone.trim()) {
-      const clean = phone.replace(/[\s-+]/g, '');
+    if ((phone && phone.trim()) || (email && email.trim())) {
+      const clean = (phone || '').replace(/[\s-+]/g, '');
+      const cleanEmail = (email || '').trim().toLowerCase();
       orders = orders.filter((o) => {
         const oPhone = (o.phone || '').replace(/[\s-+]/g, '');
         const oWa = (o.whatsapp || '').replace(/[\s-+]/g, '');
-        return oPhone.includes(clean) || oWa.includes(clean) || clean.includes(oPhone);
+        const oEmail = (o.email || '').toLowerCase();
+        const matchPhone = clean && (oPhone.includes(clean) || oWa.includes(clean) || clean.includes(oPhone));
+        const matchEmail = cleanEmail && oEmail.includes(cleanEmail);
+        return matchPhone || matchEmail;
       });
     }
     res.json(orders);

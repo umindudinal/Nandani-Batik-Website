@@ -359,3 +359,120 @@ export async function loginCustomer(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
+
+// 6. Customer Google OAuth Sign-In & Sign-Up Handler
+export async function googleCustomerAuth(req, res) {
+  try {
+    const { email, fullName, photoURL, phone } = req.body;
+    if (!email || !email.trim()) {
+      return res.status(400).json({ error: 'Valid email address is required from Google' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = (fullName && fullName.trim()) || cleanEmail.split('@')[0] || 'Valued Customer';
+    const cleanPhone = (phone && phone.trim()) || '';
+
+    if (isSupabaseConfigured() && supabase) {
+      // 1. Check if customer already exists by email
+      const { data: existing, error: findErr } = await supabase
+        .from('customers')
+        .select('*')
+        .ilike('email', cleanEmail)
+        .maybeSingle();
+
+      if (findErr) throw findErr;
+
+      if (existing) {
+        return res.json({
+          success: true,
+          isNew: false,
+          customer: mapDbCustomerToJs(existing),
+          token: `nb_client_${Date.now()}`,
+          message: 'Welcome back! Login successful',
+        });
+      }
+
+      // 2. If not found, register new customer from Google account
+      const insertPayload = {
+        full_name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone || `g-${Date.now().toString().slice(-8)}`,
+        whatsapp: cleanPhone || null,
+        address: '',
+        district: 'Colombo',
+        city: null,
+        postal_code: null,
+        notes: 'Signed up with Google Authentication',
+        orders_count: 0,
+        total_spent: 0,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data: created, error: insertErr } = await supabase
+        .from('customers')
+        .insert([insertPayload])
+        .select()
+        .single();
+
+      if (insertErr) throw insertErr;
+
+      return res.status(201).json({
+        success: true,
+        isNew: true,
+        customer: mapDbCustomerToJs(created),
+        token: `nb_client_${Date.now()}`,
+        message: 'Account created with Google successfully',
+      });
+    }
+
+    // Local DB Fallback
+    const db = getLocalDb();
+    if (!db.customers) db.customers = [];
+
+    const existingIdx = db.customers.findIndex(
+      (c) => c.email && c.email.toLowerCase() === cleanEmail
+    );
+
+    if (existingIdx !== -1) {
+      return res.json({
+        success: true,
+        isNew: false,
+        customer: db.customers[existingIdx],
+        token: `nb_client_${Date.now()}`,
+        message: 'Welcome back! Login successful',
+      });
+    }
+
+    const newCustomer = {
+      id: `cust-g-${Date.now()}`,
+      fullName: cleanName,
+      email: cleanEmail,
+      phone: cleanPhone || '',
+      whatsapp: cleanPhone || '',
+      address: '',
+      district: 'Colombo',
+      city: '',
+      postalCode: '',
+      notes: 'Signed up with Google Authentication',
+      ordersCount: 0,
+      totalSpent: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    db.customers.unshift(newCustomer);
+    saveLocalDb(db);
+
+    return res.status(201).json({
+      success: true,
+      isNew: true,
+      customer: newCustomer,
+      token: `nb_client_${Date.now()}`,
+      message: 'Account created with Google successfully',
+    });
+  } catch (err) {
+    console.error('Google Auth Error:', err);
+    res.status(500).json({ error: err.message });
+  }
+}
