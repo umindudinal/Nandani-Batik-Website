@@ -121,8 +121,8 @@ export default function CustomerLoginPage() {
           console.error(err);
         }
       }
-      if (showToast) showToast(`සාදරයෙන් පිළිගනිමු, ${data.customer.fullName}!`);
-      setSuccessMessage('පිවිසීම සාර්ථකයි! (Login successful)');
+      if (showToast) showToast(`Welcome back, ${data.customer.fullName}!`);
+      setSuccessMessage('Login successful!');
 
       // Redirect back to shop or checkout after a brief moment
       setTimeout(() => {
@@ -145,8 +145,19 @@ export default function CustomerLoginPage() {
     setErrorMessage('');
     setSuccessMessage('');
 
-    if (!registerData.fullName.trim() || !registerData.phone.trim() || !registerData.address.trim()) {
-      setErrorMessage('කරුණාකර නම, දුරකථන අංකය සහ බෙදාහැරීමේ ලිපිනය ඇතුළත් කරන්න.');
+    if (
+      !registerData.fullName.trim() ||
+      !registerData.phone.trim() ||
+      !registerData.email.trim() ||
+      !registerData.password.trim() ||
+      !registerData.address.trim()
+    ) {
+      setErrorMessage('Please fill in all required fields (Full Name, Phone, Email, Password, and Delivery Address).');
+      return;
+    }
+
+    if (registerData.password.length < 6) {
+      setErrorMessage('Password must be at least 6 characters long.');
       return;
     }
 
@@ -188,8 +199,8 @@ export default function CustomerLoginPage() {
           console.error(err);
         }
       }
-      if (showToast) showToast('Nandani Batik පාරිභෝගික ලියාපදිංචිය සාර්ථකයි!');
-      setSuccessMessage('ගිණුම සාර්ථකව නිර්මාණය විය! (Account created successfully)');
+      if (showToast) showToast('Registration successful! Welcome to Nandani Batik.');
+      setSuccessMessage('Account created successfully!');
 
       setTimeout(() => {
         if (navigateTo) {
@@ -386,7 +397,7 @@ export default function CustomerLoginPage() {
                 onClick={() => (navigateTo ? navigateTo('profile') : setActivePage('profile'))}
                 className="w-full bg-[#0b1a30] hover:bg-stone-900 text-white py-1.5 px-3 text-xs font-medium flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
               >
-                <span>Go to My Profile & Orders (මගේ ඇණවුම්)</span>
+                <span>Go to My Profile & Orders</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -574,7 +585,7 @@ export default function CustomerLoginPage() {
                 {/* Row 1: Full Name */}
                 <div>
                   <label className="block text-xs font-medium text-stone-800 mb-1">
-                    Full Name <span className="text-stone-400 font-normal">(සම්පූර්ණ නම)</span> <span className="text-rose-500">*</span>
+                    Full Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -582,7 +593,7 @@ export default function CustomerLoginPage() {
                     name="fullName"
                     value={registerData.fullName}
                     onChange={handleRegisterChange}
-                    placeholder="Your Full Name (ඔබගේ නම)"
+                    placeholder="Your Full Name"
                     className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>
@@ -590,7 +601,7 @@ export default function CustomerLoginPage() {
                 {/* Row 1: Contact Phone */}
                 <div>
                   <label className="block text-xs font-medium text-stone-800 mb-1">
-                    Phone Number <span className="text-stone-400 font-normal">(දුරකථන අංකය)</span> <span className="text-rose-500">*</span>
+                    Phone Number <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="tel"
@@ -603,10 +614,53 @@ export default function CustomerLoginPage() {
                   />
                 </div>
 
-                {/* Row 2: Delivery Address */}
+                {/* Row 2: Email Address (Required) */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Email Address <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    name="email"
+                    value={registerData.email}
+                    onChange={handleRegisterChange}
+                    placeholder="name@email.com"
+                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                  />
+                </div>
+
+                {/* Row 2: Password (Required) */}
+                <div>
+                  <label className="block text-xs font-medium text-stone-800 mb-1">
+                    Password <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      required
+                      minLength={6}
+                      name="password"
+                      value={registerData.password}
+                      onChange={handleRegisterChange}
+                      placeholder="Create password (min 6 chars)"
+                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer transition-colors"
+                      aria-label="Toggle password visibility"
+                    >
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Row 3: Delivery Address */}
                 <div className="sm:col-span-2">
                   <label className="block text-xs font-medium text-stone-800 mb-1">
-                    Delivery Address <span className="text-stone-400 font-normal">(බෙදාහැරීමේ ලිපිනය)</span> <span className="text-rose-500">*</span>
+                    Delivery Address <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -619,7 +673,7 @@ export default function CustomerLoginPage() {
                   />
                 </div>
 
-                {/* Row 3: District */}
+                {/* Row 4: District */}
                 <div>
                   <label className="block text-xs font-medium text-stone-800 mb-1">
                     District <span className="text-rose-500">*</span>
@@ -641,57 +695,18 @@ export default function CustomerLoginPage() {
                   </div>
                 </div>
 
-                {/* Row 3: City */}
+                {/* Row 4: City */}
                 <div>
                   <label className="block text-xs font-medium text-stone-800 mb-1">
-                    City / Town <span className="text-stone-400 font-normal">(නගරය)</span>
+                    City / Town <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
+                    required
                     name="city"
                     value={registerData.city}
                     onChange={handleRegisterChange}
                     placeholder="e.g. Maharagama"
-                    className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
-                  />
-                </div>
-
-                {/* Row 4: Password */}
-                <div>
-                  <label className="block text-xs font-medium text-stone-800 mb-1">
-                    Password <span className="text-stone-400 font-normal">(මුරපදය)</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      name="password"
-                      value={registerData.password}
-                      onChange={handleRegisterChange}
-                      placeholder="Create password"
-                      className="w-full h-10 sm:h-11 px-3.5 pr-10 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-700 p-1 cursor-pointer transition-colors"
-                      aria-label="Toggle password visibility"
-                    >
-                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                    </button>
-                  </div>
-                </div>
-
-                {/* Row 4: Email */}
-                <div>
-                  <label className="block text-xs font-medium text-stone-800 mb-1">
-                    Email <span className="text-stone-400 font-normal">(Optional)</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={registerData.email}
-                    onChange={handleRegisterChange}
-                    placeholder="name@email.com"
                     className="w-full h-10 sm:h-11 px-3.5 sm:px-4 bg-[#f8f9fa] hover:bg-[#f3f4f6] border border-stone-200 focus:ring-1 focus:ring-stone-900/15 text-stone-900 text-xs sm:text-sm focus:outline-none transition-all shadow-2xs"
                   />
                 </div>

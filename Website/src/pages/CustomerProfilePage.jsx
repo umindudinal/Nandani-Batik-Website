@@ -206,35 +206,30 @@ export default function CustomerProfilePage() {
         return {
           icon: <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />,
           label: 'Confirmed',
-          sinhala: 'තහවුරු කර ඇත',
           badgeClass: 'bg-blue-50 text-blue-800 border-blue-200/80',
         };
       case 'processing':
         return {
           icon: <Package className="w-3.5 h-3.5 text-amber-600" />,
           label: 'In Atelier Production',
-          sinhala: 'සූදානම් කෙරෙමින් පවතී',
           badgeClass: 'bg-amber-50 text-amber-900 border-amber-200/80',
         };
       case 'shipped':
         return {
           icon: <Truck className="w-3.5 h-3.5 text-indigo-600" />,
           label: 'Out for Delivery',
-          sinhala: 'බෙදාහැරීමට භාර දී ඇත',
           badgeClass: 'bg-indigo-50 text-indigo-900 border-indigo-200/80',
         };
       case 'delivered':
         return {
           icon: <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />,
           label: 'Delivered',
-          sinhala: 'භාර දෙන ලදී',
           badgeClass: 'bg-emerald-50 text-emerald-900 border-emerald-200/80',
         };
       case 'cancelled':
         return {
           icon: <XCircle className="w-3.5 h-3.5 text-rose-600" />,
           label: 'Cancelled',
-          sinhala: 'අවලංගු කරන ලදී',
           badgeClass: 'bg-rose-50 text-rose-800 border-rose-200/80',
         };
       case 'pending':
@@ -242,7 +237,6 @@ export default function CustomerProfilePage() {
         return {
           icon: <Clock className="w-3.5 h-3.5 text-stone-600" />,
           label: 'Order Received',
-          sinhala: 'ඇණවුම ලැබී ඇත',
           badgeClass: 'bg-stone-100 text-stone-800 border-stone-200',
         };
     }
@@ -649,7 +643,7 @@ export default function CustomerProfilePage() {
                     {/* Full Name */}
                     <div>
                       <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                        Full Name (සම්පූර්ණ නම)
+                        Full Name
                       </label>
                       <input
                         type="text"
@@ -664,7 +658,7 @@ export default function CustomerProfilePage() {
                     {/* Contact Phone */}
                     <div>
                       <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                        Contact Phone (දුරකථන අංකය)
+                        Contact Phone
                       </label>
                       <input
                         type="tel"
@@ -693,7 +687,7 @@ export default function CustomerProfilePage() {
                     {/* Email */}
                     <div>
                       <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                        Email Address (Optional)
+                        Email Address
                       </label>
                       <input
                         type="email"
@@ -707,7 +701,7 @@ export default function CustomerProfilePage() {
                     {/* Delivery Address */}
                     <div className="sm:col-span-2">
                       <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                        Primary Delivery Address (බෙදාහැරීමේ ලිපිනය)
+                        Primary Delivery Address
                       </label>
                       <input
                         type="text"
@@ -723,7 +717,7 @@ export default function CustomerProfilePage() {
                     {/* District */}
                     <div>
                       <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                        District (දිස්ත්‍රික්කය)
+                        District
                       </label>
                       <div className="relative">
                         <select
@@ -745,7 +739,7 @@ export default function CustomerProfilePage() {
                     {/* City */}
                     <div>
                       <label className="block text-xs font-medium text-stone-700 mb-1.5">
-                        City / Town (නගරය)
+                        City / Town
                       </label>
                       <input
                         type="text"
