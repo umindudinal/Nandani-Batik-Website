@@ -219,7 +219,6 @@ export default function App() {
 
   // Delete Order
   const handleDeleteOrder = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this order record?')) return;
     try {
       await api.deleteOrder(id);
       showToast('Order record removed', 'info');

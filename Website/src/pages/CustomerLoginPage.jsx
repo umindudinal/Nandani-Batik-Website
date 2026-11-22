@@ -19,6 +19,7 @@ export default function CustomerLoginPage() {
     navigateTo,
     setActivePage,
     showToast,
+    showAlert,
   } = useCart();
 
   const [mode, setMode] = useState('login'); // 'login' | 'register'
@@ -452,7 +453,13 @@ export default function CustomerLoginPage() {
                   <button
                     type="button"
                     onClick={() => {
-                      alert('To reset your password, please contact our atelier directly via WhatsApp: +94 77 892 4115');
+                      showAlert({
+                        title: 'Password Assistance',
+                        message:
+                          'To reset your password, please contact our atelier directly via WhatsApp: +94 77 892 4115',
+                        type: 'info',
+                        confirmText: 'Understood',
+                      });
                     }}
                     className="text-stone-500 hover:text-stone-900 transition-colors cursor-pointer text-xs"
                   >

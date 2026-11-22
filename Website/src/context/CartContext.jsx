@@ -86,6 +86,75 @@ export const CartProvider = ({ children }) => {
   const [pendingSareeId, setPendingSareeId] = useState(initialRoute.sareeId);
   const [toast, setToast] = useState(null);
 
+  // Dialog / Modal Alert State (Replaces native window.alert and window.confirm)
+  const [dialogState, setDialogState] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'confirm',
+    confirmText: 'Confirm',
+    cancelText: 'Cancel',
+    onConfirm: null,
+    onCancel: null,
+  });
+
+  const showConfirm = ({
+    title = 'Confirm Action',
+    message = 'Are you sure you wish to proceed?',
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
+    type = 'confirm',
+  }) => {
+    return new Promise((resolve) => {
+      setDialogState({
+        isOpen: true,
+        title,
+        message,
+        type,
+        confirmText,
+        cancelText,
+        onConfirm: () => {
+          setDialogState((prev) => ({ ...prev, isOpen: false }));
+          resolve(true);
+        },
+        onCancel: () => {
+          setDialogState((prev) => ({ ...prev, isOpen: false }));
+          resolve(false);
+        },
+      });
+    });
+  };
+
+  const showAlert = ({
+    title = 'Notice',
+    message = '',
+    confirmText = 'OK',
+    type = 'info',
+  }) => {
+    return new Promise((resolve) => {
+      setDialogState({
+        isOpen: true,
+        title,
+        message,
+        type,
+        confirmText,
+        cancelText: null,
+        onConfirm: () => {
+          setDialogState((prev) => ({ ...prev, isOpen: false }));
+          resolve(true);
+        },
+        onCancel: () => {
+          setDialogState((prev) => ({ ...prev, isOpen: false }));
+          resolve(true);
+        },
+      });
+    });
+  };
+
+  const closeDialog = () => {
+    setDialogState((prev) => ({ ...prev, isOpen: false }));
+  };
+
   // Customer Authentication Profile State (persisted in localStorage)
   const [customerProfile, setCustomerProfile] = useState(() => {
     try {
@@ -425,6 +494,10 @@ export const CartProvider = ({ children }) => {
         cartGrandTotal,
         customerProfile,
         saveCustomerProfile,
+        dialogState,
+        showConfirm,
+        showAlert,
+        closeDialog,
       }}
     >
       {children}

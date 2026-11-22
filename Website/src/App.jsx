@@ -23,6 +23,7 @@ import QuickSearchModal from './components/common/QuickSearchModal';
 import WishlistModal from './components/common/WishlistModal';
 import WhatsAppFloat from './components/common/WhatsAppFloat';
 import Toast from './components/common/Toast';
+import ConfirmationModal from './components/common/ConfirmationModal';
 
 function MainApp() {
   const { activePage, setActivePage, selectedCategory, setSelectedCategory } = useCart();
@@ -107,6 +108,7 @@ function MainApp() {
       <WishlistModal />
       {!isAuthPage && <WhatsAppFloat />}
       <Toast />
+      <ConfirmationModal />
     </div>
   );
 }

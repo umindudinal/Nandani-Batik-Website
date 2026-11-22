@@ -32,6 +32,8 @@ export default function CustomerProfilePage() {
     setActivePage,
     wishlist,
     showToast,
+    showConfirm,
+    showAlert,
   } = useCart();
 
   const [activeTab, setActiveTab] = useState('orders'); // 'orders' | 'details' | 'wishlist'
@@ -164,14 +166,26 @@ export default function CustomerProfilePage() {
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
       console.error('Update profile error:', err);
-      alert('Could not update profile: ' + (err.message || 'Server error'));
+      showAlert({
+        title: 'Could Not Update Profile',
+        message: err.message || 'Server error while saving details. Please try again.',
+        type: 'error',
+      });
     } finally {
       setIsSavingProfile(false);
     }
   };
 
-  const handleSignOut = () => {
-    if (window.confirm('Are you sure you want to sign out from Nandani Batik?')) {
+  const handleSignOut = async () => {
+    const confirmed = await showConfirm({
+      title: 'Sign Out from Nandani Batik',
+      message: 'Are you sure you want to sign out from your Nandani Batik client account?',
+      confirmText: 'Sign Out',
+      cancelText: 'Stay Signed In',
+      type: 'danger',
+    });
+
+    if (confirmed) {
       if (typeof saveCustomerProfile === 'function') {
         saveCustomerProfile(null);
       }
