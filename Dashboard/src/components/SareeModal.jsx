@@ -229,14 +229,46 @@ export default function SareeModal({
     }));
   };
 
-  const handleMainColourChange = (colorName) => {
-    const colObj = MAIN_COLOURS.find((c) => c.name === colorName);
+  // Helper to parse selected colours as an array
+  const getSelectedColours = () => {
+    if (!formData.mainColour) return [];
+    if (Array.isArray(formData.mainColour)) return formData.mainColour;
+    return formData.mainColour
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean);
+  };
+
+  const handleToggleColour = (colorName) => {
+    const current = getSelectedColours();
+    let next;
+    if (current.includes(colorName)) {
+      next = current.filter((c) => c !== colorName);
+    } else {
+      next = [...current, colorName];
+    }
+
+    const firstColor = next[0] || '';
+    const firstObj = MAIN_COLOURS.find((c) => c.name === firstColor);
+
+    // Auto-update colourType according to number of chosen colours
+    let autoColourType = formData.colourType;
+    if (next.length === 1) autoColourType = 'Single Colour';
+    else if (next.length === 2) autoColourType = 'Two Colour';
+    else if (next.length === 3) autoColourType = 'Three Colour';
+    else if (next.length >= 4) autoColourType = 'Multi Colour';
+
     setFormData((prev) => ({
       ...prev,
-      mainColour: colorName,
-      primaryColor: colorName,
-      colorHex: colObj ? colObj.hex : prev.colorHex,
+      mainColour: next.join(', '),
+      primaryColor: firstColor || prev.primaryColor,
+      colorHex: firstObj ? firstObj.hex : prev.colorHex,
+      colourType: autoColourType,
     }));
+  };
+
+  const handleMainColourChange = (colorName) => {
+    handleToggleColour(colorName);
   };
 
   const handlePriceChange = (field, val) => {
@@ -713,58 +745,121 @@ export default function SareeModal({
                 </div>
               </div>
 
-              {/* SELECT MAIN COLOUR PALETTE (12 COLOURS) */}
-              <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-xs space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <label className="block text-[11px] font-mono text-slate-500 uppercase tracking-wider">
-                    SELECT MAIN COLOUR PALETTE (12 COLOURS) <span className="text-rose-500">*</span>
-                  </label>
-                  {formData.mainColour && (
-                    <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-50 px-2.5 py-1 rounded border border-slate-200">
-                      <span className="text-slate-400 text-[11px]">Selected:</span>
-                      <span
-                        className="w-2.5 h-2.5 rounded-full border border-slate-300 inline-block shrink-0"
-                        style={{
-                          backgroundColor:
-                            MAIN_COLOURS.find((c) => c.name === formData.mainColour)?.hex || formData.colorHex || '#0b1a30',
-                        }}
-                      />
-                      <span className="font-semibold text-slate-800 text-[11px]">{formData.mainColour}</span>
+              {/* SELECT COLOUR PALETTE (MULTI-SELECT SUPPORTED) */}
+              <div className="p-4 rounded-xl border border-slate-200/90 bg-white shadow-xs space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <label className="block text-[11px] font-mono text-slate-700 font-bold uppercase tracking-wider">
+                      SELECT SAREE COLOUR PALETTE (MULTI-SELECT) <span className="text-rose-500">*</span>
+                    </label>
+                    <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                      Look at your saree photos above and click all the colours present in this saree design:
+                    </p>
+                  </div>
+
+                  {getSelectedColours().length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] font-medium text-slate-700 bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200">
+                        {formData.colourType} ({getSelectedColours().length} selected)
+                      </span>
+                      {getSelectedColours().length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const first = getSelectedColours()[0];
+                            const firstObj = MAIN_COLOURS.find((c) => c.name === first);
+                            setFormData((prev) => ({
+                              ...prev,
+                              mainColour: first,
+                              primaryColor: first,
+                              colorHex: firstObj ? firstObj.hex : prev.colorHex,
+                              colourType: 'Single Colour',
+                            }));
+                          }}
+                          className="text-[10px] text-slate-500 hover:text-slate-800 underline cursor-pointer"
+                        >
+                          Keep 1st only
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
 
-                <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Look at your saree photos above and select the matching primary colour:
-                </p>
-
+                {/* 12 Colours Palette Buttons with Multi-select State */}
                 <div className="flex flex-wrap gap-1.5 pt-0.5">
                   {MAIN_COLOURS.map((col) => {
-                    const isSelected = formData.mainColour === col.name;
+                    const isSelected = getSelectedColours().includes(col.name);
                     const isWhite = col.name === 'White' || col.hex === '#ffffff';
                     return (
                       <button
                         type="button"
                         key={col.name}
-                        onClick={() => handleMainColourChange(col.name)}
-                        title={col.name}
-                        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded text-[11px] border transition-all ${
+                        onClick={() => handleToggleColour(col.name)}
+                        title={isSelected ? `Selected: ${col.name} (Click to remove)` : `Click to select ${col.name}`}
+                        className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs border transition-all cursor-pointer ${
                           isSelected
-                            ? 'border-[#0a1120] bg-[#0a1120] text-white font-medium shadow-xs scale-105'
+                            ? 'border-[#0a1120] bg-[#0a1120] text-white font-medium shadow-xs scale-102 ring-2 ring-[#0a1120]/20'
                             : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                         }`}
                       >
                         <span
-                          className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                            isWhite ? 'border border-slate-300' : isSelected ? 'border border-white/60' : 'border border-transparent'
+                          className={`w-3 h-3 rounded-full shrink-0 ${
+                            isWhite
+                              ? 'border border-slate-300'
+                              : isSelected
+                              ? 'border border-white/80'
+                              : 'border border-transparent'
                           }`}
                           style={{ backgroundColor: col.hex }}
                         />
                         <span>{col.name}</span>
+                        {isSelected && (
+                          <span className="text-[11px] text-emerald-400 font-bold ml-0.5">✓</span>
+                        )}
                       </button>
                     );
                   })}
                 </div>
+
+                {/* Selected Colours Badges */}
+                {getSelectedColours().length > 0 && (
+                  <div className="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 mr-1">
+                      Active Palette:
+                    </span>
+                    {getSelectedColours().map((colorName, idx) => {
+                      const colObj = MAIN_COLOURS.find((c) => c.name === colorName);
+                      return (
+                        <span
+                          key={colorName}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] bg-slate-50 border border-slate-200 text-slate-800 font-medium"
+                        >
+                          <span
+                            className="w-2.5 h-2.5 rounded-full border border-slate-300 shrink-0"
+                            style={{ backgroundColor: colObj?.hex || '#0b1a30' }}
+                          />
+                          <span>{colorName}</span>
+                          {idx === 0 && (
+                            <span className="text-[9px] font-mono text-slate-400 uppercase">
+                              (Primary)
+                            </span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleColour(colorName);
+                            }}
+                            className="text-slate-400 hover:text-rose-600 font-bold text-xs ml-0.5 leading-none cursor-pointer p-0.5"
+                            title="Remove"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           )}

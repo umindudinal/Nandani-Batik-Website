@@ -86,11 +86,19 @@ export default function SareeList({
 
       // Main Colour Filter
       if (selectedMainColour !== 'all') {
+        const target = selectedMainColour.toLowerCase();
+        const itemMain = (item.mainColour || '').toLowerCase();
+        const itemPrimary = (item.primaryColor || '').toLowerCase();
+        const itemPalette = itemMain.split(',').map((c) => c.trim().toLowerCase()).filter(Boolean);
+
         const matchesColor =
-          item.mainColour === selectedMainColour ||
-          item.primaryColor === selectedMainColour ||
-          (selectedMainColour === 'Navy Blue' && (item.primaryColor === 'Dark Blue' || item.mainColour === 'Navy Blue')) ||
-          (selectedMainColour === 'Maroon' && (item.primaryColor === 'Royal Maroon' || item.mainColour === 'Maroon'));
+          itemPalette.includes(target) ||
+          itemMain === target ||
+          itemPrimary === target ||
+          itemMain.includes(target) ||
+          itemPrimary.includes(target) ||
+          (selectedMainColour === 'Navy Blue' && (itemPrimary.includes('dark blue') || itemMain.includes('navy blue'))) ||
+          (selectedMainColour === 'Maroon' && (itemPrimary.includes('royal maroon') || itemMain.includes('maroon')));
         if (!matchesColor) return false;
       }
 

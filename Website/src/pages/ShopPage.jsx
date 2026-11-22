@@ -104,11 +104,19 @@ export default function ShopPage({ selectedCategory, setSelectedCategory }) {
 
         // Main Colour Filter
         if (selectedMainColour !== 'all') {
+          const target = selectedMainColour.toLowerCase();
+          const sareeMain = (saree.mainColour || '').toLowerCase();
+          const sareePrimary = (saree.primaryColor || '').toLowerCase();
+          const sareePalette = sareeMain.split(',').map((c) => c.trim().toLowerCase()).filter(Boolean);
+
           const matchColor =
-            saree.mainColour === selectedMainColour ||
-            saree.primaryColor === selectedMainColour ||
-            (selectedMainColour === 'Navy Blue' && (saree.primaryColor === 'Dark Blue' || saree.mainColour === 'Navy Blue')) ||
-            (selectedMainColour === 'Maroon' && (saree.primaryColor === 'Royal Maroon' || saree.mainColour === 'Maroon'));
+            sareePalette.includes(target) ||
+            sareeMain === target ||
+            sareePrimary === target ||
+            sareeMain.includes(target) ||
+            sareePrimary.includes(target) ||
+            (selectedMainColour === 'Navy Blue' && (sareePrimary.includes('dark blue') || sareeMain.includes('navy blue'))) ||
+            (selectedMainColour === 'Maroon' && (sareePrimary.includes('royal maroon') || sareeMain.includes('maroon')));
           if (!matchColor) return false;
         }
 
