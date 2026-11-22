@@ -54,6 +54,49 @@ export const MAIN_COLOURS = [
   { name: 'Navy Blue', hex: '#0b1a30' },
 ];
 
+// Predefined Specification Options for Dropdown Selection
+export const SAREE_LENGTH_OPTIONS = [
+  '6.0 Meters (includes unstitched blouse piece)',
+  '5.5 Meters (without blouse piece)',
+  '6.2 Meters (extra-length drape with blouse piece)',
+  '5.0 Meters (casual / daily drape)',
+];
+
+export const BLOUSE_PIECE_OPTIONS = [
+  '0.8m Hand-batik matching blouse fabric included',
+  '1.0m Hand-batik matching blouse fabric included',
+  '1.0m Pure raw silk contrast blouse fabric included',
+  '0.8m Plain contrast blouse fabric included',
+  'Not Included (Saree drape only)',
+];
+
+export const CRAFTING_DURATION_OPTIONS = [
+  '3-4 days of artisan wax batik',
+  '2-3 days of artisan hand-waxing',
+  '4-5 days of multi-bath wax immersion',
+  '5-7 days of master heirloom wax batik',
+  '1-2 days of artisanal crackle detailing',
+  '7-10 days of bespoke bridal handcraft',
+];
+
+export const PALLU_DETAILS_OPTIONS = [
+  'Standard handcrafted batik pallu with accent borders',
+  'Intricate dual-tone hand-waxed floral chandelier with fine crackle effect',
+  'Traditional floral vine (Liya Wela) hand-waxed statement pallu',
+  'Regal peacock plume artistic panel with traditional Lankan motifs',
+  'Contemporary geometric blocks infused with abstract floral patterns',
+  'Cascade of lotus blossoms against deep wax-crackled background',
+  'Minimalist fine crackle finish with subtle micro-borders',
+];
+
+export const WASH_CARE_OPTIONS = [
+  'Gentle hand wash or dry clean recommended to preserve batik vibrancy',
+  'Strictly professional dry clean only to preserve pure silk luster',
+  'Cold water gentle hand wash with mild silk/wool shampoo; dry in shade',
+  'Normal hand wash in cold water with mild detergent; dry in shade',
+  'Do not soak; gentle hand wash and iron on reverse side with low heat',
+];
+
 export default function SareeModal({
   isOpen,
   onClose,
@@ -818,13 +861,16 @@ export default function SareeModal({
             <div className="space-y-4 animate-in fade-in-50 duration-150">
               {/* Summary Banner of Chosen Product Style & Color */}
               <div className="p-3 rounded-xl border border-slate-200/90 bg-slate-50/80 flex flex-wrap items-center justify-between gap-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="text-slate-500 font-medium">Selected Style:</span>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-slate-500 font-medium">Style:</span>
                   <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-800">
                     {formData.fabricType}
                   </span>
                   <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-800">
                     {formData.designType}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-white border border-slate-200 font-medium text-slate-800">
+                    {formData.colourType}
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-lg border border-slate-200">
@@ -839,90 +885,183 @@ export default function SareeModal({
                 </div>
               </div>
 
-              {/* Dimensions & Draping */}
+              {/* Dimensions & Draping Dropdowns */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Saree Length
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 6.0 Meters (includes unstitched blouse piece)"
-                    value={formData.length || ''}
-                    onChange={(e) => setFormData({ ...formData, length: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                  />
+                  <select
+                    value={SAREE_LENGTH_OPTIONS.includes(formData.length) ? formData.length : '__custom__'}
+                    onChange={(e) => {
+                      if (e.target.value !== '__custom__') {
+                        setFormData({ ...formData, length: e.target.value });
+                      } else {
+                        setFormData({ ...formData, length: '' });
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    {SAREE_LENGTH_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                    <option value="__custom__">Custom Saree Length...</option>
+                  </select>
+                  {!SAREE_LENGTH_OPTIONS.includes(formData.length) && (
+                    <input
+                      type="text"
+                      placeholder="Type custom length (e.g. 6.5 Meters)..."
+                      value={formData.length || ''}
+                      onChange={(e) => setFormData({ ...formData, length: e.target.value })}
+                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                    />
+                  )}
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Blouse Piece Included
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 0.8m Hand-batik matching blouse fabric included"
-                    value={formData.blousePiece || ''}
-                    onChange={(e) => setFormData({ ...formData, blousePiece: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                  />
+                  <select
+                    value={BLOUSE_PIECE_OPTIONS.includes(formData.blousePiece) ? formData.blousePiece : '__custom__'}
+                    onChange={(e) => {
+                      if (e.target.value !== '__custom__') {
+                        setFormData({ ...formData, blousePiece: e.target.value });
+                      } else {
+                        setFormData({ ...formData, blousePiece: '' });
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    {BLOUSE_PIECE_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                    <option value="__custom__">Custom Blouse Option...</option>
+                  </select>
+                  {!BLOUSE_PIECE_OPTIONS.includes(formData.blousePiece) && (
+                    <input
+                      type="text"
+                      placeholder="Type custom blouse piece details..."
+                      value={formData.blousePiece || ''}
+                      onChange={(e) => setFormData({ ...formData, blousePiece: e.target.value })}
+                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                    />
+                  )}
                 </div>
               </div>
 
-              {/* Fabric & Craftsmanship Details */}
+              {/* Craftsmanship Details Dropdowns */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Fabric Material & Weave
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 100% Pure Voile Cotton"
-                    value={formData.fabric || ''}
-                    onChange={(e) => setFormData({ ...formData, fabric: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                  />
-                </div>
-
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">
                     Crafting Duration
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 3-4 days of artisan wax batik"
-                    value={formData.craftTime || ''}
-                    onChange={(e) => setFormData({ ...formData, craftTime: e.target.value })}
-                    className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                  />
+                  <select
+                    value={CRAFTING_DURATION_OPTIONS.includes(formData.craftTime) ? formData.craftTime : '__custom__'}
+                    onChange={(e) => {
+                      if (e.target.value !== '__custom__') {
+                        setFormData({ ...formData, craftTime: e.target.value });
+                      } else {
+                        setFormData({ ...formData, craftTime: '' });
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    {CRAFTING_DURATION_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                    <option value="__custom__">Custom Crafting Duration...</option>
+                  </select>
+                  {!CRAFTING_DURATION_OPTIONS.includes(formData.craftTime) && (
+                    <input
+                      type="text"
+                      placeholder="Type custom crafting duration..."
+                      value={formData.craftTime || ''}
+                      onChange={(e) => setFormData({ ...formData, craftTime: e.target.value })}
+                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                    />
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Pallu & Border Details (Optional)
+                  </label>
+                  <select
+                    value={
+                      !formData.palluDetails
+                        ? ''
+                        : PALLU_DETAILS_OPTIONS.includes(formData.palluDetails)
+                        ? formData.palluDetails
+                        : '__custom__'
+                    }
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setFormData({ ...formData, palluDetails: '' });
+                      } else {
+                        setFormData({ ...formData, palluDetails: e.target.value });
+                      }
+                    }}
+                    className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  >
+                    <option value="">None (Standard Handcrafted Pallu)</option>
+                    {PALLU_DETAILS_OPTIONS.map((opt) => (
+                      <option key={opt} value={opt}>
+                        {opt}
+                      </option>
+                    ))}
+                    <option value="__custom__">Custom Pallu Details...</option>
+                  </select>
+                  {Boolean(formData.palluDetails && !PALLU_DETAILS_OPTIONS.includes(formData.palluDetails)) && (
+                    <input
+                      type="text"
+                      placeholder="Type custom pallu & border details..."
+                      value={formData.palluDetails || ''}
+                      onChange={(e) => setFormData({ ...formData, palluDetails: e.target.value })}
+                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                    />
+                  )}
                 </div>
               </div>
 
-              {/* Pallu & Border Art Details */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1">
-                  Pallu & Border Details (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Intricate dual-tone hand-waxed floral chandelier with fine crackle effect"
-                  value={formData.palluDetails || ''}
-                  onChange={(e) => setFormData({ ...formData, palluDetails: e.target.value })}
-                  className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                />
-              </div>
-
-              {/* Care Instructions */}
+              {/* Care Instructions Dropdown */}
               <div>
                 <label className="block text-xs font-semibold text-slate-700 mb-1">
                   Wash & Maintenance Care
                 </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Gentle hand wash or dry clean recommended to preserve batik vibrancy"
-                  value={formData.washCare || ''}
-                  onChange={(e) => setFormData({ ...formData, washCare: e.target.value })}
-                  className="w-full text-xs p-2 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                />
+                <select
+                  value={WASH_CARE_OPTIONS.includes(formData.washCare) ? formData.washCare : '__custom__'}
+                  onChange={(e) => {
+                    if (e.target.value !== '__custom__') {
+                      setFormData({ ...formData, washCare: e.target.value });
+                    } else {
+                      setFormData({ ...formData, washCare: '' });
+                    }
+                  }}
+                  className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                >
+                  {WASH_CARE_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                  <option value="__custom__">Custom Wash & Care Instructions...</option>
+                </select>
+                {!WASH_CARE_OPTIONS.includes(formData.washCare) && (
+                  <input
+                    type="text"
+                    placeholder="Type custom wash care instructions..."
+                    value={formData.washCare || ''}
+                    onChange={(e) => setFormData({ ...formData, washCare: e.target.value })}
+                    className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
+                  />
+                )}
               </div>
 
               {/* Tags */}
