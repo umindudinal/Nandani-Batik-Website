@@ -137,47 +137,98 @@ export async function registerCustomer(req, res) {
     const targetId = id || customerId || null;
 
     if (isSupabaseConfigured() && supabase) {
-      // Find existing customer by ID, Email, or Phone
-      let existing = null;
+      // 1. Check for existing customer by PHONE
+      const { data: customerByPhone } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('phone', cleanPhone)
+        .maybeSingle();
 
-      if (targetId) {
-        const { data } = await supabase
-          .from('customers')
-          .select('*')
-          .eq('id', targetId)
-          .maybeSingle();
-        if (data) existing = data;
+      // 2. Check for existing customer by EMAIL
+      const { data: customerByEmail } = cleanEmail
+        ? await supabase
+            .from('customers')
+            .select('*')
+            .ilike('email', cleanEmail)
+            .maybeSingle()
+        : { data: null };
+
+      // 3. Check for existing customer by ID
+      const { data: customerById } = targetId
+        ? await supabase
+            .from('customers')
+            .select('*')
+            .eq('id', targetId)
+            .maybeSingle()
+        : { data: null };
+
+      // Resolve duplicate account conflict / auto-merge if phone & email belong to separate rows
+      let targetRecord = null;
+
+      if (customerByPhone && customerByEmail && customerByPhone.id !== customerByEmail.id) {
+        // Two separate accounts found!
+        // Prioritize the real phone record or the established account
+        let keepRecord = customerByPhone;
+        let removeRecord = customerByEmail;
+
+        if (customerByPhone.phone && customerByPhone.phone.startsWith('g-')) {
+          keepRecord = customerByEmail;
+          removeRecord = customerByPhone;
+        }
+
+        // Migrate any orders attached to removeRecord before deleting
+        try {
+          await supabase.from('orders').update({ customer_id: keepRecord.id }).eq('customer_id', removeRecord.id);
+        } catch (_) {}
+
+        // Delete the temporary or redundant record to free up unique constraints
+        await supabase.from('customers').delete().eq('id', removeRecord.id);
+        targetRecord = keepRecord;
+      } else if (customerByPhone && customerById && customerByPhone.id !== customerById.id) {
+        let keepRecord = customerByPhone;
+        let removeRecord = customerById;
+
+        if (customerByPhone.phone && customerByPhone.phone.startsWith('g-')) {
+          keepRecord = customerById;
+          removeRecord = customerByPhone;
+        }
+
+        try {
+          await supabase.from('orders').update({ customer_id: keepRecord.id }).eq('customer_id', removeRecord.id);
+        } catch (_) {}
+
+        await supabase.from('customers').delete().eq('id', removeRecord.id);
+        targetRecord = keepRecord;
+      } else if (customerByEmail && customerById && customerByEmail.id !== customerById.id) {
+        let keepRecord = customerByEmail;
+        let removeRecord = customerById;
+
+        if (customerByEmail.phone && customerByEmail.phone.startsWith('g-')) {
+          keepRecord = customerById;
+          removeRecord = customerByEmail;
+        }
+
+        try {
+          await supabase.from('orders').update({ customer_id: keepRecord.id }).eq('customer_id', removeRecord.id);
+        } catch (_) {}
+
+        await supabase.from('customers').delete().eq('id', removeRecord.id);
+        targetRecord = keepRecord;
+      } else {
+        targetRecord = customerByPhone || customerByEmail || customerById;
       }
 
-      if (!existing && cleanEmail) {
-        const { data } = await supabase
-          .from('customers')
-          .select('*')
-          .ilike('email', cleanEmail)
-          .maybeSingle();
-        if (data) existing = data;
-      }
-
-      if (!existing && cleanPhone) {
-        const { data } = await supabase
-          .from('customers')
-          .select('*')
-          .eq('phone', cleanPhone)
-          .maybeSingle();
-        if (data) existing = data;
-      }
-
-      if (existing) {
+      if (targetRecord) {
         const updatePayload = {
           full_name: fullName.trim(),
-          phone: cleanPhone || existing.phone,
-          whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone || existing.whatsapp,
-          email: cleanEmail || existing.email,
+          phone: cleanPhone,
+          whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone || targetRecord.whatsapp,
+          email: cleanEmail || targetRecord.email,
           address: address.trim(),
-          district: district || existing.district || 'Colombo',
-          city: (city && city.trim()) || existing.city,
-          postal_code: (postalCode && postalCode.trim()) || existing.postal_code,
-          notes: (notes && notes.trim()) || existing.notes,
+          district: district || targetRecord.district || 'Colombo',
+          city: (city && city.trim()) || targetRecord.city,
+          postal_code: (postalCode && postalCode.trim()) || targetRecord.postal_code,
+          notes: (notes && notes.trim()) || targetRecord.notes,
           updated_at: new Date().toISOString(),
         };
         if (password) updatePayload.password = password;
@@ -185,11 +236,12 @@ export async function registerCustomer(req, res) {
         const { data: updated, error: updateErr } = await supabase
           .from('customers')
           .update(updatePayload)
-          .eq('id', existing.id)
+          .eq('id', targetRecord.id)
           .select()
           .single();
 
         if (updateErr) throw updateErr;
+
         return res.json({
           success: true,
           isNew: false,
@@ -221,48 +273,7 @@ export async function registerCustomer(req, res) {
           .select()
           .single();
 
-        if (insertErr) {
-          // If unique constraint violation (e.g. email or phone already registered), attempt fallback update
-          if (insertErr.code === '23505') {
-            let fallbackQuery = supabase.from('customers').select('*');
-            if (cleanEmail) {
-              fallbackQuery = fallbackQuery.ilike('email', cleanEmail);
-            } else {
-              fallbackQuery = fallbackQuery.eq('phone', cleanPhone);
-            }
-            const { data: matched } = await fallbackQuery.maybeSingle();
-            if (matched) {
-              const { data: updatedRow, error: retryErr } = await supabase
-                .from('customers')
-                .update({
-                  full_name: fullName.trim(),
-                  phone: cleanPhone,
-                  whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone,
-                  email: cleanEmail || matched.email,
-                  address: address.trim(),
-                  district: district || matched.district || 'Colombo',
-                  city: (city && city.trim()) || matched.city,
-                  postal_code: (postalCode && postalCode.trim()) || matched.postal_code,
-                  notes: (notes && notes.trim()) || matched.notes,
-                  updated_at: new Date().toISOString(),
-                })
-                .eq('id', matched.id)
-                .select()
-                .single();
-
-              if (!retryErr && updatedRow) {
-                return res.json({
-                  success: true,
-                  isNew: false,
-                  customer: mapDbCustomerToJs(updatedRow),
-                  token: `nb_client_${Date.now()}`,
-                  message: 'Customer profile updated successfully',
-                });
-              }
-            }
-          }
-          throw insertErr;
-        }
+        if (insertErr) throw insertErr;
 
         return res.status(201).json({
           success: true,
@@ -278,19 +289,28 @@ export async function registerCustomer(req, res) {
     const db = getLocalDb();
     if (!db.customers) db.customers = [];
 
-    const existingIdx = db.customers.findIndex((c) => {
-      if (targetId && c.id === targetId) return true;
-      if (cleanEmail && c.email && c.email.toLowerCase() === cleanEmail) return true;
-      if (cleanPhone && c.phone && (c.phone === cleanPhone || c.phone.replace(/[\s-]/g, '') === cleanPhone)) return true;
-      return false;
-    });
+    const phoneIdx = db.customers.findIndex((c) => c.phone && (c.phone === cleanPhone || c.phone.replace(/[\s-]/g, '') === cleanPhone));
+    const emailIdx = cleanEmail ? db.customers.findIndex((c) => c.email && c.email.toLowerCase() === cleanEmail) : -1;
+    const idIdx = targetId ? db.customers.findIndex((c) => c.id === targetId) : -1;
 
-    if (existingIdx !== -1) {
-      const existing = db.customers[existingIdx];
+    let targetIdx = phoneIdx !== -1 ? phoneIdx : (emailIdx !== -1 ? emailIdx : idIdx);
+
+    // Merge if phone and email match two separate entries
+    if (phoneIdx !== -1 && emailIdx !== -1 && phoneIdx !== emailIdx) {
+      const isEmailTemp = db.customers[emailIdx].phone && db.customers[emailIdx].phone.startsWith('g-');
+      const removeIndex = isEmailTemp ? emailIdx : phoneIdx;
+      const keepIndex = isEmailTemp ? phoneIdx : emailIdx;
+      const keepItem = db.customers[keepIndex];
+      db.customers.splice(removeIndex, 1);
+      targetIdx = db.customers.indexOf(keepItem);
+    }
+
+    if (targetIdx !== -1) {
+      const existing = db.customers[targetIdx];
       const updated = {
         ...existing,
         fullName: fullName.trim(),
-        phone: cleanPhone || existing.phone,
+        phone: cleanPhone,
         whatsapp: (whatsapp && whatsapp.trim()) || cleanPhone || existing.whatsapp,
         email: cleanEmail || existing.email,
         address: address.trim(),
@@ -302,7 +322,7 @@ export async function registerCustomer(req, res) {
       };
       if (password) updated.password = password;
 
-      db.customers[existingIdx] = updated;
+      db.customers[targetIdx] = updated;
       saveLocalDb(db);
       return res.json({
         success: true,
