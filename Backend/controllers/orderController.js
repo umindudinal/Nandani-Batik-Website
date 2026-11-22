@@ -11,15 +11,33 @@ export async function getOrders(req, res) {
       if (status && status !== 'all') {
         query = query.eq('status', status);
       }
-      if (phone && phone.trim() && email && email.trim()) {
-        const clean = phone.replace(/[\s-+]/g, '');
-        query = query.or(`phone.ilike.%${clean}%,whatsapp.ilike.%${clean}%,email.ilike.%${email.trim()}%`);
-      } else if (phone && phone.trim()) {
-        const clean = phone.replace(/[\s-+]/g, '');
-        query = query.or(`phone.ilike.%${clean}%,whatsapp.ilike.%${clean}%`);
-      } else if (email && email.trim()) {
-        query = query.ilike('email', `%${email.trim()}%`);
+
+      let clean = phone && phone.trim() ? phone.replace(/[\s-+]/g, '') : '';
+
+      // If phone is missing or a temporary Google identifier (starts with 'g'), try finding customer's actual phone by email
+      if ((!clean || clean.startsWith('g')) && email && email.trim()) {
+        const { data: cust } = await supabase
+          .from('customers')
+          .select('phone')
+          .ilike('email', email.trim())
+          .maybeSingle();
+        if (cust && cust.phone && !cust.phone.startsWith('g')) {
+          clean = cust.phone.replace(/[\s-+]/g, '');
+        }
       }
+
+      if (clean && !clean.startsWith('g')) {
+        query = query.or(`phone.ilike.%${clean}%,whatsapp.ilike.%${clean}%`);
+        const { data, error } = await query;
+        if (error) throw error;
+        return res.json((data || []).map(mapDbOrderToJs));
+      }
+
+      // If customer has only a temp ID and no orders, return empty array safely
+      if (phone || email) {
+        return res.json([]);
+      }
+
       const { data, error } = await query;
       if (error) throw error;
       return res.json((data || []).map(mapDbOrderToJs));
@@ -30,18 +48,29 @@ export async function getOrders(req, res) {
     if (status && status !== 'all') {
       orders = orders.filter((o) => o.status === status);
     }
-    if ((phone && phone.trim()) || (email && email.trim())) {
-      const clean = (phone || '').replace(/[\s-+]/g, '');
-      const cleanEmail = (email || '').trim().toLowerCase();
+
+    let clean = phone && phone.trim() ? phone.replace(/[\s-+]/g, '') : '';
+    if ((!clean || clean.startsWith('g')) && email && email.trim()) {
+      const customers = db.customers || [];
+      const cust = customers.find((c) => c.email && c.email.toLowerCase() === email.trim().toLowerCase());
+      if (cust && cust.phone && !cust.phone.startsWith('g')) {
+        clean = cust.phone.replace(/[\s-+]/g, '');
+      }
+    }
+
+    if (clean && !clean.startsWith('g')) {
       orders = orders.filter((o) => {
         const oPhone = (o.phone || '').replace(/[\s-+]/g, '');
         const oWa = (o.whatsapp || '').replace(/[\s-+]/g, '');
-        const oEmail = (o.email || '').toLowerCase();
-        const matchPhone = clean && (oPhone.includes(clean) || oWa.includes(clean) || clean.includes(oPhone));
-        const matchEmail = cleanEmail && oEmail.includes(cleanEmail);
-        return matchPhone || matchEmail;
+        return oPhone.includes(clean) || oWa.includes(clean) || clean.includes(oPhone);
       });
+      return res.json(orders);
     }
+
+    if (phone || email) {
+      return res.json([]);
+    }
+
     res.json(orders);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -446,7 +446,7 @@ export default function CustomerProfilePage() {
                       Order History
                     </h2>
                     <p className="text-xs text-stone-500">
-                      View all orders placed under {customerProfile.email || customerProfile.phone}
+                      View all orders placed under {customerProfile.phone || customerProfile.email}
                     </p>
                   </div>
 
@@ -481,7 +481,7 @@ export default function CustomerProfilePage() {
                     <div className="space-y-1">
                       <h3 className="font-serif text-lg text-stone-900">No Orders Placed Yet</h3>
                       <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                        You have not placed any saree orders with <strong>{customerProfile.email || customerProfile.phone}</strong> yet.
+                        You have not placed any saree orders with <strong>{customerProfile.phone || customerProfile.email}</strong> yet.
                       </p>
                     </div>
                     <button
