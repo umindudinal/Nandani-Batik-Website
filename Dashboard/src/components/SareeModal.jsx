@@ -139,6 +139,15 @@ export default function SareeModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [stepError, setStepError] = useState(null);
 
+  // Tracks whether each specification field is in custom input mode
+  const [customFields, setCustomFields] = useState({
+    length: false,
+    blousePiece: false,
+    craftTime: false,
+    palluDetails: false,
+    washCare: false,
+  });
+
   useEffect(() => {
     if (initialData) {
       const ft = initialData.fabricType || initialData.categoryLabel || 'Normal Voil Sarees';
@@ -152,6 +161,13 @@ export default function SareeModal({
         primaryColor: initialData.primaryColor || mc,
         colorHex: initialData.colorHex || '#0b1a30',
         tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : (initialData.tags || ''),
+      });
+      setCustomFields({
+        length: Boolean(initialData.length && !SAREE_LENGTH_OPTIONS.includes(initialData.length)),
+        blousePiece: Boolean(initialData.blousePiece && !BLOUSE_PIECE_OPTIONS.includes(initialData.blousePiece)),
+        craftTime: Boolean(initialData.craftTime && !CRAFTING_DURATION_OPTIONS.includes(initialData.craftTime)),
+        palluDetails: Boolean(initialData.palluDetails && !PALLU_DETAILS_OPTIONS.includes(initialData.palluDetails)),
+        washCare: Boolean(initialData.washCare && !WASH_CARE_OPTIONS.includes(initialData.washCare)),
       });
     } else {
       setFormData({
@@ -182,6 +198,13 @@ export default function SareeModal({
         washCare: 'Gentle hand wash or dry clean recommended to preserve batik vibrancy',
         craftTime: '3-4 days of artisan wax batik',
         tags: 'Normal Voile, Handmade Wax Batik',
+      });
+      setCustomFields({
+        length: false,
+        blousePiece: false,
+        craftTime: false,
+        palluDetails: false,
+        washCare: false,
       });
     }
     setCurrentStep(1);
@@ -892,12 +915,20 @@ export default function SareeModal({
                     Saree Length
                   </label>
                   <select
-                    value={SAREE_LENGTH_OPTIONS.includes(formData.length) ? formData.length : '__custom__'}
+                    value={
+                      customFields.length
+                        ? '__custom__'
+                        : SAREE_LENGTH_OPTIONS.includes(formData.length)
+                        ? formData.length
+                        : '__custom__'
+                    }
                     onChange={(e) => {
-                      if (e.target.value !== '__custom__') {
-                        setFormData({ ...formData, length: e.target.value });
+                      const val = e.target.value;
+                      if (val === '__custom__') {
+                        setCustomFields((prev) => ({ ...prev, length: true }));
                       } else {
-                        setFormData({ ...formData, length: '' });
+                        setCustomFields((prev) => ({ ...prev, length: false }));
+                        setFormData((prev) => ({ ...prev, length: val }));
                       }
                     }}
                     className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -909,14 +940,17 @@ export default function SareeModal({
                     ))}
                     <option value="__custom__">Custom Saree Length...</option>
                   </select>
-                  {!SAREE_LENGTH_OPTIONS.includes(formData.length) && (
-                    <input
-                      type="text"
-                      placeholder="Type custom length (e.g. 6.5 Meters)..."
-                      value={formData.length || ''}
-                      onChange={(e) => setFormData({ ...formData, length: e.target.value })}
-                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                    />
+                  {(customFields.length || (formData.length && !SAREE_LENGTH_OPTIONS.includes(formData.length))) && (
+                    <div className="mt-1.5 space-y-1">
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder="Type custom length (e.g. 6.5 Meters)..."
+                        value={formData.length || ''}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, length: e.target.value }))}
+                        className="w-full text-xs p-2 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                    </div>
                   )}
                 </div>
 
@@ -925,12 +959,20 @@ export default function SareeModal({
                     Blouse Piece Included
                   </label>
                   <select
-                    value={BLOUSE_PIECE_OPTIONS.includes(formData.blousePiece) ? formData.blousePiece : '__custom__'}
+                    value={
+                      customFields.blousePiece
+                        ? '__custom__'
+                        : BLOUSE_PIECE_OPTIONS.includes(formData.blousePiece)
+                        ? formData.blousePiece
+                        : '__custom__'
+                    }
                     onChange={(e) => {
-                      if (e.target.value !== '__custom__') {
-                        setFormData({ ...formData, blousePiece: e.target.value });
+                      const val = e.target.value;
+                      if (val === '__custom__') {
+                        setCustomFields((prev) => ({ ...prev, blousePiece: true }));
                       } else {
-                        setFormData({ ...formData, blousePiece: '' });
+                        setCustomFields((prev) => ({ ...prev, blousePiece: false }));
+                        setFormData((prev) => ({ ...prev, blousePiece: val }));
                       }
                     }}
                     className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -942,14 +984,17 @@ export default function SareeModal({
                     ))}
                     <option value="__custom__">Custom Blouse Option...</option>
                   </select>
-                  {!BLOUSE_PIECE_OPTIONS.includes(formData.blousePiece) && (
-                    <input
-                      type="text"
-                      placeholder="Type custom blouse piece details..."
-                      value={formData.blousePiece || ''}
-                      onChange={(e) => setFormData({ ...formData, blousePiece: e.target.value })}
-                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                    />
+                  {(customFields.blousePiece || (formData.blousePiece && !BLOUSE_PIECE_OPTIONS.includes(formData.blousePiece))) && (
+                    <div className="mt-1.5 space-y-1">
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder="Type custom blouse piece details..."
+                        value={formData.blousePiece || ''}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, blousePiece: e.target.value }))}
+                        className="w-full text-xs p-2 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                    </div>
                   )}
                 </div>
               </div>
@@ -961,12 +1006,20 @@ export default function SareeModal({
                     Crafting Duration
                   </label>
                   <select
-                    value={CRAFTING_DURATION_OPTIONS.includes(formData.craftTime) ? formData.craftTime : '__custom__'}
+                    value={
+                      customFields.craftTime
+                        ? '__custom__'
+                        : CRAFTING_DURATION_OPTIONS.includes(formData.craftTime)
+                        ? formData.craftTime
+                        : '__custom__'
+                    }
                     onChange={(e) => {
-                      if (e.target.value !== '__custom__') {
-                        setFormData({ ...formData, craftTime: e.target.value });
+                      const val = e.target.value;
+                      if (val === '__custom__') {
+                        setCustomFields((prev) => ({ ...prev, craftTime: true }));
                       } else {
-                        setFormData({ ...formData, craftTime: '' });
+                        setCustomFields((prev) => ({ ...prev, craftTime: false }));
+                        setFormData((prev) => ({ ...prev, craftTime: val }));
                       }
                     }}
                     className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -978,14 +1031,17 @@ export default function SareeModal({
                     ))}
                     <option value="__custom__">Custom Crafting Duration...</option>
                   </select>
-                  {!CRAFTING_DURATION_OPTIONS.includes(formData.craftTime) && (
-                    <input
-                      type="text"
-                      placeholder="Type custom crafting duration..."
-                      value={formData.craftTime || ''}
-                      onChange={(e) => setFormData({ ...formData, craftTime: e.target.value })}
-                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                    />
+                  {(customFields.craftTime || (formData.craftTime && !CRAFTING_DURATION_OPTIONS.includes(formData.craftTime))) && (
+                    <div className="mt-1.5 space-y-1">
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder="Type custom crafting duration..."
+                        value={formData.craftTime || ''}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, craftTime: e.target.value }))}
+                        className="w-full text-xs p-2 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                    </div>
                   )}
                 </div>
 
@@ -995,17 +1051,21 @@ export default function SareeModal({
                   </label>
                   <select
                     value={
-                      !formData.palluDetails
+                      customFields.palluDetails
+                        ? '__custom__'
+                        : !formData.palluDetails
                         ? ''
                         : PALLU_DETAILS_OPTIONS.includes(formData.palluDetails)
                         ? formData.palluDetails
                         : '__custom__'
                     }
                     onChange={(e) => {
-                      if (e.target.value === '__custom__') {
-                        setFormData({ ...formData, palluDetails: '' });
+                      const val = e.target.value;
+                      if (val === '__custom__') {
+                        setCustomFields((prev) => ({ ...prev, palluDetails: true }));
                       } else {
-                        setFormData({ ...formData, palluDetails: e.target.value });
+                        setCustomFields((prev) => ({ ...prev, palluDetails: false }));
+                        setFormData((prev) => ({ ...prev, palluDetails: val }));
                       }
                     }}
                     className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -1018,14 +1078,18 @@ export default function SareeModal({
                     ))}
                     <option value="__custom__">Custom Pallu Details...</option>
                   </select>
-                  {Boolean(formData.palluDetails && !PALLU_DETAILS_OPTIONS.includes(formData.palluDetails)) && (
-                    <input
-                      type="text"
-                      placeholder="Type custom pallu & border details..."
-                      value={formData.palluDetails || ''}
-                      onChange={(e) => setFormData({ ...formData, palluDetails: e.target.value })}
-                      className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                    />
+                  {(customFields.palluDetails || (formData.palluDetails && !PALLU_DETAILS_OPTIONS.includes(formData.palluDetails))) && (
+                    <div className="mt-1.5 space-y-1">
+                      <input
+                        type="text"
+                        autoFocus
+                        placeholder="Type custom pallu & border details..."
+                        value={formData.palluDetails || ''}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, palluDetails: e.target.value }))}
+                        className="w-full text-xs p-2 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                      <p className="text-[10px] text-slate-400">Enter custom pallu motif or artwork description.</p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -1036,12 +1100,20 @@ export default function SareeModal({
                   Wash & Maintenance Care
                 </label>
                 <select
-                  value={WASH_CARE_OPTIONS.includes(formData.washCare) ? formData.washCare : '__custom__'}
+                  value={
+                    customFields.washCare
+                      ? '__custom__'
+                      : WASH_CARE_OPTIONS.includes(formData.washCare)
+                      ? formData.washCare
+                      : '__custom__'
+                  }
                   onChange={(e) => {
-                    if (e.target.value !== '__custom__') {
-                      setFormData({ ...formData, washCare: e.target.value });
+                    const val = e.target.value;
+                    if (val === '__custom__') {
+                      setCustomFields((prev) => ({ ...prev, washCare: true }));
                     } else {
-                      setFormData({ ...formData, washCare: '' });
+                      setCustomFields((prev) => ({ ...prev, washCare: false }));
+                      setFormData((prev) => ({ ...prev, washCare: val }));
                     }
                   }}
                   className="w-full text-xs p-2.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
@@ -1053,14 +1125,17 @@ export default function SareeModal({
                   ))}
                   <option value="__custom__">Custom Wash & Care Instructions...</option>
                 </select>
-                {!WASH_CARE_OPTIONS.includes(formData.washCare) && (
-                  <input
-                    type="text"
-                    placeholder="Type custom wash care instructions..."
-                    value={formData.washCare || ''}
-                    onChange={(e) => setFormData({ ...formData, washCare: e.target.value })}
-                    className="w-full text-xs p-2 mt-1.5 bg-white border border-slate-200 rounded-lg focus:outline-none"
-                  />
+                {(customFields.washCare || (formData.washCare && !WASH_CARE_OPTIONS.includes(formData.washCare))) && (
+                  <div className="mt-1.5 space-y-1">
+                    <input
+                      type="text"
+                      autoFocus
+                      placeholder="Type custom wash care instructions..."
+                      value={formData.washCare || ''}
+                      onChange={(e) => setFormData((prev) => ({ ...prev, washCare: e.target.value }))}
+                      className="w-full text-xs p-2 bg-white border border-amber-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-amber-400"
+                    />
+                  </div>
                 )}
               </div>
 
